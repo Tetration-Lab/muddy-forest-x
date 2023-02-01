@@ -1,5 +1,9 @@
+import { PhaserLayer } from "../layer/phaser/phaserLayer"
+
 export const Game = ()=>{
     return(
-        <>Game page...</>
+        <>
+            <PhaserLayer/>
+        </>
     )
 }

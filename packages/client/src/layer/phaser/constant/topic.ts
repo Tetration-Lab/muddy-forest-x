@@ -1,0 +1,1 @@
+export const TOPIC_GAME_SCENE = 'TOPIC_GAME_SCENE'
