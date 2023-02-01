@@ -1,9 +1,9 @@
-import { PhaserLayer } from "../layer/phaser/phaserLayer"
+import { PhaserLayer } from '../layer/phaser/phaserLayer'
 
-export const Game = ()=>{
-    return(
-        <>
-            <PhaserLayer/>
-        </>
-    )
+export const Game = () => {
+  return (
+    <>
+      <PhaserLayer />
+    </>
+  )
 }

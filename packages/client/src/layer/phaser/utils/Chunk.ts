@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { CHUNK_HEIGHT_SIZE, CHUNK_WIDTH_SIZE, TILE_SIZE } from './config/chunk'
+import { CHUNK_HEIGHT_SIZE, CHUNK_WIDTH_SIZE, TILE_SIZE } from '../config/chunk'
 import { Tile } from './Tile'
 
 export class Chunk extends Phaser.GameObjects.Container {

@@ -1,5 +1,5 @@
 import { Chunk } from './Chunk'
-import { CHUNK_HEIGHT_SIZE, CHUNK_WIDTH_SIZE, LOAD_RADIUS, TILE_SIZE } from './config/chunk'
+import { CHUNK_HEIGHT_SIZE, CHUNK_WIDTH_SIZE, LOAD_RADIUS, TILE_SIZE } from '../config/chunk'
 import { Tile } from './Tile'
 export interface ChunkLoaderConfig {
   tileSize: number
@@ -13,7 +13,7 @@ export class ChunkLoader {
   alivePosition: Map<string, boolean> = new Map()
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   updateCb = (t: Tile) => {}
-  constructor(scene:Phaser.Scene, config: ChunkLoaderConfig, rt: Phaser.GameObjects.RenderTexture) {
+  constructor(scene: Phaser.Scene, config: ChunkLoaderConfig, rt: Phaser.GameObjects.RenderTexture) {
     this.scene = scene
     this.chunks = []
     this.trackObjects = this.scene.add.group()

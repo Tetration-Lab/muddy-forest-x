@@ -1,11 +1,12 @@
+import { Perlin } from '@latticexyz/noise'
 import Phaser from 'phaser'
 import { Pane } from 'tweakpane'
-import { Chunk } from '../Chunk'
-import { ChunkLoader } from '../ChunkLoader'
+import { Chunk } from '../utils/Chunk'
+import { ChunkLoader } from '../utils/ChunkLoader'
 import { CHUNK_HEIGHT_SIZE, CHUNK_WIDTH_SIZE, LOAD_RADIUS, TILE_SIZE } from '../config/chunk'
 import { GAME_HEIGHT, GAME_WIDTH } from '../config/game'
 import { GAME_SCENE } from '../constant/scene'
-import { Tile } from '../Tile'
+import { Tile } from '../utils/Tile'
 import GameUIScene from './GameUIScene'
 class GameScene extends Phaser.Scene {
   bg!: Phaser.GameObjects.TileSprite
@@ -30,6 +31,7 @@ class GameScene extends Phaser.Scene {
   redRect!: Phaser.GameObjects.Rectangle
   rt!: Phaser.GameObjects.RenderTexture
   ready = false
+  perlin: Perlin | null = null
   constructor() {
     super(GAME_SCENE)
     this.pane = new Pane()
@@ -91,7 +93,7 @@ class GameScene extends Phaser.Scene {
     this.chunkLoader.setUpdateCbToChunks((t: Tile) => {
       const SCALE = 100
       const PRECISION = 10
-      if (this.perlin === undefined) return
+      if (!this.perlin) return
       t.alpha = Math.floor(this.perlin(t.x, t.y, 0, SCALE) * 2 ** PRECISION) / 2 ** PRECISION
     })
     this.chunkLoader.initChunks(this.followPoint.x, this.followPoint.y)
@@ -150,10 +152,6 @@ class GameScene extends Phaser.Scene {
       camera.setZoom(this.cameras.main.zoom + 0.1)
     }
 
-    const gameUIScene = this.scene.get('GameUIScene') as GameUIScene
-    if (gameUIScene) {
-      gameUIScene.setChunkText(`total chunk${this.chunkLoader.chunkCount()}`)
-    }
     this.navigation.setPosition(this.followPoint.x, this.followPoint.y)
   }
 

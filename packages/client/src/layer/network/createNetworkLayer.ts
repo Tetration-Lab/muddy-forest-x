@@ -14,27 +14,25 @@ export async function createNetworkLayer(config: SetupContractConfig) {
   const uniqueWorldId = config.chainId + config.worldAddress
 
   // --- COMPONENTS -----------------------------------------------------------------
-  const components = {
+  const _components = {
     Counter: defineNumberComponent(world, {
-        metadata: {
-          contractId: "component.Counter",
-        },
-      }),
+      metadata: {
+        contractId: 'component.Counter',
+      },
+    }),
   }
   // --- SETUP ----------------------------------------------------------------------
-  const { txQueue, systems, txReduced$, network, startSync, encoders } = await setupMUDNetwork<
-    typeof components,
+  const { txQueue, systems, txReduced$, network, startSync, encoders, components } = await setupMUDNetwork<
+    typeof _components,
     SystemTypes
-  >(config, world, components, SystemAbis)
+  >(config, world, _components, SystemAbis)
 
   // --- ACTION SYSTEM --------------------------------------------------------------
   const actions = createActionSystem(world, txReduced$)
-  
-
   // --- API ------------------------------------------------------------------------
 
-  const increment = () =>{
-    systems["system.Increment"].executeTyped("0x00");
+  const increment = () => {
+    systems['system.Increment'].executeTyped('0x00')
   }
   // FOR DEV
   const w = window as any
@@ -53,7 +51,7 @@ export async function createNetworkLayer(config: SetupContractConfig) {
     network,
     encoders,
     actions,
-    api: { },
+    api: {},
   }
 
   return context
