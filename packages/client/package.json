@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint --fix"
   },
   "devDependencies": {
     "@tweakpane/core": "^1.1.1",
@@ -15,12 +16,17 @@
     "@types/react-dom": "^18.0.9",
     "@typescript-eslint/eslint-plugin": "^5.46.1",
     "@typescript-eslint/parser": "^5.46.1",
-    "@vitejs/plugin-react": "^3.0.0",
+    "@vitejs/plugin-react-swc": "^3.0.0",
     "eslint": "^8.29.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.31.11",
     "eslint-plugin-react-hooks": "^4.6.0",
     "typescript": "^4.6.4",
-    "vite": "^3.2.3"
+    "vite": "^4.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "prettier": "2.8.1",
+    "postcss-windicss": "^1.0.0"
   },
   "dependencies": {
     "@improbable-eng/grpc-web": "^0.15.0",
@@ -40,6 +46,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.8.0",
     "threads": "^1.7.0",
-    "tweakpane": "^3.1.4"
+    "tweakpane": "^3.1.4",
+    "windicss": "^3.5.6"
   }
 }

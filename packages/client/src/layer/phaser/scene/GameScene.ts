@@ -56,6 +56,7 @@ class GameScene extends Phaser.Scene {
   }
 
   create() {
+    console.log('game scene create')
     this.redRect = this.add.rectangle(1016, 0, 16, 16, 0xff0000)
     this.redRect.setDepth(100)
     this.redRect.setVisible(false)

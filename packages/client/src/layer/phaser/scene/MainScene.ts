@@ -55,6 +55,7 @@ class MainScene extends Phaser.Scene {
   }
 
   onDestroy = () => {
+    console.log('MainScene onDestroy')
     this.scale.off(Phaser.Scale.Events.RESIZE).removeAllListeners()
   }
 
@@ -62,7 +63,7 @@ class MainScene extends Phaser.Scene {
     return new Phaser.Math.Vector2(GAME_WIDTH / 2, GAME_HEIGHT / 2)
   }
 
-  resize(gameSize) {
+  resize(gameSize: Phaser.Structs.Size) {
     const width = gameSize.width
     const height = gameSize.height
 
@@ -70,7 +71,6 @@ class MainScene extends Phaser.Scene {
     this.sizer.setSize(width, height)
 
     this.updateCamera()
-    // this.updateStrickRatioCamera(this.cameras.main)
   }
 
   updateCamera() {
@@ -82,10 +82,8 @@ class MainScene extends Phaser.Scene {
     const scaleY = this.sizer.height / GAME_HEIGHT
 
     camera.setViewport(x, y, this.sizer.width, this.sizer.height)
-    // camera.setZoom(Math.max(scaleX, scaleY) * ZOOM_MULTIPLIER)
     camera.setZoom(Math.max(scaleX, scaleY))
     camera.centerOn(GAME_WIDTH / 2, GAME_HEIGHT / 2)
-    // camera.setZoom(ZOOM_MULTIPLIER)
 
     this.updateCameraInSubScenes()
   }
@@ -118,7 +116,6 @@ class MainScene extends Phaser.Scene {
       const scaleX = scene.scale.width / GAME_WIDTH
       const scaleY = scene.scale.height / GAME_HEIGHT
       camera.setZoom(Math.max(scaleX, scaleY) * ZOOM_MULTIPLIER)
-      // camera.setZoom(Math.max(scaleX, scaleY))
     }
   }
 

@@ -1,7 +1,11 @@
 import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import react from "@vitejs/plugin-react-swc";
 
 export default defineConfig({
+  build: {
+    sourcemap: true, // TODO: change to false in production
+    assetsInlineLimit: 0,
+  },
   plugins: [react()],
   server: {
     port: 3000,

@@ -1,10 +1,10 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { createPhaserLayer } from '../layer/phaser/createPhaserLayer'
 
 export const usePhaserLayer = (config: Phaser.Types.Core.GameConfig) => {
   const parentRef = useRef<HTMLDivElement | null>(null)
   const gameRef = useRef<Phaser.Game | null>(null)
-  const newGame = () => {
+  const newGame = useCallback(() => {
     if (parentRef.current && !gameRef.current) {
       // first time
       const phaserLayer = createPhaserLayer(config)
@@ -17,10 +17,16 @@ export const usePhaserLayer = (config: Phaser.Types.Core.GameConfig) => {
         gameRef.current = phaserLayer.game
       }
     }
-  }
+  }, [config])
+
   useEffect(() => {
     newGame()
-  }, [parentRef.current])
+    return () => {
+      if (gameRef.current) {
+        gameRef.current.destroy(true)
+      }
+    }
+  }, [newGame])
 
   return {
     parentRef,

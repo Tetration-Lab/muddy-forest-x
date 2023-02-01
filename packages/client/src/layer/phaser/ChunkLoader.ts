@@ -13,7 +13,7 @@ export class ChunkLoader {
   alivePosition: Map<string, boolean> = new Map()
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   updateCb = (t: Tile) => {}
-  constructor(scene, config: ChunkLoaderConfig, rt: Phaser.GameObjects.RenderTexture) {
+  constructor(scene:Phaser.Scene, config: ChunkLoaderConfig, rt: Phaser.GameObjects.RenderTexture) {
     this.scene = scene
     this.chunks = []
     this.trackObjects = this.scene.add.group()
