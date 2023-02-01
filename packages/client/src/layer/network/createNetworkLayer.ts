@@ -5,6 +5,7 @@ import { defineNumberComponent } from '@latticexyz/std-client'
 
 import { SystemTypes } from 'contracts/types/SystemTypes'
 import { SystemAbis } from 'contracts/types/SystemAbis.mjs'
+import { GodID } from '@latticexyz/network'
 
 export async function createNetworkLayer(config: SetupContractConfig) {
   const perlin = await createPerlin()
@@ -12,6 +13,7 @@ export async function createNetworkLayer(config: SetupContractConfig) {
   // --- WORLD ----------------------------------------------------------------------
   const world = createWorld()
   const uniqueWorldId = config.chainId + config.worldAddress
+  const singletonIndex = world.registerEntity({ id: GodID });
 
   // --- COMPONENTS -----------------------------------------------------------------
   const _components = {
@@ -52,6 +54,7 @@ export async function createNetworkLayer(config: SetupContractConfig) {
     encoders,
     actions,
     api: {},
+    singletonIndex,
   }
 
   return context
