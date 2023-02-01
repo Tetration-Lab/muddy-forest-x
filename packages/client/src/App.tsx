@@ -1,5 +1,5 @@
 import { SyncState } from '@latticexyz/network'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import { useStore } from 'zustand'
 import { config } from './config'
@@ -12,7 +12,7 @@ import { createLoadingStateSystem } from './system/createLoadingStateSystem'
 function App() {
   const store = useStore(appStore, (state) => state)
 
-  const onInitialSync = async () => {
+  const onInitialSync = useCallback(async () => {
     const networkLayer = await createNetworkLayer(config)
     networkLayer.startSync()
     store.setNetworkLayer(networkLayer)
@@ -22,11 +22,11 @@ function App() {
       }
       console.log('loading state', stage, msg, percentage)
     })
-  }
+  }, [store])
 
   useEffect(() => {
     onInitialSync()
-  }, [])
+  }, [onInitialSync])
 
   return (
     <>
