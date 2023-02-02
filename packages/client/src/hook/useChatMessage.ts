@@ -37,9 +37,10 @@ export default function useSocketIO(url, username: string, roomID = '') {
       console.log('call disconnect')
       if (socket.current) socket.current.disconnect()
     }
-  }, [roomID, url, username])
+  }, [])
 
   const emit = (event: string, ...args: unknown[]) => {
+    console.log(event, args, socket.current)
     if (socket.current) socket.current.emit(event, ...args)
   }
 

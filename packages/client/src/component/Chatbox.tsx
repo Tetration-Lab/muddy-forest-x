@@ -43,9 +43,8 @@ export const ChatBox = () => {
     on(`message`, onMessage)
     return () => {
       off('message', onMessage)
-      disconnect()
     }
-  }, [])
+  }, [connected])
 
   const onSubmit = () => {
     if (!inputChat.current || !inputChat.current.value) return
