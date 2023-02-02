@@ -1,13 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
 import useChatMessage, { ChatMessage } from '../hook/useChatMessage'
 
-export const ChatBox = () => {
+export interface ChatBoxProps {
+  focusInputCallback?: () => void
+  focusOutInputCallback?: () => void
+}
+export const ChatBox: React.FC<ChatBoxProps> = ({ focusInputCallback, focusOutInputCallback }) => {
   const chatEndpoint = 'https://chat.tetrationlab.com/'
   const chatRoomID = 'lobby'
 
   const scrollRef = useRef<HTMLDivElement>()
   const inputChat = useRef<HTMLInputElement>()
-  const { connected, on, emit, off, disconnect } = useChatMessage(chatEndpoint, 'test', chatRoomID)
+  const { connected, on, emit, off } = useChatMessage(chatEndpoint, 'test', chatRoomID)
   const [messageList, setMessageList] = useState<ChatMessage[]>([])
   const onMessage = (_msg: string, data: any) => {
     console.log(data)
@@ -32,14 +36,18 @@ export const ChatBox = () => {
     }
   }
 
+  const onFocusInput = () => {
+    if (focusInputCallback) focusInputCallback()
+  }
+  const onFocusOutInput = () => {
+    if (focusOutInputCallback) focusOutInputCallback()
+  }
+
   useEffect(() => {
     scrollChatDown()
   }, [messageList])
 
   useEffect(() => {
-    emit('join:room', {
-      roomID: chatRoomID,
-    })
     on(`message`, onMessage)
     return () => {
       off('message', onMessage)
@@ -59,7 +67,10 @@ export const ChatBox = () => {
 
   return (
     <>
-      <div className="h-[10rem] w-[20rem] bg-black bg-opacity-50 rounded-md p-2 overflow-y-auto" ref={scrollRef}>
+      <div
+        className="h-[10rem] ws-[20rem] sm:w-[30rem] bg-black bg-opacity-50 rounded-md p-2 overflow-y-auto"
+        ref={scrollRef}
+      >
         <div className="space-y-1 text-white">
           {messageList.map((e) => (
             <div key={e.id}>
@@ -77,9 +88,16 @@ export const ChatBox = () => {
       >
         <div className="mt-2">
           <div className="flex space-x-2">
-            <input ref={inputChat} className=" appearance-none bg-black opacity-50 w-full rounded-sm text-white" />
+            <input
+              tabIndex={-1}
+              ref={inputChat}
+              placeholder="Enter text here..."
+              className="appearance-none bg-black opacity-50 w-full rounded-md text-white p-2"
+              onFocus={onFocusInput}
+              onBlur={onFocusOutInput}
+            />
             <button
-              className="bg-[#ADB5BD] text-black p-1 rounded-sm"
+              className="bg-[#ADB5BD] text-black p-1 px-2 rounded-sm font-bold"
               onClick={(e) => {
                 e.preventDefault()
                 onSubmit()

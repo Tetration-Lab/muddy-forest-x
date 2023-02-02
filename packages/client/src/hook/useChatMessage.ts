@@ -22,6 +22,9 @@ export default function useSocketIO(url, username: string, roomID = '') {
     })
     socket.current.connect()
     socket.current.on('connect', () => {
+      emit('join:room', {
+        roomID: roomID,
+      })
       setConnected(true)
     })
 

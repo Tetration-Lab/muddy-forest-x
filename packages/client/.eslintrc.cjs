@@ -18,5 +18,6 @@ module.exports = {
   rules: {
     'prettier/prettier': 'error',
     'react/react-in-jsx-scope': 'off', // for react 17.0.0
+    'react/prop-types': 'off',
   },
 }

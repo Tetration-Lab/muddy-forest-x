@@ -8,6 +8,7 @@ import { GAME_HEIGHT, GAME_WIDTH } from '../config/game'
 import { GAME_SCENE } from '../constant/scene'
 import { Tile } from '../utils/Tile'
 import GameUIScene from './GameUIScene'
+import { appStore } from '../../../store/app'
 class GameScene extends Phaser.Scene {
   bg!: Phaser.GameObjects.TileSprite
   logo!: Phaser.Types.Physics.Arcade.ImageWithDynamicBody
@@ -97,13 +98,12 @@ class GameScene extends Phaser.Scene {
     this.chunkLoader.initChunks(this.followPoint.x, this.followPoint.y)
     this.chunkLoader.addObject(this.redRect)
 
-    this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
-    this.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S)
-    this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
-    this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
-
-    this.keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z)
-    this.keyX = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X)
+    this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W, false)
+    this.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S, false)
+    this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A, false)
+    this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D, false)
+    this.keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z, false)
+    this.keyX = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X, false)
     this.navigation = this.add.rectangle(this.followPoint.y, this.followPoint.x, 16, 16, 0x00ff00)
 
     this.navigation.setDepth(10)
@@ -128,6 +128,17 @@ class GameScene extends Phaser.Scene {
     const tileY = Math.floor(this.navigation.y / TILE_SIZE)
     this.paramsDebug.tileCoordinate = `${tileX}, ${tileY}`
     this.paramsDebug.cameraSize = `${this.cameras.main.worldView.width} ${this.cameras.main.worldView.height}`
+
+    this.handleKeyboardUpdate()
+    this.navigation.setPosition(this.followPoint.x, this.followPoint.y)
+  }
+
+  handleKeyboardUpdate() {
+    const focusUI = appStore.getState().isFocusUI
+    if (focusUI) {
+      return
+    }
+
     if (this.keyW.isDown) {
       this.followPoint.y -= this.cameraSpeed
     }
@@ -149,8 +160,6 @@ class GameScene extends Phaser.Scene {
       const camera = this.cameras.main
       camera.setZoom(this.cameras.main.zoom + 0.1)
     }
-
-    this.navigation.setPosition(this.followPoint.x, this.followPoint.y)
   }
 
   getCenter() {
