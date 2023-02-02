@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import useChatMessage, { ChatMessage } from '../hook/useChatMessage'
-
+import useChatMessage, { ChatMessage } from '../../hook/useChatMessage'
+import './index.css'
 export interface ChatBoxProps {
   focusInputCallback?: () => void
   focusOutInputCallback?: () => void
@@ -68,7 +68,8 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ focusInputCallback, focusOutIn
   return (
     <>
       <div
-        className="h-[10rem] ws-[20rem] sm:w-[30rem] bg-black bg-opacity-50 rounded-md p-2 overflow-y-auto"
+        className="h-[10rem] w-[15rem] sm:w-[20rem] md:w-[30rem] bg-black bg-opacity-50 rounded-md p-2 overflow-y-auto
+        chatbox-scroll"
         ref={scrollRef}
       >
         <div className="space-y-1 text-white">
@@ -92,12 +93,13 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ focusInputCallback, focusOutIn
               tabIndex={-1}
               ref={inputChat}
               placeholder="Enter text here..."
-              className="appearance-none bg-black opacity-50 w-full rounded-md text-white p-2"
+              className="appearance-none bg-black  bg-opacity-50 w-full rounded-md text-white p-2 focus:outline-none"
               onFocus={onFocusInput}
               onBlur={onFocusOutInput}
             />
             <button
-              className="bg-[#ADB5BD] text-black p-1 px-2 rounded-sm font-bold"
+              tabIndex={-1}
+              className="bg-[#ADB5BD] p-1 px-2 rounded-sm font-bold text-white"
               onClick={(e) => {
                 e.preventDefault()
                 onSubmit()

@@ -9,6 +9,7 @@ import { GAME_SCENE } from '../constant/scene'
 import { Tile } from '../utils/Tile'
 import GameUIScene from './GameUIScene'
 import { appStore } from '../../../store/app'
+import { Container } from 'windicss/types/utils/style'
 class GameScene extends Phaser.Scene {
   bg!: Phaser.GameObjects.TileSprite
   logo!: Phaser.Types.Physics.Arcade.ImageWithDynamicBody
@@ -35,7 +36,7 @@ class GameScene extends Phaser.Scene {
   perlin: Perlin | null = null
   constructor() {
     super(GAME_SCENE)
-    this.pane = new Pane()
+    this.pane = new Pane({ container: document.getElementById('debug-pane') })
     this.paramsDebug = {
       position: '0, 0',
       chunkCoordinate: '0, 0',
