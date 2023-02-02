@@ -69,11 +69,9 @@ class GameScene extends Phaser.Scene {
         console.log('updateChunksEvent', i, j)
         this.time.addEvent({
           startAt,
-          delay: 100,
+          delay: 50,
           callback: () => {
-            setTimeout(() => {
-              this.chunkLoader.updateChunksRePositionWithOffset(this.followPoint.x, this.followPoint.y, i, j)
-            })
+            this.chunkLoader.updateChunksRePositionWithOffset(this.followPoint.x, this.followPoint.y, i, j)
           },
           loop: true,
         })
