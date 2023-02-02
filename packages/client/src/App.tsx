@@ -22,7 +22,7 @@ function App() {
       }
       console.log('loading state', stage, msg, percentage)
     })
-  }, [store])
+  }, [])
 
   useEffect(() => {
     onInitialSync()

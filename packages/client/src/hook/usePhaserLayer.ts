@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { createPhaserLayer } from '../layer/phaser/createPhaserLayer'
+import { appStore } from '../store/app'
 
 export const usePhaserLayer = (config: Phaser.Types.Core.GameConfig) => {
+  const store = appStore
   const parentRef = useRef<HTMLDivElement | null>(null)
   const gameRef = useRef<Phaser.Game | null>(null)
   const newGame = useCallback(() => {
@@ -9,6 +11,7 @@ export const usePhaserLayer = (config: Phaser.Types.Core.GameConfig) => {
       // first time
       const phaserLayer = createPhaserLayer(config)
       gameRef.current = phaserLayer.game
+      store.setState({ phaserLayer })
     } else {
       // remove and create new once hot reload create duplicate
       if (gameRef.current) {

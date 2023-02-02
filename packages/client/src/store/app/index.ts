@@ -6,6 +6,7 @@ export type Store = {
   networkLayer: NetworkLayer | null
   phaserLayer: PhaserLayer | null
   setNetworkLayer: (networkLayer: NetworkLayer) => void
+  setPhaserLayer: (phaserLayer: PhaserLayer) => void
 }
 const initialState = {
   networkLayer: null,
@@ -16,5 +17,8 @@ export const appStore = createStore<Store>((set) => ({
   ...initialState,
   setNetworkLayer: (networkLayer: NetworkLayer) => {
     set({ networkLayer })
-  }
+  },
+  setPhaserLayer: (phaserLayer: PhaserLayer) => {
+    set({ phaserLayer })
+  },
 }))
