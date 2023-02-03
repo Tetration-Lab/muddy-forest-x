@@ -99,7 +99,7 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ focusInputCallback, focusOutIn
             />
             <button
               tabIndex={-1}
-              className="bg-[#ADB5BD] p-1 px-2 rounded-sm font-bold text-white"
+              className="bg-[#343A40] p-1 px-2 rounded-sm text-white"
               onClick={(e) => {
                 e.preventDefault()
                 onSubmit()
