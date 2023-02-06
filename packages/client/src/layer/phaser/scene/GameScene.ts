@@ -99,6 +99,14 @@ class GameScene extends Phaser.Scene {
     this.chunkLoader.initChunks(this.followPoint.x, this.followPoint.y)
     this.chunkLoader.addObject(this.redRect)
 
+    const cam = this.cameras.main
+    this.input.on('pointermove',  (p) =>{
+      if (!p.isDown) return
+      console.log('pointermove', p.x, p.y, p.prevPosition.x, p.prevPosition.y, cam.zoom)
+      this.followPoint.x -= (p.x - p.prevPosition.x) / cam.zoom
+      this.followPoint.y -= (p.y - p.prevPosition.y) / cam.zoom
+    })
+
     this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W, false)
     this.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S, false)
     this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A, false)
