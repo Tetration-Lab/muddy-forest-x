@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
-import "std-contracts/components/Uint32Component.sol";
+import "solecs/Component.sol";
 import { Math64 } from "../libraries/LibMath.sol";
 
 uint256 constant ID = uint256(keccak256("component.Resource"));
-
-uint256 constant BASE = uint256(keccak256("resource.base"));
-uint256 constant ADVANCED = uint256(keccak256("resource.advanced"));
 
 contract ResourceComponent is Component {
   struct Resource {
@@ -20,20 +17,23 @@ contract ResourceComponent is Component {
   constructor(address world) Component(world, ID) {}
 
   function getSchema() public pure override returns (string[] memory keys, LibTypes.SchemaValue[] memory values) {
-    keys = new string[](4);
-    values = new LibTypes.SchemaValue[](4);
+    keys = new string[](5);
+    values = new LibTypes.SchemaValue[](5);
 
     keys[0] = "value";
-    values[0] = LibTypes.SchemaValue.UINT32;
+    values[0] = LibTypes.SchemaValue.UINT64;
 
-    keys[1] = "regen";
-    values[1] = LibTypes.SchemaValue.UINT32;
+    keys[1] = "cap";
+    values[1] = LibTypes.SchemaValue.UINT64;
 
-    keys[2] = "latestRegenBlock";
-    values[2] = LibTypes.SchemaValue.UINT32;
+    keys[2] = "regen";
+    values[2] = LibTypes.SchemaValue.UINT64;
 
-    keys[3] = "bases";
+    keys[3] = "latestRegenBlock";
     values[3] = LibTypes.SchemaValue.UINT32;
+
+    keys[4] = "bases";
+    values[4] = LibTypes.SchemaValue.UINT32;
   }
 
   function set(uint256 entity, Resource memory value) public virtual {
