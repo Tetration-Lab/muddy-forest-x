@@ -1,4 +1,5 @@
 import { SyncState } from '@latticexyz/network'
+import { ThemeProvider } from '@mui/material'
 import { useCallback, useEffect } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import { useStore } from 'zustand'
@@ -8,6 +9,7 @@ import { createNetworkLayer } from './layer/network/createNetworkLayer'
 import { AppRoutes } from './router'
 import { appStore } from './store/app'
 import { createLoadingStateSystem } from './system/createLoadingStateSystem'
+import { theme } from './themes/theme'
 
 function App() {
   const store = useStore(appStore, (state) => state)
@@ -30,9 +32,11 @@ function App() {
 
   return (
     <>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+      </ThemeProvider>
     </>
   )
 }
