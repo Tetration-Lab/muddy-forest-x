@@ -1,10 +1,15 @@
-import { Box, Fade, keyframes, Stack, Typography, useTheme } from '@mui/material'
+import { Box, Button, CircularProgress, Fade, keyframes, Stack, TextField, Typography, useTheme } from '@mui/material'
 import { Container, SxProps } from '@mui/system'
+import { useFormik } from 'formik'
+import { isEmpty } from 'lodash'
 import { useEffect, useState } from 'react'
-import { FaChevronRight } from 'react-icons/fa'
+import { FaCheckCircle, FaChevronRight } from 'react-icons/fa'
+import * as yup from 'yup'
+import { CommonTextField } from '../component/common/CommonTextField'
 import { MainButton } from '../component/common/MainButton'
 import { NavBar } from '../component/common/NavBar'
 import { texts } from '../const/texts'
+import { wait } from '../utils/utils'
 
 enum Tribe {
   PROTOSS = 'protoss',
@@ -12,7 +17,7 @@ enum Tribe {
   ZERG = 'zerg',
 }
 
-const TOTAL_STEPS = 4
+const TOTAL_STEPS = 5
 const loadingDots = keyframes`
   0%{ 
     content: ".";
@@ -83,8 +88,27 @@ const NextButton = ({ sx, onClick, disabled = false }: { sx?: SxProps; onClick?:
 
 export const Intro = () => {
   const theme = useTheme()
-  const [currentStep, setCurrentStep] = useState(0)
+  const [currentStep, setCurrentStep] = useState(4)
   const [selectedTribe, setSelectedTribe] = useState<Tribe | undefined>()
+  const [loading, setLoading] = useState(false)
+
+  const formik = useFormik({
+    initialValues: { displayName: '' },
+    validationSchema: yup
+      .object({
+        displayName: yup.string().required('Please enter your display name'),
+      })
+      .required(),
+    onSubmit: async (values) => {
+      console.log('values', values)
+      // NOTE: mock loading
+      setLoading(true)
+      await wait(1500)
+      setLoading(false)
+      goToNextStep()
+    },
+  })
+
   const goToNextStep = () => {
     setCurrentStep((step) => (step + 1) % TOTAL_STEPS)
   }
@@ -149,13 +173,7 @@ export const Intro = () => {
                 )}
                 {currentStep === 2 && (
                   <Fade in={currentStep === 2}>
-                    <Stack
-                      height="100%"
-                      justifyContent="flex-end"
-                      alignItems="center"
-                      onClick={() => goToNextStep()}
-                      sx={{ cursor: 'pointer' }}
-                    >
+                    <Stack height="100%" justifyContent="flex-end" alignItems="center">
                       <Stack
                         mb="30vh"
                         direction="row"
@@ -212,6 +230,99 @@ export const Intro = () => {
                         />
                       </Stack>
                       <NextButton disabled={!selectedTribe} onClick={() => goToNextStep()} />
+                    </Stack>
+                  </Fade>
+                )}
+                {currentStep === 4 && (
+                  <Fade in={currentStep === 4}>
+                    <Stack flex="1" alignItems="center" justifyContent="center">
+                      <Box
+                        sx={{
+                          width: '100%',
+                          maxWidth: 420,
+                          bgcolor: 'background.paper',
+                          color: 'primary.main',
+                          py: 3,
+                          px: 4,
+                        }}
+                      >
+                        <Stack>
+                          <Typography
+                            fontSize="28px"
+                            fontWeight={700}
+                            sx={{
+                              textDecoration: 'underline',
+                            }}
+                          >
+                            Display Name
+                          </Typography>
+                          <Typography variant="body2" pt={3}>
+                            {texts.displayNameDescription}
+                          </Typography>
+                          <Typography fontWeight={700} mt={3}>
+                            Address
+                          </Typography>
+                          <Stack direction="row" alignItems="center" mt={1}>
+                            <Box
+                              height={40}
+                              width={40}
+                              sx={{
+                                borderRadius: '4px 0 0 4px',
+                                backgroundColor: theme.palette.gray.light,
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                color: theme.palette.common.green,
+                              }}
+                            >
+                              <FaCheckCircle />
+                            </Box>
+                            <TextField
+                              sx={{
+                                flex: 1,
+                                '& fieldset': { borderLeft: 'none', borderRadius: '0 4px 4px 0' },
+                              }}
+                              variant="outlined"
+                              focused={false}
+                              value="0x0000000000000 (Player address)"
+                              inputProps={{
+                                sx: {
+                                  height: 40,
+                                  fontSize: 14,
+                                  padding: '0px 8px',
+                                  color: theme.palette.secondary.main,
+                                  backgroundColor: theme.palette.common.white,
+                                  borderRadius: 1,
+                                },
+                              }}
+                            />
+                          </Stack>
+                          <Typography fontWeight={700} mt={3}>
+                            Display Name
+                          </Typography>
+                          <CommonTextField
+                            formik={formik}
+                            path={'displayName'}
+                            placeholder="Enter your preferred name"
+                            sx={{
+                              mt: 1,
+                            }}
+                          />
+                          <Button
+                            onClick={formik.submitForm}
+                            disabled={loading || !isEmpty(formik.errors) || !formik?.values?.displayName}
+                            sx={{
+                              height: 48,
+                              mt: 3,
+                              borderRadius: 0,
+                            }}
+                            color="primary"
+                            variant="contained"
+                          >
+                            {loading ? <CircularProgress color="inherit" /> : 'Done'}
+                          </Button>
+                        </Stack>
+                      </Box>
                     </Stack>
                   </Fade>
                 )}
