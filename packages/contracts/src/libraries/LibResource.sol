@@ -4,9 +4,21 @@ import { getAddressById, addressToEntity } from "solecs/utils.sol";
 import { IUint256Component } from "solecs/interfaces/IUint256Component.sol";
 import { ResourceComponent, ID as RID, getResourceEntity } from "components/ResourceComponent.sol";
 import { Math64 } from "./LibMath.sol";
-import { BASE_ENERGY } from "../constants/resources.sol";
+import { BASE_ENERGY, BASE, MAX_BASE, ADVANCED, MAX_ADVANCED } from "../constants/resources.sol";
 
 library Resource {
+  function isInBaseResource(uint256 resourceId) public returns (bool) {
+    return resourceId > BASE && resourceId <= MAX_BASE;
+  }
+
+  function isInAdvancedResource(uint256 resourceId) public returns (bool) {
+    return resourceId > ADVANCED && resourceId <= MAX_ADVANCED;
+  }
+
+  function isContainResource(uint256 location, uint32 perlin, uint256 resourceId) public returns (bool) {
+    return ((location ^ resourceId) % perlin) % 5 > 3;
+  }
+
   function moveEnergyCost(uint64 distance) public pure returns (uint64 cost) {
     return 100 + 10 * distance;
   }
