@@ -56,4 +56,12 @@ contract ResourceComponent is Component {
       set(entity, r);
     }
   }
+
+  function getResourceEntity(uint256 baseEntity, uint256 resourceId) pure returns (uint256) {
+    return uint256(keccak256(abi.encode(baseEntity, resourceId)));
+  }
+
+  function getResourceEntityValue(uint256 baseEntity, uint256 resourceId) pure returns (Resource memory) {
+    return getValue(getResourceEntity(baseEntity, resourceId));
+  }
 }
