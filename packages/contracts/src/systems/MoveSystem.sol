@@ -39,4 +39,10 @@ contract MoveSystem is System {
   function executeTyped(Args memory args) public returns (bytes memory) {
     return execute(abi.encode(args));
   }
+
+  function executeTypedMulti(Args[] memory args) public returns (bytes[] memory output) {
+    for (uint256 i = 0; i < args.length; ++i) {
+      output[i] = execute(abi.encode(args[i]));
+    }
+  }
 }
