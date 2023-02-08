@@ -3,7 +3,6 @@ import { useStore } from 'zustand'
 import { ChatBox } from '../../component/Chatbox'
 import { ToolButton } from '../../component/ToolButton'
 import { appStore } from '../../store/app'
-
 export const UILayer = () => {
   const store = useStore(appStore, (state) => state)
   const onInputFocus = () => {
