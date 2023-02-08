@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
 import "solecs/Component.sol";
-import { Math64 } from "../libraries/LibMath.sol";
+import { Math64 } from "libraries/LibMath.sol";
 
 uint256 constant ID = uint256(keccak256("component.Resource"));
+
+function getResourceEntity(uint256 baseEntity, uint256 resourceId) pure returns (uint256) {
+  return uint256(keccak256(abi.encode(baseEntity, resourceId)));
+}
 
 contract ResourceComponent is Component {
   struct Resource {
@@ -41,7 +45,12 @@ contract ResourceComponent is Component {
   }
 
   function getValue(uint256 entity) public view virtual returns (Resource memory) {
-    return abi.decode(getRawValue(entity), (Resource));
+    bytes memory rawValue = getRawValue(entity);
+    if (rawValue.length > 0) {
+      return abi.decode(rawValue, (Resource));
+    } else {
+      return Resource(0, 0, 0, 0, 0);
+    }
   }
 
   function getEntitiesWithValue(Resource memory value) public view virtual returns (uint256[] memory) {
@@ -55,13 +64,5 @@ contract ResourceComponent is Component {
       r.lrb = uint32(block.number);
       set(entity, r);
     }
-  }
-
-  function getResourceEntity(uint256 baseEntity, uint256 resourceId) pure returns (uint256) {
-    return uint256(keccak256(abi.encode(baseEntity, resourceId)));
-  }
-
-  function getResourceEntityValue(uint256 baseEntity, uint256 resourceId) pure returns (Resource memory) {
-    return getValue(getResourceEntity(baseEntity, resourceId));
   }
 }

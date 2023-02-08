@@ -17,7 +17,6 @@ contract NameSystem is System {
 
   function execute(bytes memory arguments) public returns (bytes memory) {
     Args memory args = abi.decode(arguments, (Args));
-    NameComponent c = NameComponent(getAddressById(components, NID));
 
     require(
       args.entity == addressToEntity(msg.sender) ||
