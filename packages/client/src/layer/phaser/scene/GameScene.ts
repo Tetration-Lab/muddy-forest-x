@@ -136,9 +136,24 @@ class GameScene extends Phaser.Scene {
     this.chunkLoader.setUpdateCbToChunks((t: Tile) => {
       const SCALE = 100
       const PRECISION = 10
+      if (this.poseidon) {
+        const pos = t.centerPosition()
+        const tileX = t.x
+        const tileY = t.y
+        const h = this.poseidon([tileX, tileY])
+        const hVal = `0x${this.poseidon.F.toString(h, 16)}`
+        const val = '0x2d2f32534e97d979c3f2b616170489791c3f6706d539c62f89fd52bdb46c1cd7'
+        const check = BigInt(hVal) < BigInt(val)
+        console.log(BigInt(hVal) - BigInt(val))
+        if (!check) {
+          this.add.circle(pos.x, pos.y, 2, 0x00ff00, 0.8)
+        }
+      }
       if (!this.perlin) return
       t.alpha = Math.floor(this.perlin(t.x, t.y, 0, SCALE) * 2 ** PRECISION) / 2 ** PRECISION
     })
+
+    this.poseidon = await buildPoseidon()
     this.chunkLoader.initChunks(this.followPoint.x, this.followPoint.y)
     this.chunkLoader.addObject(this.redRect)
 
@@ -165,9 +180,6 @@ class GameScene extends Phaser.Scene {
       console.log(pointer.worldX, this.cameras.main.worldView.width)
     })
 
-    this.poseidon = await buildPoseidon()
-    console.log('poseidon', this.poseidon)
-
     this.ready = true
   }
   create() {
@@ -180,7 +192,6 @@ class GameScene extends Phaser.Scene {
     }
     const cursor = this.input.activePointer
     const gridPos = snapToGrid(cursor.x, cursor.y, 16)
-    console.log('gridPos', gridPos)
     this.chunkLoader.updateChunks(this.followPoint.x, this.followPoint.y)
     this.paramsDebug.position = `${this.navigation.x}, ${this.navigation.y}`
     const chunkX = Math.floor(this.navigation.x / (TILE_SIZE * CHUNK_WIDTH_SIZE))
@@ -188,9 +199,7 @@ class GameScene extends Phaser.Scene {
     this.paramsDebug.chunkCoordinate = `${chunkX}, ${chunkY}`
     const tileX = Math.floor(this.navigation.x / TILE_SIZE)
     const tileY = Math.floor(this.navigation.y / TILE_SIZE)
-    const h = this.poseidon([tileX, tileY])
-    const val = '21888242871839275222246405745257275088548364400416034343698204186575808495617'
-    console.log(this.poseidon.F.toString(h, 16) < val)
+
     this.paramsDebug.tileCoordinate = `${tileX}, ${tileY}`
     this.paramsDebug.cameraSize = `${this.cameras.main.worldView.width} ${this.cameras.main.worldView.height}`
 
