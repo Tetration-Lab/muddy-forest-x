@@ -17,7 +17,7 @@ enum Tribe {
   ZERG = 'zerg',
 }
 
-const TOTAL_STEPS = 5
+const TOTAL_STEPS = 7
 const loadingDots = keyframes`
   0%{ 
     content: ".";
@@ -88,7 +88,7 @@ const NextButton = ({ sx, onClick, disabled = false }: { sx?: SxProps; onClick?:
 
 export const Intro = () => {
   const theme = useTheme()
-  const [currentStep, setCurrentStep] = useState(4)
+  const [currentStep, setCurrentStep] = useState(0)
   const [selectedTribe, setSelectedTribe] = useState<Tribe | undefined>()
   const [loading, setLoading] = useState(false)
 
@@ -323,6 +323,59 @@ export const Intro = () => {
                           </Button>
                         </Stack>
                       </Box>
+                    </Stack>
+                  </Fade>
+                )}
+                {currentStep === 5 && (
+                  <Fade in={currentStep === 5}>
+                    <Stack flex="1" alignItems="center" justifyContent="center">
+                      <Box
+                        sx={{
+                          width: '100%',
+                          maxWidth: 420,
+                          bgcolor: 'background.paper',
+                          color: 'primary.main',
+                          py: 3,
+                          px: 3,
+                        }}
+                      >
+                        <Stack alignItems="center">
+                          <Box component={FaCheckCircle} color={theme.palette.common.green} fontSize={60} />
+                          <Typography fontSize="20px" fontWeight={700} mt={3}>
+                            Binding display name completed!
+                          </Typography>
+                          <Typography mt={1} sx={{ textAlign: 'center' }}>
+                            From now on, your account will display and other people will see you as “
+                            <Typography component="span" sx={{ color: theme.palette.gray.main }}>
+                              Display Name
+                            </Typography>
+                            ”
+                          </Typography>
+                          <Button
+                            fullWidth
+                            onClick={goToNextStep}
+                            sx={{
+                              height: 48,
+                              mt: 3,
+                              borderRadius: 0,
+                            }}
+                            color="primary"
+                            variant="contained"
+                          >
+                            CONTINUE
+                          </Button>
+                        </Stack>
+                      </Box>
+                    </Stack>
+                  </Fade>
+                )}
+                {currentStep === 6 && (
+                  <Fade in={currentStep === 6}>
+                    <Stack flex="1" justifyContent="center">
+                      <Typography variant="body1" color="textPrimary" sx={{ whiteSpace: 'pre-wrap' }}>
+                        {texts.infoBeforeStart}
+                      </Typography>
+                      <NextButton sx={{ mt: 20 }} onClick={() => goToNextStep()} />
                     </Stack>
                   </Fade>
                 )}
