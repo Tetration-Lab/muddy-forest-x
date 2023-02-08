@@ -8,7 +8,7 @@ use arkworks_utils::{
 pub type ConstraintF<C> = <<C as ProjectiveCurve>::BaseField as Field>::BasePrimeField;
 
 pub fn setup_poseidon<F: PrimeField>() -> Poseidon<F> {
-    let pos_data = setup_poseidon_params(Curve::Bn254, 5, 3).unwrap();
+    let pos_data = setup_poseidon_params(Curve::Bn254, 5, 4).unwrap();
 
     let mds_f = bytes_matrix_to_f(&pos_data.mds);
     let rounds_f = bytes_vec_to_f(&pos_data.rounds);
