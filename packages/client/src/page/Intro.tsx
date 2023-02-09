@@ -207,7 +207,7 @@ export const Intro = () => {
                 )}
                 {currentStep === 3 && (
                   <Fade in={currentStep === 3}>
-                    <Stack spacing={20}>
+                    <Stack spacing={12}>
                       <Typography color="textPrimary">Choose one of your supported fraction:</Typography>
                       <Stack direction="row" spacing={24} width="100%" justifyContent="center">
                         <TribeButton
