@@ -10,6 +10,10 @@ import { Tile } from '../utils/Tile'
 import GameUIScene from './GameUIScene'
 import { appStore } from '../../../store/app'
 import { Container } from 'windicss/types/utils/style'
+import { snapToGrid } from '../../../util/snapToGrid'
+import { buildPoseidon } from 'circomlibjs'
+
+type Poseidon = ReturnType<typeof buildPoseidon>
 class GameScene extends Phaser.Scene {
   bg!: Phaser.GameObjects.TileSprite
   logo!: Phaser.Types.Physics.Arcade.ImageWithDynamicBody
@@ -34,8 +38,10 @@ class GameScene extends Phaser.Scene {
   rt!: Phaser.GameObjects.RenderTexture
   ready = false
   perlin: Perlin | null = null
+  poseidon: Poseidon
   constructor() {
     super(GAME_SCENE)
+    document.getElementById('debug-pane').innerHTML = ''
     this.pane = new Pane({ container: document.getElementById('debug-pane') })
     this.paramsDebug = {
       position: '0, 0',
@@ -50,6 +56,10 @@ class GameScene extends Phaser.Scene {
   }
 
   preload() {
+    this.load.spritesheet('dogeSheet', 'assets/sprite/doge-hv.png', { frameWidth: 480, frameHeight: 480 })
+    this.load.spritesheet('p1Sheet', 'assets/sprite/P1_24px.png', { frameWidth: 24, frameHeight: 24 })
+    this.load.spritesheet('p2Sheet', 'assets/sprite/P2_48px.png', { frameWidth: 48, frameHeight: 48 })
+    this.load.spritesheet('p3Sheet', 'assets/sprite/P3_48px.png', { frameWidth: 48, frameHeight: 48 })
     this.load.image('tile', 'assets/tile.png')
   }
 
@@ -58,12 +68,45 @@ class GameScene extends Phaser.Scene {
     this.followPoint.x = +x
     this.followPoint.y = +y
   }
-
-  create() {
+  async onCreate() {
+    const idle = {
+      key: 'doge',
+      frames: this.anims.generateFrameNumbers('dogeSheet', { start: 0, end: 74 }),
+      frameRate: 30,
+      repeat: -1,
+    }
+    const p1Idle = {
+      key: 'p1Idle',
+      frames: this.anims.generateFrameNumbers('p1Sheet', { start: 0, end: 74 }),
+      frameRate: 30,
+      repeat: -1,
+    }
+    const p2Idle = {
+      key: 'p2Idle',
+      frames: this.anims.generateFrameNumbers('p2Sheet', { start: 0, end: 74 }),
+      frameRate: 30,
+      repeat: -1,
+    }
+    this.anims.create(idle)
+    this.anims.create(p1Idle)
+    this.anims.create(p2Idle)
     console.log('game scene create')
     this.redRect = this.add.rectangle(1016, 0, 16, 16, 0xff0000)
     this.redRect.setDepth(100)
     this.redRect.setVisible(false)
+    const sprite = this.add.sprite(800, 451, 'dogeSheet')
+    sprite.setDepth(100)
+    sprite.play('doge')
+    sprite.setScale(0.5)
+    const sprite2 = this.add.sprite(800, 500, 'p1Sheet')
+    sprite2.setScale(2)
+    sprite2.setDepth(100)
+    sprite2.play('p1Idle')
+    const circle = this.add.circle(sprite2.x, sprite2.y, sprite2.width / 2 - 4, 0x00ff00, 0.8)
+    circle.setDepth(99)
+    const sprite3 = this.add.sprite(800, 600, 'p2Sheet')
+    sprite3.setDepth(100)
+    sprite3.play('p2Idle')
     window.addEventListener('position', this.handleUIEventPosition)
     let startAt = 0
     for (let i = -1; i <= LOAD_RADIUS; i++) {
@@ -93,11 +136,34 @@ class GameScene extends Phaser.Scene {
     this.chunkLoader.setUpdateCbToChunks((t: Tile) => {
       const SCALE = 100
       const PRECISION = 10
+      if (this.poseidon) {
+        const pos = t.centerPosition()
+        const tileX = t.x
+        const tileY = t.y
+        const h = this.poseidon([tileX, tileY])
+        const hVal = `0x${this.poseidon.F.toString(h, 16)}`
+        const val = '0x2d2f32534e97d979c3f2b616170489791c3f6706d539c62f89fd52bdb46c1cd7'
+        const check = BigInt(hVal) < BigInt(val)
+        console.log(BigInt(hVal) - BigInt(val))
+        if (!check) {
+          this.add.circle(pos.x, pos.y, 2, 0x00ff00, 0.8)
+        }
+      }
       if (!this.perlin) return
       t.alpha = Math.floor(this.perlin(t.x, t.y, 0, SCALE) * 2 ** PRECISION) / 2 ** PRECISION
     })
+
+    this.poseidon = await buildPoseidon()
     this.chunkLoader.initChunks(this.followPoint.x, this.followPoint.y)
     this.chunkLoader.addObject(this.redRect)
+
+    const cam = this.cameras.main
+    this.input.on('pointermove', (p) => {
+      if (!p.isDown) return
+      console.log('pointermove', p.x, p.y, p.prevPosition.x, p.prevPosition.y, cam.zoom)
+      this.followPoint.x -= (p.x - p.prevPosition.x) / cam.zoom
+      this.followPoint.y -= (p.y - p.prevPosition.y) / cam.zoom
+    })
 
     this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W, false)
     this.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S, false)
@@ -113,13 +179,19 @@ class GameScene extends Phaser.Scene {
     this.input.on('pointerdown', (pointer: any) => {
       console.log(pointer.worldX, this.cameras.main.worldView.width)
     })
+
     this.ready = true
+  }
+  create() {
+    this.onCreate()
   }
 
   update(time: number, delta: number): void {
     if (!this.ready) {
       return
     }
+    const cursor = this.input.activePointer
+    const gridPos = snapToGrid(cursor.x, cursor.y, 16)
     this.chunkLoader.updateChunks(this.followPoint.x, this.followPoint.y)
     this.paramsDebug.position = `${this.navigation.x}, ${this.navigation.y}`
     const chunkX = Math.floor(this.navigation.x / (TILE_SIZE * CHUNK_WIDTH_SIZE))
@@ -127,6 +199,7 @@ class GameScene extends Phaser.Scene {
     this.paramsDebug.chunkCoordinate = `${chunkX}, ${chunkY}`
     const tileX = Math.floor(this.navigation.x / TILE_SIZE)
     const tileY = Math.floor(this.navigation.y / TILE_SIZE)
+
     this.paramsDebug.tileCoordinate = `${tileX}, ${tileY}`
     this.paramsDebug.cameraSize = `${this.cameras.main.worldView.width} ${this.cameras.main.worldView.height}`
 
