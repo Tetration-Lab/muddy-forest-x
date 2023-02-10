@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
+import { comlink } from 'vite-plugin-comlink'
+import wasm from 'vite-plugin-wasm'
 
 export default defineConfig({
   resolve: {
@@ -12,7 +14,10 @@ export default defineConfig({
     sourcemap: true, // TODO: change to false in production
     assetsInlineLimit: 0,
   },
-  plugins: [svgr(), react()],
+  plugins: [svgr(), react(), wasm(), comlink()],
+  worker: {
+    plugins: [comlink(), wasm()],
+  },
   server: {
     port: 3000,
     fs: {
