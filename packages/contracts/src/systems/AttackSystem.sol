@@ -6,10 +6,13 @@ import { OwnerComponent, ID as OID } from "components/OwnerComponent.sol";
 import { ResourceComponent, ID as RID, getResourceEntity } from "components/ResourceComponent.sol";
 import { TypeComponent, ID as TID } from "components/TypeComponent.sol";
 import { PerlinComponent, ID as PLID } from "components/PerlinComponent.sol";
+import { DestroyedComponent, ID as DID } from "components/DestroyedComponent.sol";
 import { Resource } from "libraries/LibResource.sol";
 import { Level } from "libraries/LibLevel.sol";
 import { Planet } from "libraries/LibPlanet.sol";
 import { BASE_ENERGY } from "../constants/resources.sol";
+import { SPACESHIP } from "../constants/type.sol";
+import { Type } from "libraries/LibType.sol";
 
 uint256 constant ID = uint256(keccak256("system.Attack"));
 
@@ -17,14 +20,17 @@ contract AttackSystem is System {
   struct Args {
     uint256 entity;
     uint256 targetEntity;
-    uint32 targetPerlin;
     uint64 energy;
+    uint32 targetPerlin;
+    uint32 range;
   }
 
   constructor(IWorld _world, address _components) System(_world, _components) {}
 
   function execute(bytes memory arguments) public returns (bytes memory) {
     Args memory args = abi.decode(arguments, (Args));
+
+    Type.assertNotDestroyedTuple(components, args.entity, args.targetEntity);
 
     require(
       OwnerComponent(getAddressById(components, OID)).getValue(args.entity) != addressToEntity(msg.sender),
@@ -37,7 +43,7 @@ contract AttackSystem is System {
       Resource.deductEnergy(components, args.entity, energyCost);
     }
 
-    if (!TypeComponent(getAddressById(components, SID)).has(args.targetEntity)) {
+    if (!TypeComponent(getAddressById(components, TID)).has(args.targetEntity)) {
       // Planet
 
       // Not init
@@ -48,21 +54,33 @@ contract AttackSystem is System {
 
       // Already Init
       // Deduct energy from attack
-      Resource.deductEnergy(args.entity, args.energy);
-      Resource.deductEnergyCap(args.targetEntity, args.energy);
+      Resource.deductEnergy(components, args.entity, args.energy);
+      Resource.deductEnergyCap(components, args.targetEntity, args.energy);
       {
         // If target energy = 0; capture
-        ResourceComponent.Resource energy = Resource.getResource(components, args.targetEntity, BASE_ENERGY);
+        ResourceComponent.Resource memory energy = Resource.getResource(components, args.targetEntity, BASE_ENERGY);
         if (energy.value == 0) {
           OwnerComponent(getAddressById(components, OID)).set(args.targetEntity, addressToEntity(msg.sender));
         }
       }
     } else {
-      uint32 ty = TypeComponent(getAddressById(components, SID)).getValue(args.entity);
+      uint32 ty = TypeComponent(getAddressById(components, TID)).getValue(args.entity);
       // Other entity
       // Deduct energy from attack
-      Resource.deductEnergy(args.entity, args.energy);
-      Resource.deductEnergyCap(args.targetEntity, args.energy);
+      Resource.deductEnergy(components, args.entity, args.energy);
+      Resource.deductEnergyCap(components, args.targetEntity, args.energy);
+
+      {
+        // If target energy = 0;
+        ResourceComponent.Resource memory energy = Resource.getResource(components, args.targetEntity, BASE_ENERGY);
+
+        if (energy.value == 0) {
+          // If spaceship = destroy
+          if (ty == SPACESHIP) {
+            DestroyedComponent(getAddressById(components, DID)).set(args.targetEntity);
+          }
+        }
+      }
     }
   }
 

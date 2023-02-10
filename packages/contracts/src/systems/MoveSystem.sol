@@ -6,6 +6,7 @@ import { OwnerComponent, ID as OID } from "components/OwnerComponent.sol";
 import { PositionComponent, ID as PID } from "components/PositionComponent.sol";
 import { Resource } from "libraries/LibResource.sol";
 import { Position } from "libraries/LibPosition.sol";
+import { Type } from "libraries/LibType.sol";
 
 uint256 constant ID = uint256(keccak256("system.Move"));
 
@@ -19,6 +20,8 @@ contract MoveSystem is System {
 
   function execute(bytes memory arguments) public returns (bytes memory) {
     Args memory args = abi.decode(arguments, (Args));
+
+    Type.assertNotDestroyed(components, args.entity);
 
     PositionComponent positionComp = PositionComponent(getAddressById(components, PID));
 

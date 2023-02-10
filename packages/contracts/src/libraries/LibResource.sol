@@ -11,7 +11,7 @@ library Resource {
     IUint256Component components,
     uint256 entity,
     uint256 resourceId
-  ) public returns (ResourceComponent.Resource) {
+  ) public returns (ResourceComponent.Resource memory) {
     uint256 id = getResourceEntity(entity, BASE_ENERGY);
     ResourceComponent(getAddressById(components, RID)).getValue(entity);
   }

@@ -7,6 +7,7 @@ import { ResourceComponent, ID as RID } from "components/ResourceComponent.sol";
 import { PositionComponent, ID as PID } from "components/PositionComponent.sol";
 import { Resource } from "libraries/LibResource.sol";
 import { Position } from "libraries/LibPosition.sol";
+import { Type } from "libraries/LibType.sol";
 
 uint256 constant ID = uint256(keccak256("system.Send"));
 
@@ -27,6 +28,8 @@ contract SendSystem is System {
 
   function execute(bytes memory arguments) public returns (bytes memory) {
     Args memory args = abi.decode(arguments, (Args));
+
+    Type.assertNotDestroyedTuple(components, args.entity, args.targetEntity);
 
     require(
       OwnerComponent(getAddressById(components, OID)).getValue(args.entity) != addressToEntity(msg.sender),

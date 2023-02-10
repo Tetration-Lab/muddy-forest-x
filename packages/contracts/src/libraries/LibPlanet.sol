@@ -16,7 +16,7 @@ library Planet {
   function initPlanet(IUint256Component components, uint256 location, uint32 perlin) public {
     {
       uint32 level = PLANET_LEVEL(location, perlin);
-      uint32 mult = Level.getResourceStorageMultiplier(level);
+      uint32 mult = Level.getEnergyLevelMultiplier(level);
       LevelComponent(getAddressById(components, LID)).set(location, LevelComponent.Level(level, 0, 0));
       ResourceComponent(getAddressById(components, RID)).set(
         location,
@@ -24,7 +24,7 @@ library Planet {
           ((BASE_ENERGY_CAP / 2) * mult) / 100,
           (BASE_ENERGY_CAP * mult) / 100,
           (BASE_ENERGY_REGEN * mult) / 100,
-          block.number,
+          uint32(block.number),
           0
         )
       );
