@@ -7,6 +7,15 @@ import { Math64 } from "./LibMath.sol";
 import { BASE_ENERGY, BASE, MAX_BASE, ADVANCED, MAX_ADVANCED } from "../constants/resources.sol";
 
 library Resource {
+  function getResource(
+    IUint256Component components,
+    uint256 entity,
+    uint256 resourceId
+  ) public returns (ResourceComponent.Resource) {
+    uint256 id = getResourceEntity(entity, BASE_ENERGY);
+    ResourceComponent(getAddressById(components, RID)).getValue(entity);
+  }
+
   function isInBaseResource(uint256 resourceId) public returns (bool) {
     return resourceId > BASE && resourceId <= MAX_BASE;
   }
@@ -27,6 +36,10 @@ library Resource {
     return 100 + 10 * distance;
   }
 
+  function attackEnergyCost(uint64 distance) public pure returns (uint64 cost) {
+    return 100 + 10 * distance;
+  }
+
   function deductEnergy(IUint256Component components, uint256 entity, uint64 energy) public {
     ResourceComponent r = ResourceComponent(getAddressById(components, RID));
     uint256 id = getResourceEntity(entity, BASE_ENERGY);
@@ -34,6 +47,28 @@ library Resource {
     ResourceComponent.Resource memory resource = r.getValue(id);
     require(energy > resource.value, "Not enough energy");
     resource.value -= energy;
+    r.set(id, resource);
+  }
+
+  function deductEnergyCap(IUint256Component components, uint256 entity, uint64 energy) public {
+    ResourceComponent r = ResourceComponent(getAddressById(components, RID));
+    uint256 id = getResourceEntity(entity, BASE_ENERGY);
+    r.regen(id);
+    ResourceComponent.Resource memory resource = r.getValue(id);
+    if (energy > resource.value) {
+      resource.value = 0;
+    } else {
+      resource.value -= energy;
+    }
+    r.set(id, resource);
+  }
+
+  function increaseEnergy(IUint256Component components, uint256 entity, uint64 energy) public {
+    ResourceComponent r = ResourceComponent(getAddressById(components, RID));
+    uint256 id = getResourceEntity(entity, BASE_ENERGY);
+    r.regen(id);
+    ResourceComponent.Resource memory resource = r.getValue(id);
+    resource.value = Math64.min(resource.value + energy, resource.cap);
     r.set(id, resource);
   }
 

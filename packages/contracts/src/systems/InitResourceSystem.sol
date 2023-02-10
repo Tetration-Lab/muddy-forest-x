@@ -6,8 +6,10 @@ import { OwnerComponent, ID as OID } from "components/OwnerComponent.sol";
 import { ResourceComponent, ID as RID, getResourceEntity } from "components/ResourceComponent.sol";
 import { StorageComponent, ID as SID } from "components/StorageComponent.sol";
 import { PerlinComponent, ID as PLID } from "components/PerlinComponent.sol";
+import { TypeComponent, ID as TID } from "components/TypeComponent.sol";
 import { Resource } from "libraries/LibResource.sol";
 import { Level } from "libraries/LibLevel.sol";
+import { Type } from "libraries/LibType.sol";
 import { ADVANCED_CAP_REGEN } from "../constants/resources.sol";
 
 uint256 constant ID = uint256(keccak256("system.InitResource"));
@@ -28,15 +30,17 @@ contract InitResourceSystem is System {
       "Not owner"
     );
     require(Resource.isInAdvancedResource(args.resourceId), "Not in advanced resource id");
+    Type.assertInit(components, args.entity);
 
     ResourceComponent rC = ResourceComponent(getAddressById(components, RID));
     uint256 id = getResourceEntity(args.entity, args.resourceId);
     require(!rC.has(id), "Should not init before");
 
+    uint32 mult = Level.getLevelResourceStorageMultiplier(components, args.entity);
+    (uint64 baseCap, uint32 baseRegen) = ADVANCED_CAP_REGEN(args.resourceId);
+
     if (StorageComponent(getAddressById(components, SID)).has(args.entity)) {
       // Storage
-      uint32 mult = Level.getLevelResourceStorageMultiplier(components, args.entity);
-      (uint64 baseCap, uint32 baseRegen) = ADVANCED_CAP_REGEN(args.resourceId);
       rC.regen(args.entity);
       ResourceComponent.Resource memory r = rC.getValue(args.entity);
       r.cap = (baseCap * mult) / 100;
@@ -51,8 +55,10 @@ contract InitResourceSystem is System {
         ),
         "Resource not contained in this entity"
       );
-      (uint64 baseCap, uint32 baseRegen) = ADVANCED_CAP_REGEN(args.resourceId);
-      rC.set(args.entity, ResourceComponent.Resource(0, baseCap, baseRegen, uint32(block.timestamp), 0));
+      rC.set(
+        args.entity,
+        ResourceComponent.Resource(0, (baseCap * mult) / 100, (baseRegen * mult) / 100, uint32(block.timestamp), 0)
+      );
     }
   }
 
