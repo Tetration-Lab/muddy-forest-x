@@ -5,19 +5,14 @@ import { comlink } from 'vite-plugin-comlink'
 import wasm from 'vite-plugin-wasm'
 
 export default defineConfig({
-  resolve: {
-    alias: {
-      process: 'process/browser',
-    },
-  },
   build: {
-    sourcemap: true, // TODO: change to false in production
+    sourcemap: process.env.NODE_ENV === 'dev',
     assetsInlineLimit: 0,
   },
-  plugins: [svgr(), react(), wasm(), comlink()],
-  worker: {
-    plugins: [comlink(), wasm()],
-  },
+  plugins: [react(), wasm(), comlink()],
+  // worker: {
+  //   plugins: [comlink(), wasm()],
+  // },
   server: {
     port: 3000,
     fs: {
