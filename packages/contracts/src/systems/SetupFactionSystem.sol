@@ -13,7 +13,7 @@ contract SetupFactionSystem is System {
   struct Args {
     uint32 id;
     string name;
-    PositionComponent.Position HQPosition;
+    PositionComponent.Position capitalPosition;
   }
 
   constructor(IWorld _world, address _components) System(_world, _components) {}
@@ -21,7 +21,7 @@ contract SetupFactionSystem is System {
   function execute(bytes memory arguments) public onlyOwner returns (bytes memory) {
     Args memory args = abi.decode(arguments, (Args));
 
-    PositionComponent(getAddressById(components, PID)).set(uint256(args.id), args.HQPosition);
+    PositionComponent(getAddressById(components, PID)).set(uint256(args.id), args.capitalPosition);
     NameComponent(getAddressById(components, NID)).set(uint256(args.id), args.name);
     TypeComponent(getAddressById(components, TID)).set(uint256(args.id), uint32(EType.FACTION));
   }

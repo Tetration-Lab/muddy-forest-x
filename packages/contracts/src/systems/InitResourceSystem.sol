@@ -35,19 +35,12 @@ contract InitResourceSystem is System {
 
     ResourceComponent rC = ResourceComponent(getAddressById(components, RID));
     uint256 id = getResourceEntity(args.entity, args.resourceId);
-    require(!rC.has(id), "Should not init before");
 
     uint32 mult = Level.getLevelResourceStorageMultiplier(components, args.entity);
     (uint64 baseCap, uint32 baseRegen) = ADVANCED_CAP_REGEN(args.resourceId);
 
     if (ty == uint32(EType.PLANET)) {
       // Storage
-      rC.regen(args.entity);
-      ResourceComponent.Resource memory r = rC.getValue(args.entity);
-      r.cap = (baseCap * mult) / 100;
-      r.rpb = (baseRegen * mult) / 100;
-    } else {
-      // Non storage
       require(
         Resource.isContainResource(
           args.entity,
@@ -56,10 +49,17 @@ contract InitResourceSystem is System {
         ),
         "Resource not contained in this entity"
       );
-      rC.set(
-        args.entity,
-        ResourceComponent.Resource(0, (baseCap * mult) / 100, (baseRegen * mult) / 100, uint32(block.timestamp), 0)
-      );
+      rC.regen(args.entity);
+      ResourceComponent.Resource memory r = rC.getValue(args.entity);
+      r.cap = (baseCap * mult) / 100;
+      r.rpb = (baseRegen * mult) / 100;
+      rC.set(args.entity, r);
+    } else {
+      // Non storage
+      ResourceComponent.Resource memory r = rC.getValue(args.entity);
+      rC.regen(args.entity);
+      r.cap = (baseCap * mult) / 100;
+      rC.set(args.entity, r);
     }
   }
 
