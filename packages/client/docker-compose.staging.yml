@@ -1,0 +1,7 @@
+version: '3'
+services:
+  frontend-dev:
+    build: ./
+    restart: always
+    ports:
+      - "4000:3000"
