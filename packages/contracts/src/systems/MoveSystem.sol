@@ -7,6 +7,8 @@ import { PositionComponent, ID as PID } from "components/PositionComponent.sol";
 import { Resource } from "libraries/LibResource.sol";
 import { Position } from "libraries/LibPosition.sol";
 import { Type } from "libraries/LibType.sol";
+import { Cooldown } from "libraries/LibCooldown.sol";
+import { MOVE_ID, MOVE_COOLDOWN } from "../constants/cooldown.sol";
 
 uint256 constant ID = uint256(keccak256("system.Move"));
 
@@ -22,6 +24,7 @@ contract MoveSystem is System {
     Args memory args = abi.decode(arguments, (Args));
 
     Type.assertNotDestroyed(components, args.entity);
+    Cooldown.assertCooldown(components, args.entity, MOVE_ID);
 
     PositionComponent positionComp = PositionComponent(getAddressById(components, PID));
 
@@ -37,6 +40,7 @@ contract MoveSystem is System {
     }
 
     positionComp.set(args.entity, args.position);
+    Cooldown.setCooldown(components, args.entity, MOVE_ID, MOVE_COOLDOWN);
   }
 
   function executeTyped(Args memory args) public returns (bytes memory) {
