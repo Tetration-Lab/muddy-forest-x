@@ -27,6 +27,7 @@ contract SpawnSystem is System {
     FactionComponent fac = FactionComponent(getAddressById(components, FID));
 
     require(args.HQShipId > 2 ** 40, "Invalid hq ship id");
+    require(!ty.has(args.HQShipId), "Duplicate hq ship id");
     require(!ty.has(addressToEntity(msg.sender)), "Player must not spawn before");
     require(!fac.has(addressToEntity(msg.sender)), "Player must not select faction before");
     require(ty.getValue(uint256(args.factionId)) == uint32(EType.FACTION), "Invalid faction id");
