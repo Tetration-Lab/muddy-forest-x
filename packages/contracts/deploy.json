@@ -1,4 +1,87 @@
 {
-  "components": ["CounterComponent"],
-  "systems": [{ "name": "IncrementSystem", "writeAccess": ["CounterComponent"] }]
+    "components": [
+        "LevelComponent",
+        "ResourceComponent",
+        "NameComponent",
+        "TypeComponent",
+        "PositionComponent",
+        "LocationComponent",
+        "OwnerComponent",
+        "FactionComponent",
+        "DestroyedComponent",
+        "PerlinComponent",
+        "CooldownComponent"
+    ],
+    "systems": [
+        {
+            "name": "SetupFactionSystem",
+            "writeAccess": [
+                "NameComponent",
+                "TypeComponent",
+                "PositionComponent"
+            ]
+        },
+        {
+            "name": "SpawnSystem",
+            "writeAccess": [
+                "LevelComponent",
+                "ResourceComponent",
+                "NameComponent",
+                "TypeComponent",
+                "PositionComponent",
+                "FactionComponent"
+            ]
+        },
+        {
+            "name": "SendSystem",
+            "writeAccess": [
+                "ResourceComponent",
+                "TypeComponent",
+                "PositionComponent",
+                "OwnerComponent",
+                "DestroyedComponent"
+            ]
+        },
+        {
+            "name": "AttackSystem",
+            "writeAccess": [
+                "LevelComponent",
+                "ResourceComponent",
+                "TypeComponent",
+                "LocationComponent",
+                "OwnerComponent",
+                "DestroyedComponent",
+                "PerlinComponent"
+            ]
+        },
+        {
+            "name": "InitResourceSystem",
+            "writeAccess": [
+                "LevelComponent",
+                "ResourceComponent",
+                "TypeComponent",
+                "OwnerComponent",
+                "DestroyedComponent",
+                "PerlinComponent"
+            ]
+        },
+        {
+            "name": "MoveSystem",
+            "writeAccess": [
+                "ResourceComponent",
+                "TypeComponent",
+                "PositionComponent",
+                "OwnerComponent",
+                "DestroyedComponent",
+                "CooldownComponent"
+            ]
+        },
+        {
+            "name": "NameSystem",
+            "writeAccess": [
+                "NameComponent",
+                "OwnerComponent"
+            ]
+        }
+    ]
 }
