@@ -3,7 +3,8 @@ name = "circuits"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 ark-ff = { version = "^0.3.0", default-features = false }
@@ -20,7 +21,16 @@ ark-serialize = { version = "^0.3.0", default-features = false }
 
 arkworks-native-gadgets = { version = "^1.2.0", default-features = false }
 arkworks-r1cs-gadgets = { version = "^1.2.0", default-features = false }
-arkworks-utils = { version = "^1.0.1", default-features = false, features = ["poseidon_bn254_x5_3"] }
+arkworks-utils = { version = "^1.0.1", default-features = false, features = ["poseidon_bn254_x5_4"] }
 
 thiserror = "1.0.35"
 hex = "0.4.3"
+
+wasm-bindgen = "0.2.84"
+ethereum-types = "0.14.1"
+console_error_panic_hook = "0.1.7"
+
+getrandom = { version = "^0.2.8", default-features = false, features = ["js"] }
+
+[dev-dependencies]
+ark-groth16 = { version = "^0.3.0", default-features = false, features = ["print-trace"] }
