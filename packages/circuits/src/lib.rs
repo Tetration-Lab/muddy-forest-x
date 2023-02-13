@@ -1,4 +1,5 @@
 pub mod utils;
+pub mod wasm;
 
 use ark_ff::PrimeField;
 use ark_r1cs_std::{
