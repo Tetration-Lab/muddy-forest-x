@@ -4,6 +4,8 @@ import { System, IWorld } from "solecs/System.sol";
 import { getAddressById, addressToEntity } from "solecs/utils.sol";
 import { NameComponent, ID as NID } from "components/NameComponent.sol";
 import { PositionComponent, ID as PID } from "components/PositionComponent.sol";
+import { TypeComponent, ID as TID } from "components/TypeComponent.sol";
+import { EType } from "../constants/type.sol";
 
 uint256 constant ID = uint256(keccak256("system.SetupFaction"));
 
@@ -21,6 +23,7 @@ contract SetupFactionSystem is System {
 
     PositionComponent(getAddressById(components, PID)).set(uint256(args.id), args.HQPosition);
     NameComponent(getAddressById(components, NID)).set(uint256(args.id), args.name);
+    TypeComponent(getAddressById(components, TID)).set(uint256(args.id), uint32(EType.FACTION));
   }
 
   function executeTyped(Args memory args) public returns (bytes memory) {

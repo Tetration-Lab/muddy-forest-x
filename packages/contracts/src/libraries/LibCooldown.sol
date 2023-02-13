@@ -7,17 +7,16 @@ import { CooldownComponent, ID as CID, getCooldownEntity } from "components/Cool
 library Cooldown {
   function assertCooldown(IUint256Component components, uint256 entity, uint256 cooldownId) public {
     require(
-      CooldownComponent(getAddressById(components, CID)).getValue(
-        block.timestamp >= getCooldownEntity(entity, cooldownId),
-        "Cooldown for this action not met"
-      )
+      block.timestamp >=
+        CooldownComponent(getAddressById(components, CID)).getValue(getCooldownEntity(entity, cooldownId)),
+      "Cooldown for this action not met"
     );
   }
 
   function setCooldown(IUint256Component components, uint256 entity, uint256 cooldownId, uint256 cooldown) public {
     CooldownComponent(getAddressById(components, CID)).set(
       getCooldownEntity(entity, cooldownId),
-      block.timestamp + cooldown
+      uint32(block.timestamp + cooldown)
     );
   }
 }

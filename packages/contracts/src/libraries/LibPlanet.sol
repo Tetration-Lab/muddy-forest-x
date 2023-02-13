@@ -8,7 +8,7 @@ import { LevelComponent, ID as LID } from "components/LevelComponent.sol";
 import { LocationComponent, ID as LTID } from "components/LocationComponent.sol";
 import { PerlinComponent, ID as PLID } from "components/PerlinComponent.sol";
 import { PLANET_LEVEL } from "../constants/level.sol";
-import { PLANET } from "../constants/type.sol";
+import { EType } from "../constants/type.sol";
 import { Level } from "./LibLevel.sol";
 import { BASE_ENERGY, BASE_ENERGY_REGEN, BASE_ENERGY_CAP } from "../constants/resources.sol";
 
@@ -29,7 +29,7 @@ library Planet {
         )
       );
     }
-    TypeComponent(getAddressById(components, TID)).set(location, PLANET);
+    TypeComponent(getAddressById(components, TID)).set(location, uint32(EType.PLANET));
     LocationComponent(getAddressById(components, LTID)).set(location, location);
     PerlinComponent(getAddressById(components, PLID)).set(location, perlin);
   }

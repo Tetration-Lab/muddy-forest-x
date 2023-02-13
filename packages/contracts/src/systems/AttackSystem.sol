@@ -11,7 +11,7 @@ import { Resource } from "libraries/LibResource.sol";
 import { Level } from "libraries/LibLevel.sol";
 import { Planet } from "libraries/LibPlanet.sol";
 import { BASE_ENERGY } from "../constants/resources.sol";
-import { SPACESHIP } from "../constants/type.sol";
+import { EType } from "../constants/type.sol";
 import { Type } from "libraries/LibType.sol";
 
 uint256 constant ID = uint256(keccak256("system.Attack"));
@@ -31,6 +31,7 @@ contract AttackSystem is System {
     Args memory args = abi.decode(arguments, (Args));
 
     Type.assertNotDestroyedTuple(components, args.entity, args.targetEntity);
+    Type.assertInit(components, args.entity);
 
     require(
       OwnerComponent(getAddressById(components, OID)).getValue(args.entity) != addressToEntity(msg.sender),
@@ -43,11 +44,12 @@ contract AttackSystem is System {
       Resource.deductEnergy(components, args.entity, energyCost);
     }
 
-    if (!TypeComponent(getAddressById(components, TID)).has(args.targetEntity)) {
+    uint32 ty = Type.getType(components, args.entity);
+    if (ty != uint32(EType.PLANET)) {
       // Planet
 
       // Not init
-      {
+      if (!TypeComponent(getAddressById(components, TID)).has(args.targetEntity)) {
         // Init planet first
         Planet.initPlanet(components, args.targetEntity, args.targetPerlin);
       }
@@ -64,7 +66,6 @@ contract AttackSystem is System {
         }
       }
     } else {
-      uint32 ty = TypeComponent(getAddressById(components, TID)).getValue(args.entity);
       // Other entity
       // Deduct energy from attack
       Resource.deductEnergy(components, args.entity, args.energy);
@@ -76,7 +77,7 @@ contract AttackSystem is System {
 
         if (energy.value == 0) {
           // If spaceship = destroy
-          if (ty == SPACESHIP) {
+          if (ty == uint32(EType.SPACESHIP)) {
             DestroyedComponent(getAddressById(components, DID)).set(args.targetEntity);
           }
         }

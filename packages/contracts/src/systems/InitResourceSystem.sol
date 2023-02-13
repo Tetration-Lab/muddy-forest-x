@@ -10,7 +10,7 @@ import { Resource } from "libraries/LibResource.sol";
 import { Level } from "libraries/LibLevel.sol";
 import { Type } from "libraries/LibType.sol";
 import { ADVANCED_CAP_REGEN } from "../constants/resources.sol";
-import { PLANET } from "../constants/type.sol";
+import { EType } from "../constants/type.sol";
 
 uint256 constant ID = uint256(keccak256("system.InitResource"));
 
@@ -40,7 +40,7 @@ contract InitResourceSystem is System {
     uint32 mult = Level.getLevelResourceStorageMultiplier(components, args.entity);
     (uint64 baseCap, uint32 baseRegen) = ADVANCED_CAP_REGEN(args.resourceId);
 
-    if (ty == PLANET) {
+    if (ty == uint32(EType.PLANET)) {
       // Storage
       rC.regen(args.entity);
       ResourceComponent.Resource memory r = rC.getValue(args.entity);

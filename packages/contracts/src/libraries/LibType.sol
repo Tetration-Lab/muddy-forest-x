@@ -4,7 +4,7 @@ import { getAddressById, addressToEntity } from "solecs/utils.sol";
 import { IUint256Component } from "solecs/interfaces/IUint256Component.sol";
 import { TypeComponent, ID as TID } from "components/TypeComponent.sol";
 import { DestroyedComponent, ID as DID } from "components/DestroyedComponent.sol";
-import { PLANET } from "../constants/type.sol";
+import { EType } from "../constants/type.sol";
 
 library Type {
   function assertInit(IUint256Component components, uint256 entity) public {
@@ -22,6 +22,6 @@ library Type {
   }
 
   function getType(IUint256Component components, uint256 entity) public returns (uint32) {
-    TypeComponent(getAddressById(components, TID)).getValue(entity);
+    return TypeComponent(getAddressById(components, TID)).getValue(entity);
   }
 }
