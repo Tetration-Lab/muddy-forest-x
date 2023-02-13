@@ -23,7 +23,7 @@ contract SetupFactionSystem is System {
 
     PositionComponent(getAddressById(components, PID)).set(uint256(args.id), args.capitalPosition);
     NameComponent(getAddressById(components, NID)).set(uint256(args.id), args.name);
-    TypeComponent(getAddressById(components, TID)).set(uint256(args.id), uint32(EType.FACTION));
+    TypeComponent(getAddressById(components, TID)).set(uint256(args.id), uint32(EType.CAPITAL));
   }
 
   function executeTyped(Args memory args) public returns (bytes memory) {
