@@ -45,8 +45,9 @@ contract AttackSystem is System {
     }
 
     uint32 ty = Type.getType(components, args.entity);
-    if (ty != uint32(EType.PLANET)) {
+    if (ty == uint32(EType.PLANET)) {
       // Planet
+      Planet.assertPlanetLocation(args.entity);
 
       // Not init
       if (!TypeComponent(getAddressById(components, TID)).has(args.targetEntity)) {

@@ -9,10 +9,19 @@ import { LocationComponent, ID as LTID } from "components/LocationComponent.sol"
 import { PerlinComponent, ID as PLID } from "components/PerlinComponent.sol";
 import { PLANET_LEVEL } from "../constants/level.sol";
 import { EType } from "../constants/type.sol";
+import { RARITY } from "../constants/planet.sol";
 import { Level } from "./LibLevel.sol";
 import { BASE_ENERGY, BASE_ENERGY_REGEN, BASE_ENERGY_CAP } from "../constants/resources.sol";
 
 library Planet {
+  function assertPlanetLocation(uint256 location) public {
+    require(location <= RARITY, "Invalid location, must lteq rarity");
+  }
+
+  function assertNonPlanetLocation(uint256 location) public {
+    require(location > RARITY, "Invalid location, must gt rarity");
+  }
+
   function initPlanet(IUint256Component components, uint256 location, uint32 perlin) public {
     {
       uint32 level = PLANET_LEVEL(location, perlin);
