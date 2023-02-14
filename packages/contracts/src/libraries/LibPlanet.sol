@@ -6,7 +6,6 @@ import { TypeComponent, ID as TID } from "components/TypeComponent.sol";
 import { ResourceComponent, ID as RID, getResourceEntity } from "components/ResourceComponent.sol";
 import { LevelComponent, ID as LID } from "components/LevelComponent.sol";
 import { LocationComponent, ID as LTID } from "components/LocationComponent.sol";
-import { PerlinComponent, ID as PLID } from "components/PerlinComponent.sol";
 import { PLANET_LEVEL } from "../constants/level.sol";
 import { EType } from "../constants/type.sol";
 import { RARITY } from "../constants/planet.sol";
@@ -22,9 +21,9 @@ library Planet {
     require(location > RARITY, "Invalid location, must gt rarity");
   }
 
-  function initPlanet(IUint256Component components, uint256 location, uint32 perlin) public {
+  function initPlanet(IUint256Component components, uint256 location) public {
     {
-      uint32 level = PLANET_LEVEL(location, perlin);
+      uint32 level = PLANET_LEVEL(location);
       uint32 mult = Level.getEnergyLevelMultiplier(level);
       LevelComponent(getAddressById(components, LID)).set(location, LevelComponent.Level(level, 0, 0));
       ResourceComponent(getAddressById(components, RID)).set(
@@ -40,6 +39,5 @@ library Planet {
     }
     TypeComponent(getAddressById(components, TID)).set(location, uint32(EType.PLANET));
     LocationComponent(getAddressById(components, LTID)).set(location, location);
-    PerlinComponent(getAddressById(components, PLID)).set(location, perlin);
   }
 }

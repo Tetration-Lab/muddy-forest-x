@@ -5,7 +5,6 @@ import { getAddressById, addressToEntity } from "solecs/utils.sol";
 import { OwnerComponent, ID as OID } from "components/OwnerComponent.sol";
 import { ResourceComponent, ID as RID, getResourceEntity } from "components/ResourceComponent.sol";
 import { TypeComponent, ID as TID } from "components/TypeComponent.sol";
-import { PerlinComponent, ID as PLID } from "components/PerlinComponent.sol";
 import { DestroyedComponent, ID as DID } from "components/DestroyedComponent.sol";
 import { Resource } from "libraries/LibResource.sol";
 import { Level } from "libraries/LibLevel.sol";
@@ -22,7 +21,6 @@ contract AttackSystem is System {
     uint256 entity;
     uint256 targetEntity;
     uint64 energy;
-    uint32 targetPerlin;
     uint32 range;
   }
 
@@ -53,7 +51,7 @@ contract AttackSystem is System {
       // Not init
       if (!TypeComponent(getAddressById(components, TID)).has(args.targetEntity)) {
         // Init planet first
-        Planet.initPlanet(components, args.targetEntity, args.targetPerlin);
+        Planet.initPlanet(components, args.targetEntity);
       }
 
       // Already Init

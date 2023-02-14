@@ -4,7 +4,6 @@ import { System, IWorld } from "solecs/System.sol";
 import { getAddressById, addressToEntity } from "solecs/utils.sol";
 import { OwnerComponent, ID as OID } from "components/OwnerComponent.sol";
 import { ResourceComponent, ID as RID, getResourceEntity } from "components/ResourceComponent.sol";
-import { PerlinComponent, ID as PLID } from "components/PerlinComponent.sol";
 import { TypeComponent, ID as TID } from "components/TypeComponent.sol";
 import { Resource } from "libraries/LibResource.sol";
 import { Level } from "libraries/LibLevel.sol";
@@ -41,14 +40,7 @@ contract InitResourceSystem is System {
 
     if (ty == uint32(EType.PLANET)) {
       // Storage
-      require(
-        Resource.isContainResource(
-          args.entity,
-          PerlinComponent(getAddressById(components, PLID)).getValue(args.entity),
-          args.resourceId
-        ),
-        "Resource not contained in this entity"
-      );
+      require(Resource.isContainResource(args.entity, args.resourceId), "Resource not contained in this entity");
       rC.regen(args.entity);
       ResourceComponent.Resource memory r = rC.getValue(args.entity);
       r.cap = (baseCap * mult) / 100;

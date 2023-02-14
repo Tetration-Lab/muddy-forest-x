@@ -24,8 +24,8 @@ library Resource {
     return resourceId > ADVANCED && resourceId <= MAX_ADVANCED;
   }
 
-  function isContainResource(uint256 location, uint32 perlin, uint256 resourceId) public returns (bool) {
-    return ((location ^ resourceId) % perlin) % 5 > 3;
+  function isContainResource(uint256 location, uint256 resourceId) public returns (bool) {
+    return (location ^ resourceId) % 5 > 3;
   }
 
   function moveEnergyCost(uint64 distance) public pure returns (uint64 cost) {
