@@ -128,18 +128,15 @@ class GameScene extends Phaser.Scene {
         startAt += 50
       }
     }
+    const checkVal = BigInt('0x2d2f32534e97d979c3f2b616170489791c3f6706d539c62f89fd52bdb46c1c')
     this.events.on('hello', async (data) => {
-      console.log('hello', data)
       const worker = workerStore.getState().worker
       if (worker) {
         const res = await worker.HashTwo(data)
         for (let i = 0; i < res.length; i++) {
-          console.log('res', res[i], data[i].x, data[i].y)
           const hVal = res[i]
-          const val = '0x2d2f32534e97d979c3f2b616170489791c3f6706d539c62f89fd52bdb46c1cd7'
-          const check = BigInt(hVal) < BigInt(val)
-          console.log(BigInt(hVal) - BigInt(val))
-          if (!check) {
+          const check = BigInt(hVal) < checkVal
+          if (check) {
             const pos = {
               x: +data[i].x,
               y: +data[i].y,
@@ -181,7 +178,7 @@ class GameScene extends Phaser.Scene {
       const pos = t.centerPosition()
       const tileX = t.x
       const tileY = t.y
-      sendPos.push({ x: `${tileX}`, y: String(tileY) })
+      sendPos.push({ x: tileX, y: tileY })
       tList.push(t)
       if (sendPos.length >= 200) {
         console.log('send')

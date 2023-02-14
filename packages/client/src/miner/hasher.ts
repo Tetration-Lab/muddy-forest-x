@@ -9,15 +9,15 @@ export const createHasher = async () => {
 }
 
 type Pos = {
-  x: string
-  y: string
+  x: number
+  y: number
 }
 
 export const HashTwo = async (chunk: Pos[]) => {
   const hash = await createHasher()
   const res = []
   for (const c of chunk) {
-    const val = hash.hash_two(c.x, c.y)
+    const val = hash.hash_two_i(BigInt(c.x), BigInt(c.y))
     res.push(val)
   }
   return res
