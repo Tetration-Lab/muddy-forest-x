@@ -25,7 +25,7 @@ export class ChunkLoader {
     this.trackObjects.add(trackObject)
   }
 
-  setUpdateCbToChunks(cb: (t: Tile) => void) {
+  setUpdateCbToChunks(cb: (t: Tile) => void | Promise<void>) {
     this.updateCb = cb
   }
 

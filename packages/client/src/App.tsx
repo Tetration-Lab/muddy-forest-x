@@ -24,6 +24,12 @@ function App() {
       }
       console.log('loading state', stage, msg, percentage)
     })
+    const worker = new ComlinkWorker<typeof import('./miner/hasher')>(new URL('./miner/hasher.ts', import.meta.url))
+    const hashInstance = await new worker.HasherInstance()
+    await hashInstance.init()
+    // const hash = await worker.HashTwo('0x1', '0x2')
+    // const val = hash.hash_two('0x1', '0x2')
+    console.log('hash', hashInstance.instance.hash_two('0x1', '0x2'))
   }, [])
 
   useEffect(() => {

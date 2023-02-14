@@ -12,7 +12,11 @@ import { appStore } from '../../../store/app'
 import { Container } from 'windicss/types/utils/style'
 import { snapToGrid } from '../../../util/snapToGrid'
 import { buildPoseidon } from 'circomlibjs'
+import { CreateHasher } from '../../../miner/hasher'
+import { Hasher } from 'circuits'
+import { Remote } from 'comlink'
 
+type Worker = Remote<typeof import('../../../miner/hasher')>
 type Poseidon = ReturnType<typeof buildPoseidon>
 class GameScene extends Phaser.Scene {
   bg!: Phaser.GameObjects.TileSprite
@@ -39,6 +43,7 @@ class GameScene extends Phaser.Scene {
   ready = false
   perlin: Perlin | null = null
   poseidon: Poseidon
+  hasher: Hasher
   constructor() {
     super(GAME_SCENE)
     document.getElementById('debug-pane').innerHTML = ''
@@ -124,6 +129,21 @@ class GameScene extends Phaser.Scene {
       }
     }
 
+    this.events.on('hello', async () => {
+      // console.log('hi', worker)
+      // const hash = worker.CreateHasher()
+      // console.log('hash', hash)
+      // .then((hasher) => hasher)
+      // .then((hasher) => {
+      //   console.log(hasher, 'h')
+      //   const res = hasher.hash_two('0x1', '0x2')
+      //   console.log('res', res)
+      // })
+      // .catch((e) => {
+      //   console.log('error', e)
+      // })
+    })
+
     this.events.on(Phaser.GameObjects.Events.DESTROY, this.onDestroy)
 
     this.rt = this.add.renderTexture(0, 0, GAME_WIDTH, GAME_HEIGHT)
@@ -136,19 +156,28 @@ class GameScene extends Phaser.Scene {
     this.chunkLoader.setUpdateCbToChunks((t: Tile) => {
       const SCALE = 100
       const PRECISION = 10
-      if (this.poseidon) {
-        const pos = t.centerPosition()
-        const tileX = t.x
-        const tileY = t.y
-        const h = this.poseidon([tileX, tileY])
-        const hVal = `0x${this.poseidon.F.toString(h, 16)}`
-        const val = '0x2d2f32534e97d979c3f2b616170489791c3f6706d539c62f89fd52bdb46c1cd7'
-        const check = BigInt(hVal) < BigInt(val)
-        console.log(BigInt(hVal) - BigInt(val))
-        if (!check) {
-          this.add.circle(pos.x, pos.y, 2, 0x00ff00, 0.8)
-        }
-      }
+      // if (this.hasher) {
+
+      const pos = t.centerPosition()
+      const tileX = t.x
+      const tileY = t.y
+      this.events.emit('hello', { tileX, tileY })
+
+      // const h = this.hasher.hash_two(`${tileX}`, `${tileY}`)
+      // console.log('h-start')
+
+      // worker.HashTwo(`${tileX}`, `${tileY}`).
+      // console.log(h, 'h')
+
+      // const h = this.poseidon([tileX, tileY])
+      // const hVal = `0x${this.poseidon.F.toString(h, 16)}`
+      // const val = '0x2d2f32534e97d979c3f2b616170489791c3f6706d539c62f89fd52bdb46c1cd7'
+      // const check = BigInt(hVal) < BigInt(val)
+      // console.log(BigInt(hVal) - BigInt(val))
+      // if (!check) {
+      //   this.add.circle(pos.x, pos.y, 2, 0x00ff00, 0.8)
+      // }
+      // }
       if (!this.perlin) return
       t.alpha = Math.floor(this.perlin(t.x, t.y, 0, SCALE) * 2 ** PRECISION) / 2 ** PRECISION
     })
