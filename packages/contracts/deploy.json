@@ -10,7 +10,6 @@
         "FactionComponent",
         "DefenseComponent",
         "DestroyedComponent",
-        "PerlinComponent",
         "CooldownComponent",
         "AttackComponent"
     ],
@@ -54,7 +53,6 @@
                 "OwnerComponent",
                 "DefenseComponent",
                 "DestroyedComponent",
-                "PerlinComponent",
                 "AttackComponent"
             ]
         },
@@ -65,8 +63,7 @@
                 "ResourceComponent",
                 "TypeComponent",
                 "OwnerComponent",
-                "DestroyedComponent",
-                "PerlinComponent"
+                "DestroyedComponent"
             ]
         },
         {
