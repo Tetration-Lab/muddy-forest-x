@@ -9,6 +9,10 @@ pub fn fr(s: &str) -> Fr {
     Fr::from_repr(bi(s)).unwrap()
 }
 
+pub fn fri(i: i64) -> Fr {
+    Fr::from(i)
+}
+
 pub fn fq(s: &str) -> Fq {
     Fq::from_repr(bi(s)).unwrap()
 }
