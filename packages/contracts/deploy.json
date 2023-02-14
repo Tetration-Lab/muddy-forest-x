@@ -8,9 +8,11 @@
         "LocationComponent",
         "OwnerComponent",
         "FactionComponent",
+        "DefenseComponent",
         "DestroyedComponent",
         "PerlinComponent",
-        "CooldownComponent"
+        "CooldownComponent",
+        "AttackComponent"
     ],
     "systems": [
         {
@@ -50,8 +52,10 @@
                 "TypeComponent",
                 "LocationComponent",
                 "OwnerComponent",
+                "DefenseComponent",
                 "DestroyedComponent",
-                "PerlinComponent"
+                "PerlinComponent",
+                "AttackComponent"
             ]
         },
         {
