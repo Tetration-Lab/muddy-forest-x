@@ -12,9 +12,9 @@ import { appStore } from '../../../store/app'
 import { Container } from 'windicss/types/utils/style'
 import { snapToGrid } from '../../../util/snapToGrid'
 import { buildPoseidon } from 'circomlibjs'
-import { CreateHasher } from '../../../miner/hasher'
 import { Hasher } from 'circuits'
 import { Remote } from 'comlink'
+import { workerStore } from '../../../store/worker'
 
 type Worker = Remote<typeof import('../../../miner/hasher')>
 type Poseidon = ReturnType<typeof buildPoseidon>
@@ -128,8 +128,26 @@ class GameScene extends Phaser.Scene {
         startAt += 50
       }
     }
-
-    this.events.on('hello', async () => {
+    this.events.on('hello', async (data) => {
+      console.log('hello', data)
+      const worker = workerStore.getState().worker
+      if (worker) {
+        const res = await worker.HashTwo(data)
+        for (let i = 0; i < res.length; i++) {
+          console.log('res', res[i], data[i].x, data[i].y)
+          const hVal = res[i]
+          const val = '0x2d2f32534e97d979c3f2b616170489791c3f6706d539c62f89fd52bdb46c1cd7'
+          const check = BigInt(hVal) < BigInt(val)
+          console.log(BigInt(hVal) - BigInt(val))
+          if (!check) {
+            const pos = {
+              x: +data[i].x,
+              y: +data[i].y,
+            }
+            this.add.circle(pos.x, pos.y, 2, 0x00ff00, 0.8)
+          }
+        }
+      }
       // console.log('hi', worker)
       // const hash = worker.CreateHasher()
       // console.log('hash', hash)
@@ -153,6 +171,8 @@ class GameScene extends Phaser.Scene {
     )
 
     this.chunkLoader = new ChunkLoader(this, { tileSize: TILE_SIZE }, this.rt)
+    let sendPos = []
+    const tList = []
     this.chunkLoader.setUpdateCbToChunks((t: Tile) => {
       const SCALE = 100
       const PRECISION = 10
@@ -161,7 +181,13 @@ class GameScene extends Phaser.Scene {
       const pos = t.centerPosition()
       const tileX = t.x
       const tileY = t.y
-      this.events.emit('hello', { tileX, tileY })
+      sendPos.push({ x: `${tileX}`, y: String(tileY) })
+      tList.push(t)
+      if (sendPos.length >= 200) {
+        console.log('send')
+        this.events.emit('hello', sendPos, tList)
+        sendPos = []
+      }
 
       // const h = this.hasher.hash_two(`${tileX}`, `${tileY}`)
       // console.log('h-start')

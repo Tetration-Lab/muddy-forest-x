@@ -22,7 +22,7 @@ export class Chunk extends Phaser.GameObjects.Container {
     this.id = id
     this.scene.add.existing(this)
     this.chunkX = chunkX
-    this.chunkX = chunkY
+    this.chunkY = chunkY
     this.tiles = this.scene.add.group()
     this.groupObjects = this.scene.add.group()
     this.isLoaded = false
