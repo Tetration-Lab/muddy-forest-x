@@ -16,10 +16,10 @@ library Level {
   }
 
   function getHQShipEnergyLevelMultiplier(uint32 level) public returns (uint32) {
-    return 500 + (75 * (level ** 2));
+    return 100 + (75 * (level ** 2));
   }
 
   function getShipEnergyLevelMultiplier(uint32 level) public returns (uint32) {
-    return 250 + (50 * (level ** 2));
+    return 100 + (50 * (level ** 2));
   }
 }

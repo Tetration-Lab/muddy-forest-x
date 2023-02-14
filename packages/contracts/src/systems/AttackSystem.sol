@@ -13,6 +13,7 @@ import { Planet } from "libraries/LibPlanet.sol";
 import { BASE_ENERGY } from "../constants/resources.sol";
 import { EType } from "../constants/type.sol";
 import { Type } from "libraries/LibType.sol";
+import { Stat } from "libraries/LibStat.sol";
 
 uint256 constant ID = uint256(keccak256("system.Attack"));
 
@@ -58,7 +59,11 @@ contract AttackSystem is System {
       // Already Init
       // Deduct energy from attack
       Resource.deductEnergy(components, args.entity, args.energy);
-      Resource.deductEnergyCap(components, args.targetEntity, args.energy);
+      Resource.deductEnergyCap(
+        components,
+        args.targetEntity,
+        Stat.calculateFinalEnergyReceived(components, args.entity, args.targetEntity, args.energy)
+      );
       {
         // If target energy = 0; capture
         ResourceComponent.Resource memory energy = Resource.getResource(components, args.targetEntity, BASE_ENERGY);
