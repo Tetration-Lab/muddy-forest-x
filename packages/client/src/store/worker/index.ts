@@ -1,7 +1,7 @@
 import { Remote } from 'comlink'
 import { createStore } from 'zustand/vanilla'
 
-type HashWorker = Remote<typeof import('../../miner/hasher')>
+type HashWorker = Remote<typeof import('../../miner/hasher.worker')>
 export type Store = {
   worker: HashWorker | null
   setWorker: (worker: HashWorker) => void

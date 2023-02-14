@@ -3,7 +3,6 @@ import { CHUNK_HEIGHT_SIZE, CHUNK_WIDTH_SIZE, TILE_SIZE } from '../config/chunk'
 import { Tile } from './Tile'
 
 export class Chunk extends Phaser.GameObjects.Container {
-  scene: Phaser.Scene
   tiles: Phaser.GameObjects.Group
   isLoaded: boolean
   tileSize: number

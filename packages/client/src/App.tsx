@@ -25,7 +25,9 @@ function App() {
       }
       console.log('loading state', stage, msg, percentage)
     })
-    const worker = new ComlinkWorker<typeof import('./miner/hasher')>(new URL('./miner/hasher.ts', import.meta.url))
+    const worker = new ComlinkWorker<typeof import('./miner/hasher.worker')>(
+      new URL('./miner/hasher.worker.ts', import.meta.url),
+    )
     wStore.setWorker(worker)
     // const result = await worker.HashTwo([
     //   {
