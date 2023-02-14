@@ -48,6 +48,7 @@
     "async-mutex": "^0.4.0",
     "buffer": "^6.0.3",
     "circomlibjs": "^0.1.7",
+    "comlink": "^4.4.1",
     "ethers": "^5.7.2",
     "formik": "^2.2.9",
     "lodash": "^4.17.21",
@@ -65,7 +66,9 @@
     "socket.io-client": "^4.5.4",
     "threads": "^1.7.0",
     "tweakpane": "^3.1.4",
+    "vite-plugin-static-copy": "^0.13.0",
     "vite-plugin-svgr": "^2.4.0",
+    "vite-plugin-top-level-await": "^1.2.4",
     "windicss": "^3.5.6",
     "yup": "^0.32.11",
     "zustand": "^4.3.2"

@@ -5,7 +5,8 @@
   "license": "MIT",
   "workspaces": [
     "packages/contracts",
-    "packages/client"
+    "packages/client",
+    "packages/circuits/pkg"
   ],
   "scripts": {
     "prepare": "yarn workspace contracts prepare",

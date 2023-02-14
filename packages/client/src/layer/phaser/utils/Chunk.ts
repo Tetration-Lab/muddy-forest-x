@@ -3,7 +3,6 @@ import { CHUNK_HEIGHT_SIZE, CHUNK_WIDTH_SIZE, TILE_SIZE } from '../config/chunk'
 import { Tile } from './Tile'
 
 export class Chunk extends Phaser.GameObjects.Container {
-  scene: Phaser.Scene
   tiles: Phaser.GameObjects.Group
   isLoaded: boolean
   tileSize: number
@@ -22,7 +21,7 @@ export class Chunk extends Phaser.GameObjects.Container {
     this.id = id
     this.scene.add.existing(this)
     this.chunkX = chunkX
-    this.chunkX = chunkY
+    this.chunkY = chunkY
     this.tiles = this.scene.add.group()
     this.groupObjects = this.scene.add.group()
     this.isLoaded = false

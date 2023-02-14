@@ -9,6 +9,8 @@ use crate::{
     wasm::{bf, fr},
 };
 
+use super::fri;
+
 #[wasm_bindgen]
 #[allow(dead_code)]
 pub struct Hasher {
@@ -35,5 +37,17 @@ impl Hasher {
 
     pub fn hash_three(&self, v1: &str, v2: &str, v3: &str) -> String {
         bf(self.hasher.hash(&[fr(v1), fr(v2), fr(v3)]).unwrap())
+    }
+
+    pub fn hash_one_i(&self, v: i64) -> String {
+        bf(self.hasher.hash(&[fri(v)]).unwrap())
+    }
+
+    pub fn hash_two_i(&self, v1: i64, v2: i64) -> String {
+        bf(self.hasher.hash(&[fri(v1), fri(v2)]).unwrap())
+    }
+
+    pub fn hash_three_i(&self, v1: i64, v2: i64, v3: i64) -> String {
+        bf(self.hasher.hash(&[fri(v1), fri(v2), fri(v3)]).unwrap())
     }
 }

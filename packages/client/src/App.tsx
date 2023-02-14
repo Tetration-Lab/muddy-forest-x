@@ -8,12 +8,13 @@ import { createNetworkLayer } from './layer/network/createNetworkLayer'
 
 import { AppRoutes } from './router'
 import { appStore } from './store/app'
+import { workerStore } from './store/worker'
 import { createLoadingStateSystem } from './system/createLoadingStateSystem'
 import { theme } from './themes/theme'
 
 function App() {
   const store = useStore(appStore, (state) => state)
-
+  const wStore = useStore(workerStore, (state) => state)
   const onInitialSync = useCallback(async () => {
     const networkLayer = await createNetworkLayer(config)
     networkLayer.startSync()
@@ -24,6 +25,18 @@ function App() {
       }
       console.log('loading state', stage, msg, percentage)
     })
+    const worker = new ComlinkWorker<typeof import('./miner/hasher.worker')>(
+      new URL('./miner/hasher.worker.ts', import.meta.url),
+    )
+    wStore.setWorker(worker)
+    // const result = await worker.HashTwo([
+    //   {
+    //     x: '0x1',
+    //     y: '0x2',
+    //   },
+    // ])
+    // const val = hash.hash_two('0x1', '0x2')
+    // console.log('hash', result)
   }, [])
 
   useEffect(() => {

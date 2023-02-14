@@ -208,6 +208,57 @@ export class Hasher {
             wasm.__wbindgen_free(r0, r1);
         }
     }
+    /**
+    * @param {bigint} v
+    * @returns {string}
+    */
+    hash_one_i(v) {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.hasher_hash_one_i(retptr, this.ptr, v);
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            return getStringFromWasm0(r0, r1);
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+            wasm.__wbindgen_free(r0, r1);
+        }
+    }
+    /**
+    * @param {bigint} v1
+    * @param {bigint} v2
+    * @returns {string}
+    */
+    hash_two_i(v1, v2) {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.hasher_hash_two_i(retptr, this.ptr, v1, v2);
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            return getStringFromWasm0(r0, r1);
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+            wasm.__wbindgen_free(r0, r1);
+        }
+    }
+    /**
+    * @param {bigint} v1
+    * @param {bigint} v2
+    * @param {bigint} v3
+    * @returns {string}
+    */
+    hash_three_i(v1, v2, v3) {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.hasher_hash_three_i(retptr, this.ptr, v1, v2, v3);
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            return getStringFromWasm0(r0, r1);
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+            wasm.__wbindgen_free(r0, r1);
+        }
+    }
 }
 
 export function __wbg_new_abda76e883ba8a5f() {

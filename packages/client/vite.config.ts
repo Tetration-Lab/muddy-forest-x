@@ -3,16 +3,36 @@ import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
 import { comlink } from 'vite-plugin-comlink'
 import wasm from 'vite-plugin-wasm'
+import { viteStaticCopy } from 'vite-plugin-static-copy'
+import topLevelAwait from 'vite-plugin-top-level-await'
 
 export default defineConfig({
   build: {
     sourcemap: process.env.NODE_ENV === 'dev',
     assetsInlineLimit: 0,
   },
-  plugins: [react(), wasm(), comlink()],
-  // worker: {
-  //   plugins: [comlink(), wasm()],
-  // },
+  plugins: [
+    svgr(),
+    react(),
+    topLevelAwait(),
+    wasm(),
+    comlink(),
+    viteStaticCopy({
+      targets: [
+        {
+          src: '../circuits/out/*.bin',
+          dest: 'keys',
+        },
+      ],
+      watch: {
+        reloadPageOnChange: true,
+      },
+    }),
+  ],
+  worker: {
+    format: 'es',
+    plugins: [wasm(), topLevelAwait(), comlink()],
+  },
   server: {
     port: 3000,
     fs: {
