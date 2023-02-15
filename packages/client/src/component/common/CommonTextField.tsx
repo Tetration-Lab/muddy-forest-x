@@ -21,9 +21,6 @@ export const CommonTextField = (props: CommonTextFieldProps & TextFieldProps) =>
           borderColor: `${theme.palette.gray.light}`,
           borderWidth: '1px !important',
         },
-        // '&:hover fieldset': {
-        //   borderColor: `${theme.palette.gray.main} !important`,
-        // },
         ...restProps.sx,
       }}
       placeholder={placeholder}
