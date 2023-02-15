@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import { CHUNK_HEIGHT_SIZE, CHUNK_WIDTH_SIZE, TILE_SIZE } from '../config/chunk'
+
 import { Tile } from './Tile'
 
 export class Chunk extends Phaser.GameObjects.Container {
@@ -14,6 +15,7 @@ export class Chunk extends Phaser.GameObjects.Container {
   id = -1
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   updateCb = (t: Tile) => {}
+  rt: Phaser.GameObjects.RenderTexture
 
   constructor(scene: Phaser.Scene, chunkX: number, chunkY: number, id: number) {
     super(scene, chunkX, chunkY)
@@ -27,6 +29,13 @@ export class Chunk extends Phaser.GameObjects.Container {
     this.isLoaded = false
     this.tileSize = TILE_SIZE
     this.graphics = this.scene.add.graphics()
+    // this.rt = this.scene.add.renderTexture(chunkX, chunkY, CHUNK_WIDTH_SIZE * TILE_SIZE, CHUNK_HEIGHT_SIZE * TILE_SIZE)
+    this.rt = this.scene.add.renderTexture(
+      this.chunkX * (CHUNK_WIDTH_SIZE * this.tileSize),
+      this.chunkY * (CHUNK_HEIGHT_SIZE * this.tileSize),
+      CHUNK_WIDTH_SIZE * this.tileSize,
+      CHUNK_HEIGHT_SIZE * this.tileSize,
+    )
   }
 
   registerUpdateCb(cb: (t: Tile) => void) {
@@ -81,13 +90,17 @@ export class Chunk extends Phaser.GameObjects.Container {
   forceUpdateCb() {
     this.tiles.getChildren().forEach((t) => {
       this.updateCb(t as Tile)
+      this.draw()
     })
   }
 
   update(x: number, y: number) {
     this.chunkX = x
     this.chunkY = y
-    this.killAll()
+    this.rt.setPosition(
+      this.chunkX * (CHUNK_WIDTH_SIZE * this.tileSize),
+      this.chunkY * (CHUNK_HEIGHT_SIZE * this.tileSize),
+    )
     for (let row = 0; row < CHUNK_WIDTH_SIZE; row++) {
       for (let col = 0; col < CHUNK_HEIGHT_SIZE; col++) {
         const tileX = this.chunkX * (CHUNK_WIDTH_SIZE * this.tileSize) + row * this.tileSize
@@ -101,6 +114,31 @@ export class Chunk extends Phaser.GameObjects.Container {
         }
       }
     }
+
+    this.killAll()
     this.drawBounceRect()
+    this.draw()
+  }
+
+  draw() {
+    this.rt.beginDraw()
+    for (let row = 0; row < CHUNK_WIDTH_SIZE; row++) {
+      for (let col = 0; col < CHUNK_HEIGHT_SIZE; col++) {
+        // const tileX = this.chunkX * (CHUNK_WIDTH_SIZE * this.tileSize) + row * this.tileSize
+        // const tileY = this.chunkY * (CHUNK_HEIGHT_SIZE * this.tileSize) + col * this.tileSize
+        const tileXRT = row * this.tileSize
+        const tileYRT = col * this.tileSize
+        const t = this.tiles.getFirstDead()
+        if (t) {
+          // this.rt.batchDraw(t)
+          this.rt.batchDrawFrame('tile', '', tileXRT, tileYRT)
+          // t.setActive(true)
+          // t.setVisible(true)
+          // t.setPosition(tileX, tileY)
+          this.updateCb(t)
+        }
+      }
+    }
+    this.rt.endDraw()
   }
 }
