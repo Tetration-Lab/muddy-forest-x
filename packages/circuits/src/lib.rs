@@ -4,7 +4,7 @@ pub mod wasm;
 use ark_ff::PrimeField;
 use ark_r1cs_std::{
     fields::fp::FpVar,
-    prelude::{AllocVar, EqGadget},
+    prelude::{AllocVar, EqGadget, FieldVar},
 };
 use ark_relations::r1cs::ConstraintSynthesizer;
 use arkworks_r1cs_gadgets::poseidon::FieldHasherGadget;
@@ -30,6 +30,57 @@ impl<F: PrimeField, HG: FieldHasherGadget<F>> ConstraintSynthesizer<F> for Locat
         hasher
             .hash(&[coord_x, coord_y, seed])?
             .enforce_equal(&result)?;
+
+        Ok(())
+    }
+}
+
+pub struct DistanceCircuit<F: PrimeField, HG: FieldHasherGadget<F>> {
+    pub from_coord: [F; 2],
+    pub from_location: F,
+    pub target_coord: [F; 2],
+    pub target_location: F,
+    pub seed: F,
+    pub max_distance: F,
+    pub max_radius: F,
+    pub hasher: HG::Native,
+}
+
+impl<F: PrimeField, HG: FieldHasherGadget<F>> ConstraintSynthesizer<F> for DistanceCircuit<F, HG> {
+    fn generate_constraints(
+        self,
+        cs: ark_relations::r1cs::ConstraintSystemRef<F>,
+    ) -> ark_relations::r1cs::Result<()> {
+        let hasher = HG::from_native(&mut cs.clone(), self.hasher)?;
+        let seed = FpVar::new_input(cs.clone(), || Ok(self.seed))?;
+        let max_distance = FpVar::new_input(cs.clone(), || Ok(self.max_distance))?;
+        let max_radius = FpVar::new_input(cs.clone(), || Ok(self.max_radius))?;
+        let from_coord_x = FpVar::new_witness(cs.clone(), || Ok(self.from_coord[0]))?;
+        let from_coord_y = FpVar::new_witness(cs.clone(), || Ok(self.from_coord[1]))?;
+        let from_location = FpVar::new_input(cs.clone(), || Ok(self.from_location))?;
+        let target_coord_x = FpVar::new_witness(cs.clone(), || Ok(self.target_coord[0]))?;
+        let target_coord_y = FpVar::new_witness(cs.clone(), || Ok(self.target_coord[1]))?;
+        let target_location = FpVar::new_input(cs.clone(), || Ok(self.target_location))?;
+
+        hasher
+            .hash(&[from_coord_x.clone(), from_coord_y.clone(), seed.clone()])?
+            .enforce_equal(&from_location)?;
+        hasher
+            .hash(&[target_coord_x.clone(), target_coord_y.clone(), seed])?
+            .enforce_equal(&target_location)?;
+
+        max_distance.square()?.enforce_cmp(
+            &(&(&from_coord_x - &target_coord_x).square()?
+                + &(&from_coord_y - &target_coord_y).square()?),
+            std::cmp::Ordering::Greater,
+            true,
+        )?;
+
+        max_radius.square()?.enforce_cmp(
+            &(&target_coord_x.square()? + &target_coord_y.square()?),
+            std::cmp::Ordering::Greater,
+            true,
+        )?;
 
         Ok(())
     }
