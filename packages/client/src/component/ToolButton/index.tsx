@@ -1,12 +1,12 @@
 export interface ToolButtonProps {
-  onClick?: () => void
+  onClick?: (event: React.MouseEvent<HTMLElement>) => void
   title?: string
   iconSrc: string
 }
-export const ToolButton: React.FC<ToolButtonProps> = ({ title, iconSrc }) => {
+export const ToolButton: React.FC<ToolButtonProps> = ({ title, iconSrc, onClick }) => {
   return (
     <>
-      <div className="flex justify-center flex-col items-center">
+      <div className="flex justify-center flex-col items-center" onClick={onClick}>
         <div
           tabIndex={-1}
           className="select-none w-12 h-12 bg-[#343A40] rounded-lg flex items-center justify-center border-2 border-[#212529] transform transition-all linear duration-75 active:scale-95"
