@@ -39,7 +39,7 @@ contract AttackSystem is System {
 
     {
       // Deduct energy cost of attacking
-      uint64 energyCost = Resource.sendEnergyCost(args.range);
+      uint64 energyCost = Resource.attackEnergyCost(args.range);
       Resource.deductEnergy(components, args.entity, energyCost);
     }
 
