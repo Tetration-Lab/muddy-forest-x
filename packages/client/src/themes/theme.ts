@@ -34,6 +34,9 @@ export const theme = createTheme({
       disabledBackground: '#E9ECEF',
       disabled: '#ADB5BD',
     },
+    error: {
+      main: '#D6432F',
+    },
   },
   typography: {
     fontFamily: ['Fira Mono', 'Roboto', 'sans-serif'].join(','),
