@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
 import { comlink } from 'vite-plugin-comlink'
 import wasm from 'vite-plugin-wasm'
-import { viteStaticCopy } from 'vite-plugin-static-copy'
+// import { viteStaticCopy } from 'vite-plugin-static-copy'
 import topLevelAwait from 'vite-plugin-top-level-await'
 
 export default defineConfig({
@@ -17,17 +17,17 @@ export default defineConfig({
     topLevelAwait(),
     wasm(),
     comlink(),
-    viteStaticCopy({
-      targets: [
-        {
-          src: '../circuits/out/*.bin',
-          dest: 'keys',
-        },
-      ],
-      watch: {
-        reloadPageOnChange: true,
-      },
-    }),
+    // viteStaticCopy({
+    //   targets: [
+    //     {
+    //       src: '../circuits/out/*.bin',
+    //       dest: 'keys',
+    //     },
+    //   ],
+    //   watch: {
+    //     reloadPageOnChange: true,
+    //   },
+    // }),
   ],
   worker: {
     format: 'es',

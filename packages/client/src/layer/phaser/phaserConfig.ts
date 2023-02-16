@@ -11,11 +11,12 @@ const phaserConfig = {
     width: GAME_WIDTH,
     height: GAME_HEIGHT,
   },
+  transparent: true,
   physics: {
     default: 'arcade',
     arcade: {},
   },
-  backgroundColor: '#202326',
+  // backgroundColor: '#202326',
   pixelArt: true,
   roundPixels: true,
   plugins: {},

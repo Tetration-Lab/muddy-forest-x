@@ -131,7 +131,7 @@ export class Chunk extends Phaser.GameObjects.Container {
         const t = this.tiles.getFirstDead()
         if (t) {
           // this.rt.batchDraw(t)
-          this.rt.batchDrawFrame('tile', '', tileXRT, tileYRT)
+          this.rt.batchDraw(t, tileXRT, tileYRT)
           // t.setActive(true)
           // t.setVisible(true)
           // t.setPosition(tileX, tileY)
