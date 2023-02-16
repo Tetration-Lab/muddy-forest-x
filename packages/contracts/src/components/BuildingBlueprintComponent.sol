@@ -9,7 +9,7 @@ contract BuildingBlueprintComponent is Component {
     uint256 resourceId;
     uint64 value;
     uint64 cap;
-    uint64 rbp;
+    uint64 rpb;
   }
 
   struct BuildingBlueprint {

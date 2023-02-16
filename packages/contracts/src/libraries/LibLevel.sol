@@ -6,6 +6,10 @@ import { LevelComponent, ID as LID } from "components/LevelComponent.sol";
 import { Math64 } from "./LibMath.sol";
 
 library Level {
+  function getLevel(IUint256Component components, uint256 entity) public returns (LevelComponent.Level memory) {
+    return LevelComponent(getAddressById(components, LID)).getValue(entity);
+  }
+
   function getLevelResourceStorageMultiplier(IUint256Component components, uint256 entity) public returns (uint32) {
     LevelComponent.Level memory lvl = LevelComponent(getAddressById(components, LID)).getValue(entity);
     return ((lvl.level * 10) * (lvl.tier + 1) * (lvl.multiplier + 100));
