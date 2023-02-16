@@ -29,14 +29,6 @@ function App() {
       new URL('./miner/hasher.worker.ts', import.meta.url),
     )
     wStore.setWorker(worker)
-    // const result = await worker.HashTwo([
-    //   {
-    //     x: '0x1',
-    //     y: '0x2',
-    //   },
-    // ])
-    // const val = hash.hash_two('0x1', '0x2')
-    // console.log('hash', result)
   }, [])
 
   useEffect(() => {

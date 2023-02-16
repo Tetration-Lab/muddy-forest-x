@@ -5,8 +5,8 @@ export class Tile extends Phaser.GameObjects.Container {
     super(scene, x, y)
     this.scene = scene
     this.scene.add.existing(this)
-    const sprite = this.scene.add.sprite(0, 0, key).setOrigin(0)
-    this.add(sprite)
+    // const sprite = this.scene.add.sprite(0, 0, key).setOrigin(0)
+    // this.add(sprite)
   }
   centerPosition() {
     return {
