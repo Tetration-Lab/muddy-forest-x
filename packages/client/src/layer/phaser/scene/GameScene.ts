@@ -139,9 +139,9 @@ class GameScene extends Phaser.Scene {
     const sprite2 = this.add.sprite(800, 500, 'p1Sheet')
     sprite2.setDepth(100)
     sprite2.play('p1Idle')
-    const sprite3 = this.add.sprite(800, 600, 'p2Sheet')
-    sprite3.setDepth(100)
-    sprite3.play('p2Idle')
+    // const sprite3 = this.add.sprite(800, 600, 'p2Sheet')
+    // sprite3.setDepth(100)
+    // sprite3.play('p2Idle')
     window.addEventListener('position', this.handleUIEventPosition)
     let startAt = 0
     for (let i = -1; i <= LOAD_RADIUS; i++) {
