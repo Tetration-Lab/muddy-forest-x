@@ -37,7 +37,15 @@ contract SendSystem is System {
     );
 
     {
-      uint64 energyCost = Resource.sendEnergyCost(args.range);
+      uint64 weight = 0;
+      for (uint256 i = 0; i < args.resources.length; ++i) {
+        SentResource memory sr = args.resources[i];
+        if (Resource.isInAdvancedResource(sr.id)) {
+          weight += sr.amount;
+        }
+      }
+      // no upgrade system for now
+      uint64 energyCost = Resource.sendEnergyCost(args.range, weight, 0);
       Resource.deductEnergy(components, args.entity, energyCost);
     }
 

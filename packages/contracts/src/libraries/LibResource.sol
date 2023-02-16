@@ -29,18 +29,26 @@ library Resource {
   }
 
   function moveEnergyCost(uint64 distance) public pure returns (uint64 cost) {
-    return 100 + 10 * distance;
+    return 100 + (20 * distance);
   }
 
-  function sendEnergyCost(uint64 distance) public pure returns (uint64 cost) {
-    return 100 + 10 * distance;
+  function sendEnergyCost(
+    uint64 distance,
+    uint64 weight,
+    uint64 upgrade
+  ) public pure returns (uint64 cost) {
+    return 100 + 10 * distance + (weight * distance) / (50 + upgrade);
   }
 
   function attackEnergyCost(uint64 distance) public pure returns (uint64 cost) {
-    return 100 + 10 * distance;
+    return 100 + distance**2;
   }
 
-  function deductEnergy(IUint256Component components, uint256 entity, uint64 energy) public {
+  function deductEnergy(
+    IUint256Component components,
+    uint256 entity,
+    uint64 energy
+  ) public {
     ResourceComponent r = ResourceComponent(getAddressById(components, RID));
     uint256 id = getResourceEntity(entity, BASE_ENERGY);
     r.regen(id);
@@ -50,7 +58,11 @@ library Resource {
     r.set(id, resource);
   }
 
-  function deductEnergyCap(IUint256Component components, uint256 entity, uint64 energy) public {
+  function deductEnergyCap(
+    IUint256Component components,
+    uint256 entity,
+    uint64 energy
+  ) public {
     ResourceComponent r = ResourceComponent(getAddressById(components, RID));
     uint256 id = getResourceEntity(entity, BASE_ENERGY);
     r.regen(id);
@@ -63,7 +75,11 @@ library Resource {
     r.set(id, resource);
   }
 
-  function increaseEnergy(IUint256Component components, uint256 entity, uint64 energy) public {
+  function increaseEnergy(
+    IUint256Component components,
+    uint256 entity,
+    uint64 energy
+  ) public {
     ResourceComponent r = ResourceComponent(getAddressById(components, RID));
     uint256 id = getResourceEntity(entity, BASE_ENERGY);
     r.regen(id);
