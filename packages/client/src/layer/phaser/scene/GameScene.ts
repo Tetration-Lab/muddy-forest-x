@@ -88,6 +88,7 @@ class GameScene extends Phaser.Scene {
     this.load.spritesheet('p1Sheet', 'assets/sprite/P1_24px_v4.png', { frameWidth: 24, frameHeight: 24 })
     this.load.spritesheet('p2Sheet', 'assets/sprite/P2_48px_v3.png', { frameWidth: 48, frameHeight: 48 })
     this.load.spritesheet('p3Sheet', 'assets/sprite/P3_48px.png', { frameWidth: 48, frameHeight: 48 })
+    this.load.spritesheet('H1Sheet', 'assets/sprite/H1_320px.png', { frameWidth: 320, frameHeight: 320 })
     this.load.image('tile', 'assets/tile.png')
   }
 
@@ -115,22 +116,29 @@ class GameScene extends Phaser.Scene {
       frameRate: 30,
       repeat: -1,
     }
+    const H1Idle = {
+      key: 'H1Idle',
+      frames: this.anims.generateFrameNumbers('H1Sheet', { start: 0, end: 74 }),
+      frameRate: 30,
+      repeat: -1,
+    }
     this.anims.create(idle)
     this.anims.create(p1Idle)
     this.anims.create(p2Idle)
+    this.anims.create(H1Idle)
     console.log('game scene create')
     this.redRect = this.add.rectangle(1016, 0, 16, 16, 0xff0000)
     this.redRect.setDepth(100)
     this.redRect.setVisible(false)
+    const h = this.add.sprite(800, 800, 'H1Sheet')
+    h.setDepth(100)
+    h.play('H1Idle')
     const sprite = this.add.sprite(800, 451, 'dogeSheet')
     sprite.setDepth(100)
     sprite.play('doge')
     const sprite2 = this.add.sprite(800, 500, 'p1Sheet')
-    sprite2.setScale(2)
     sprite2.setDepth(100)
     sprite2.play('p1Idle')
-    const circle = this.add.circle(sprite2.x, sprite2.y, sprite2.width / 2 - 4, 0x00ff00, 0.8)
-    circle.setDepth(99)
     const sprite3 = this.add.sprite(800, 600, 'p2Sheet')
     sprite3.setDepth(100)
     sprite3.play('p2Idle')
