@@ -4,24 +4,21 @@ import { Box, Stack } from '@mui/system'
 import { useMemo, useState } from 'react'
 import { FaCheck, FaMinus, FaPlus } from 'react-icons/fa'
 import { MOCK_INVENTORY_ITEMS } from '../../../const/mocks'
-import { InventoryItemType, InventoryType } from './types/inventory'
+import { InventoryItemType, InventoryType, ItemVisibility } from './types'
 
 enum InventoryTabType {
   Inventory = 'inventory',
   Crafting = 'crafting',
 }
 
-enum InventoryFilterType {
-  Blueprint = 'Blueprint',
-  Material = 'Material',
-}
-
 const InventoryTabs = ({
   activeTab,
   onChangeTab,
+  items,
 }: {
   activeTab: InventoryTabType
   onChangeTab: (tab: InventoryTabType) => void
+  items: InventoryItemType[]
 }) => {
   const theme = useTheme()
 
@@ -49,6 +46,20 @@ const InventoryTabs = ({
         }}
       >
         <Typography variant="body2">Inventory</Typography>
+        <Box
+          sx={{
+            ml: 1,
+            borderRadius: '4px',
+            width: 18,
+            height: 16,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: theme.palette.error.main,
+          }}
+        >
+          <Typography sx={{ fontSize: 12, fontWeight: 500 }}>{items.length}</Typography>
+        </Box>
       </ButtonBase>
       <ButtonBase
         onClick={() => onChangeTab(InventoryTabType.Crafting)}
@@ -92,14 +103,14 @@ const InventoryFilters = ({
   activeFilters,
   onFilterChange,
 }: {
-  activeFilters: InventoryFilterType[]
-  onFilterChange: (filters: InventoryFilterType[]) => void
+  activeFilters: InventoryType[]
+  onFilterChange: (filters: InventoryType[]) => void
 }) => {
   const theme = useTheme()
-  const isBlueprintActive = activeFilters?.some((value) => value === InventoryFilterType.Blueprint)
-  const isMaterialActive = activeFilters?.some((value) => value === InventoryFilterType.Material)
+  const isBlueprintActive = activeFilters?.some((value) => value === InventoryType.Blueprint)
+  const isMaterialActive = activeFilters?.some((value) => value === InventoryType.Material)
 
-  const handleClickFilter = (filter: InventoryFilterType) => {
+  const handleClickFilter = (filter: InventoryType) => {
     let newActiveFilters = []
     if (activeFilters.includes(filter)) {
       newActiveFilters = activeFilters.filter((f) => f !== filter)
@@ -115,12 +126,12 @@ const InventoryFilters = ({
         <FilterButton
           text="Blueprint"
           active={isBlueprintActive}
-          onClick={() => handleClickFilter(InventoryFilterType.Blueprint)}
+          onClick={() => handleClickFilter(InventoryType.Blueprint)}
         />
         <FilterButton
           text="Material"
           active={isMaterialActive}
-          onClick={() => handleClickFilter(InventoryFilterType.Material)}
+          onClick={() => handleClickFilter(InventoryType.Material)}
         />
       </Stack>
       <ButtonBase
@@ -141,10 +152,12 @@ const InventoryItemList = ({
   items,
   selectedItemId,
   onClickItem,
+  activeFilters,
 }: {
   items: InventoryItemType[]
   selectedItemId?: string
   onClickItem: (itemId: string) => void
+  activeFilters: InventoryType[]
 }) => {
   return (
     <Box display="flex" flexWrap="wrap" gap={0.5} px="12px">
@@ -154,6 +167,7 @@ const InventoryItemList = ({
           item={item}
           onClick={() => onClickItem(item.id)}
           active={item.id === selectedItemId}
+          visibility={activeFilters.includes(item.type) ? ItemVisibility.Visible : ItemVisibility.Dimmed}
         />
       ))}
     </Box>
@@ -164,10 +178,12 @@ const InventoryItem = ({
   item,
   active = false,
   onClick,
+  visibility = ItemVisibility.Visible,
 }: {
   item: InventoryItemType
   active?: boolean
   onClick?: () => void
+  visibility?: ItemVisibility
 }) => {
   const theme = useTheme()
   return (
@@ -183,6 +199,7 @@ const InventoryItem = ({
         border: `2px solid ${active ? theme.palette.grayScale.white : theme.palette.grayScale.black}`,
         borderRadius: '12px',
         cursor: 'pointer',
+        opacity: visibility === ItemVisibility.Visible ? 1 : 0.5,
       }}
     >
       <Box component="img" src={item.imageUrl} alt={item.name} sx={{ width: 32, height: 32 }} />
@@ -215,7 +232,7 @@ const InventoryItemWIthName = ({ item }: { item: InventoryItemType }) => {
 export const InventoryBox = () => {
   const theme = useTheme()
   const [activeTab, setActiveTab] = useState<InventoryTabType>(InventoryTabType.Inventory)
-  const [activeFilters, setActiveFilters] = useState<InventoryFilterType[]>([])
+  const [activeFilters, setActiveFilters] = useState<InventoryType[]>([InventoryType.Material])
   const [selectedItemId, setSelectedItemId] = useState<string>()
   // TODO: fetch items
   const [items] = useState<InventoryItemType[]>(MOCK_INVENTORY_ITEMS)
@@ -231,14 +248,16 @@ export const InventoryBox = () => {
           border: `2px solid ${theme.palette.common.black}`,
           flex: 6,
           flexGrow: 'none',
+          backgroundColor: theme.palette.grayScale.black,
         }}
       >
-        <InventoryTabs activeTab={activeTab} onChangeTab={(tab) => setActiveTab(tab)} />
+        <InventoryTabs activeTab={activeTab} onChangeTab={(tab) => setActiveTab(tab)} items={items} />
         <InventoryFilters activeFilters={activeFilters} onFilterChange={(filters) => setActiveFilters(filters)} />
         <InventoryItemList
           items={MOCK_INVENTORY_ITEMS}
           selectedItemId={selectedItemId}
           onClickItem={(itemId) => setSelectedItemId(itemId)}
+          activeFilters={activeFilters}
         />
       </Stack>
 
@@ -247,6 +266,7 @@ export const InventoryBox = () => {
           borderRadius: '4px',
           border: `2px solid ${theme.palette.common.black}`,
           flex: 4,
+          backgroundColor: theme.palette.grayScale.black,
         }}
       >
         {selectedItem && (

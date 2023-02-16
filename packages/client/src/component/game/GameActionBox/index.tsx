@@ -1,6 +1,9 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material'
 import { ToolButton } from '../../ToolButton'
+import { BuildBox } from './BuildBox'
+import { DiscoveryBox } from './DiscoveryBox'
 import { InventoryBox } from './InventoryBox'
+import { ResearchBox } from './ResearchBox'
 
 export enum GameActionBoxMode {
   Discovery = 'discovery',
@@ -69,17 +72,18 @@ export const GameActionBox = ({
           showText={mode === GameActionBoxMode.Inventory}
         />
         <ToolButtonWithText
-          iconSrc="./assets/svg/discovery-icon.svg"
-          onClick={() => onChangeMode(GameActionBoxMode.Discovery)}
-          text="Discovery"
-          showText={mode === GameActionBoxMode.Discovery}
-        />
-        <ToolButtonWithText
           iconSrc="./assets/svg/research-icon-2.svg"
           onClick={() => onChangeMode(GameActionBoxMode.Research)}
           text="Research"
           showText={mode === GameActionBoxMode.Research}
         />
+        <ToolButtonWithText
+          iconSrc="./assets/svg/discovery-icon.svg"
+          onClick={() => onChangeMode(GameActionBoxMode.Discovery)}
+          text="Discovery"
+          showText={mode === GameActionBoxMode.Discovery}
+        />
+
         <ToolButtonWithText
           iconSrc="./assets/svg/build-icon-2.svg"
           onClick={() => onChangeMode(GameActionBoxMode.Build)}
@@ -89,6 +93,9 @@ export const GameActionBox = ({
       </Stack>
       <Box mt={1} sx={{ width: '100%', flex: 1 }}>
         {mode === GameActionBoxMode.Inventory && <InventoryBox />}
+        {mode === GameActionBoxMode.Research && <ResearchBox />}
+        {mode === GameActionBoxMode.Discovery && <DiscoveryBox />}
+        {mode === GameActionBoxMode.Build && <BuildBox />}
       </Box>
     </Stack>
   )

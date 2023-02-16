@@ -10,3 +10,8 @@ export type InventoryItemType = {
   description: string
   type: InventoryType
 }
+
+export enum ItemVisibility {
+  Visible = 'visible',
+  Dimmed = 'dimmed',
+}

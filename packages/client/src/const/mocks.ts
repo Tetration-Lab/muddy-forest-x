@@ -1,4 +1,4 @@
-import { InventoryItemType, InventoryType } from '../component/game/GameActionBox/types/inventory'
+import { InventoryItemType, InventoryType } from '../component/game/GameActionBox/types'
 
 export const MOCK_INVENTORY_ITEMS: InventoryItemType[] = [
   {

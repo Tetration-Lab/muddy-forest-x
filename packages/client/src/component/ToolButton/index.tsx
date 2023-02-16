@@ -6,7 +6,7 @@ export interface ToolButtonProps {
 export const ToolButton: React.FC<ToolButtonProps> = ({ title, iconSrc, onClick }) => {
   return (
     <>
-      <div className="flex justify-center flex-col items-center" onClick={onClick}>
+      <div className="flex justify-center flex-col items-center cursor-pointer" onClick={onClick}>
         <div
           tabIndex={-1}
           className="select-none w-12 h-12 bg-[#343A40] rounded-lg flex items-center justify-center border-2 border-[#212529] transform transition-all linear duration-75 active:scale-95"
