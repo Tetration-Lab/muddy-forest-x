@@ -8,7 +8,7 @@ export const PhaserLayer = () => {
         id="phaser-game"
         className="bg-[url('assets/bg/Space-area.png')]"
         style={{
-          backgroundSize: 'cover',
+          backgroundSize: 'contain',
           background: 'url("assets/bg/Space-area.png")',
         }}
         ref={parentRef}

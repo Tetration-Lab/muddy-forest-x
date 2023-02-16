@@ -88,6 +88,7 @@ class GameScene extends Phaser.Scene {
     this.load.spritesheet('p1Sheet', 'assets/sprite/P1_24px_v4.png', { frameWidth: 24, frameHeight: 24 })
     this.load.spritesheet('p2Sheet', 'assets/sprite/P2_48px_v3.png', { frameWidth: 48, frameHeight: 48 })
     this.load.spritesheet('p3Sheet', 'assets/sprite/P3_48px.png', { frameWidth: 48, frameHeight: 48 })
+    this.load.spritesheet('p8Sheet', 'assets/sprite/P8.png', { frameWidth: 128, frameHeight: 128 })
     this.load.spritesheet('H1Sheet', 'assets/sprite/H1_320px.png', { frameWidth: 320, frameHeight: 320 })
     this.load.image('tile', 'assets/tile.png')
   }
@@ -101,31 +102,38 @@ class GameScene extends Phaser.Scene {
     const idle = {
       key: 'doge',
       frames: this.anims.generateFrameNumbers('dogeSheet', { start: 0, end: 74 }),
-      frameRate: 30,
+      frameRate: 12,
       repeat: -1,
     }
     const p1Idle = {
       key: 'p1Idle',
       frames: this.anims.generateFrameNumbers('p1Sheet', { start: 0, end: 74 }),
-      frameRate: 30,
+      frameRate: 12,
       repeat: -1,
     }
     const p2Idle = {
       key: 'p2Idle',
       frames: this.anims.generateFrameNumbers('p2Sheet', { start: 0, end: 74 }),
-      frameRate: 30,
+      frameRate: 12,
+      repeat: -1,
+    }
+    const p8Idle = {
+      key: 'p8Idle',
+      frames: this.anims.generateFrameNumbers('p8Sheet', { start: 0, end: 110 }),
+      frameRate: 12,
       repeat: -1,
     }
     const H1Idle = {
       key: 'H1Idle',
       frames: this.anims.generateFrameNumbers('H1Sheet', { start: 0, end: 74 }),
-      frameRate: 30,
+      frameRate: 12,
       repeat: -1,
     }
     this.anims.create(idle)
     this.anims.create(p1Idle)
     this.anims.create(p2Idle)
     this.anims.create(H1Idle)
+    this.anims.create(p8Idle)
     console.log('game scene create')
     this.redRect = this.add.rectangle(1016, 0, 16, 16, 0xff0000)
     this.redRect.setDepth(100)
@@ -133,6 +141,11 @@ class GameScene extends Phaser.Scene {
     const h = this.add.sprite(800, 800, 'H1Sheet')
     h.setDepth(100)
     h.play('H1Idle')
+
+    const p8 = this.add.sprite(800, 600, 'p8Sheet')
+    p8.setDepth(100)
+    p8.play('p8Idle')
+
     const sprite = this.add.sprite(800, 451, 'dogeSheet')
     sprite.setDepth(100)
     sprite.play('doge')
