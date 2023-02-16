@@ -4,12 +4,9 @@ import { Box, Stack } from '@mui/system'
 import { useMemo, useState } from 'react'
 import { FaCheck, FaMinus, FaPlus } from 'react-icons/fa'
 import { MOCK_INVENTORY_ITEMS } from '../../../const/mocks'
-import { InventoryItemType, InventoryType, ItemVisibility } from './types'
-
-enum InventoryTabType {
-  Inventory = 'inventory',
-  Crafting = 'crafting',
-}
+import { FilterButton } from './FilterButton'
+import { GameItem } from './GameItem'
+import { IInventoryItem, InventoryTabType, InventoryType, ItemVisibility } from './types'
 
 const InventoryTabs = ({
   activeTab,
@@ -18,7 +15,7 @@ const InventoryTabs = ({
 }: {
   activeTab: InventoryTabType
   onChangeTab: (tab: InventoryTabType) => void
-  items: InventoryItemType[]
+  items: IInventoryItem[]
 }) => {
   const theme = useTheme()
 
@@ -73,29 +70,6 @@ const InventoryTabs = ({
         <Typography variant="body2">Crafting</Typography>
       </ButtonBase>
     </Stack>
-  )
-}
-
-const FilterButton = ({ text, active = false, onClick }: { text: string; active?: boolean; onClick: () => void }) => {
-  const theme = useTheme()
-
-  return (
-    <ButtonBase
-      sx={{
-        border: `1px solid ${active ? 'transparent' : theme.palette.grayScale.white}`,
-        borderRadius: '4px',
-        height: 24,
-        px: 1,
-        backgroundColor: active ? theme.palette.grayScale.almostDarkGray : 'transparent',
-        transition: 'background-color .2s',
-      }}
-      onClick={onClick}
-    >
-      <Stack direction="row" alignItems="center">
-        {active && <Box component={FaCheck} sx={{ fontSize: 12, mr: 1 }} />}
-        <Typography variant="caption">{text}</Typography>
-      </Stack>
-    </ButtonBase>
   )
 }
 
@@ -154,7 +128,7 @@ const InventoryItemList = ({
   onClickItem,
   activeFilters,
 }: {
-  items: InventoryItemType[]
+  items: IInventoryItem[]
   selectedItemId?: string
   onClickItem: (itemId: string) => void
   activeFilters: InventoryType[]
@@ -162,47 +136,14 @@ const InventoryItemList = ({
   return (
     <Box display="flex" flexWrap="wrap" gap={0.5} px="12px">
       {items.map((item) => (
-        <InventoryItem
+        <GameItem
           key={item.id}
-          item={item}
+          imageUrl={item.imageUrl}
           onClick={() => onClickItem(item.id)}
           active={item.id === selectedItemId}
           visibility={activeFilters.includes(item.type) ? ItemVisibility.Visible : ItemVisibility.Dimmed}
         />
       ))}
-    </Box>
-  )
-}
-
-const InventoryItem = ({
-  item,
-  active = false,
-  onClick,
-  visibility = ItemVisibility.Visible,
-}: {
-  item: InventoryItemType
-  active?: boolean
-  onClick?: () => void
-  visibility?: ItemVisibility
-}) => {
-  const theme = useTheme()
-  return (
-    <Box
-      onClick={onClick}
-      sx={{
-        width: 48,
-        height: 48,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: active ? theme.palette.grayScale.black : theme.palette.grayScale.almostBlack,
-        border: `2px solid ${active ? theme.palette.grayScale.white : theme.palette.grayScale.black}`,
-        borderRadius: '12px',
-        cursor: 'pointer',
-        opacity: visibility === ItemVisibility.Visible ? 1 : 0.5,
-      }}
-    >
-      <Box component="img" src={item.imageUrl} alt={item.name} sx={{ width: 32, height: 32 }} />
     </Box>
   )
 }
@@ -216,11 +157,11 @@ const InventoryTypeTag = ({ type }: { type: InventoryType }) => {
   )
 }
 
-const InventoryItemWIthName = ({ item }: { item: InventoryItemType }) => {
+const IInventoryItemWIthName = ({ item }: { item: IInventoryItem }) => {
   const theme = useTheme()
   return (
     <Stack direction="row" spacing="12px" sx={{ p: 2, backgroundColor: theme.palette.grayScale.darkGray }}>
-      <InventoryItem item={item} />
+      <GameItem imageUrl={item.imageUrl} />
       <Stack>
         <Typography sx={{ fontSize: 16, fontWeight: 700 }}>{item.name}</Typography>
         <InventoryTypeTag type={item.type} />
@@ -235,7 +176,7 @@ export const InventoryBox = () => {
   const [activeFilters, setActiveFilters] = useState<InventoryType[]>([InventoryType.Material])
   const [selectedItemId, setSelectedItemId] = useState<string>()
   // TODO: fetch items
-  const [items] = useState<InventoryItemType[]>(MOCK_INVENTORY_ITEMS)
+  const [items] = useState<IInventoryItem[]>(MOCK_INVENTORY_ITEMS)
   const [craftCounterNumber, setCraftCounterNumber] = useState(1)
 
   const selectedItem = useMemo(() => items.find((item) => item.id === selectedItemId), [selectedItemId, items])
@@ -271,7 +212,7 @@ export const InventoryBox = () => {
       >
         {selectedItem && (
           <>
-            <InventoryItemWIthName item={selectedItem} />
+            <IInventoryItemWIthName item={selectedItem} />
             <Stack sx={{ mt: 3, px: 2 }} flex={1}>
               <Typography
                 sx={{
