@@ -5525,6 +5525,14 @@ vite-plugin-comlink@^3.0.5:
     json5 "2.2.1"
     magic-string "0.26.7"
 
+vite-plugin-full-reload@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/vite-plugin-full-reload/-/vite-plugin-full-reload-1.0.5.tgz#6cddfa94e51909843bc7156ab728dbac972b8560"
+  integrity sha512-kVZFDFWr0DxiHn6MuDVTQf7gnWIdETGlZh0hvTiMXzRN80vgF4PKbONSq8U1d0WtHsKaFODTQgJeakLacoPZEQ==
+  dependencies:
+    picocolors "^1.0.0"
+    picomatch "^2.3.1"
+
 vite-plugin-static-copy@^0.13.0:
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/vite-plugin-static-copy/-/vite-plugin-static-copy-0.13.0.tgz#1a05bfc0afb5d89e052043f645b610b57b050662"

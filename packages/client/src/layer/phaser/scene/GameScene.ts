@@ -83,16 +83,6 @@ class GameScene extends Phaser.Scene {
     }
   }
 
-  preload() {
-    this.load.spritesheet('dogeSheet', 'assets/sprite/P4_48px_v2.png', { frameWidth: 48, frameHeight: 48 })
-    this.load.spritesheet('p1Sheet', 'assets/sprite/P1_24px_v4.png', { frameWidth: 24, frameHeight: 24 })
-    this.load.spritesheet('p2Sheet', 'assets/sprite/P2_48px_v3.png', { frameWidth: 48, frameHeight: 48 })
-    this.load.spritesheet('p3Sheet', 'assets/sprite/P3_48px.png', { frameWidth: 48, frameHeight: 48 })
-    this.load.spritesheet('p8Sheet', 'assets/sprite/P8.png', { frameWidth: 128, frameHeight: 128 })
-    this.load.spritesheet('H1Sheet', 'assets/sprite/H1_320px.png', { frameWidth: 320, frameHeight: 320 })
-    this.load.image('tile', 'assets/tile.png')
-  }
-
   handleUIEventPosition = (e: any) => {
     const { x, y } = e.detail
     this.followPoint.x = +x
@@ -173,10 +163,7 @@ class GameScene extends Phaser.Scene {
     this.events.on(Phaser.GameObjects.Events.DESTROY, this.onDestroy)
 
     this.rt = this.add.renderTexture(0, 0, GAME_WIDTH, GAME_HEIGHT)
-    this.followPoint = new Phaser.Math.Vector2(
-      this.cameras.main.worldView.x + this.cameras.main.worldView.width * 0.5,
-      this.cameras.main.worldView.y + this.cameras.main.worldView.height * 0.5,
-    )
+    this.followPoint = new Phaser.Math.Vector2(800, 800)
 
     this.chunkLoader = new ChunkLoader(this, { tileSize: TILE_SIZE }, this.rt)
     let sendPos = []
