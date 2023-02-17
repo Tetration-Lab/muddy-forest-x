@@ -35,7 +35,7 @@ class GameScene extends Phaser.Scene {
   graphicsGp!: Phaser.GameObjects.Graphics
   chunkLoader!: ChunkLoader
   pane: Pane
-  paramsDebug: { position: string; chunkCoordinate: string; tileCoordinate: string; cameraSize: string }
+  paramsDebug: { position: string; chunkCoordinate: string; tileCoordinate: string; cameraSize: string } | null
   keyZ!: Phaser.Input.Keyboard.Key
   keyX!: Phaser.Input.Keyboard.Key
   redRect!: Phaser.GameObjects.Rectangle
@@ -46,18 +46,20 @@ class GameScene extends Phaser.Scene {
   hasher: Hasher
   constructor() {
     super(GAME_SCENE)
-    document.getElementById('debug-pane').innerHTML = ''
-    this.pane = new Pane({ container: document.getElementById('debug-pane') })
-    this.paramsDebug = {
-      position: '0, 0',
-      chunkCoordinate: '0, 0',
-      tileCoordinate: '0, 0',
-      cameraSize: '',
+    if (import.meta.env.DEV) {
+      document.getElementById('debug-pane').innerHTML = ''
+      this.pane = new Pane({ container: document.getElementById('debug-pane') })
+      this.paramsDebug = {
+        position: '0, 0',
+        chunkCoordinate: '0, 0',
+        tileCoordinate: '0, 0',
+        cameraSize: '',
+      }
+      this.pane.addMonitor(this.paramsDebug, 'position')
+      this.pane.addMonitor(this.paramsDebug, 'chunkCoordinate')
+      this.pane.addMonitor(this.paramsDebug, 'tileCoordinate')
+      this.pane.addMonitor(this.paramsDebug, 'cameraSize')
     }
-    this.pane.addMonitor(this.paramsDebug, 'position')
-    this.pane.addMonitor(this.paramsDebug, 'chunkCoordinate')
-    this.pane.addMonitor(this.paramsDebug, 'tileCoordinate')
-    this.pane.addMonitor(this.paramsDebug, 'cameraSize')
   }
 
   handleWorker = async (data) => {
@@ -225,18 +227,24 @@ class GameScene extends Phaser.Scene {
     const cursor = this.input.activePointer
     const gridPos = snapToGrid(cursor.x, cursor.y, 16)
     this.chunkLoader.updateChunks(this.followPoint.x, this.followPoint.y)
-    this.paramsDebug.position = `${this.navigation.x}, ${this.navigation.y}`
-    const chunkX = Math.floor(this.navigation.x / (TILE_SIZE * CHUNK_WIDTH_SIZE))
-    const chunkY = Math.floor(this.navigation.y / (TILE_SIZE * CHUNK_HEIGHT_SIZE))
-    this.paramsDebug.chunkCoordinate = `${chunkX}, ${chunkY}`
-    const tileX = Math.floor(this.navigation.x / TILE_SIZE)
-    const tileY = Math.floor(this.navigation.y / TILE_SIZE)
-
-    this.paramsDebug.tileCoordinate = `${tileX}, ${tileY}`
-    this.paramsDebug.cameraSize = `${this.cameras.main.worldView.width} ${this.cameras.main.worldView.height}`
+    this.updateDebug()
 
     this.handleKeyboardUpdate()
     this.navigation.setPosition(this.followPoint.x, this.followPoint.y)
+  }
+
+  updateDebug() {
+    if (this.pane) {
+      this.paramsDebug.position = `${this.navigation.x}, ${this.navigation.y}`
+      const chunkX = Math.floor(this.navigation.x / (TILE_SIZE * CHUNK_WIDTH_SIZE))
+      const chunkY = Math.floor(this.navigation.y / (TILE_SIZE * CHUNK_HEIGHT_SIZE))
+      this.paramsDebug.chunkCoordinate = `${chunkX}, ${chunkY}`
+      const tileX = Math.floor(this.navigation.x / TILE_SIZE)
+      const tileY = Math.floor(this.navigation.y / TILE_SIZE)
+
+      this.paramsDebug.tileCoordinate = `${tileX}, ${tileY}`
+      this.paramsDebug.cameraSize = `${this.cameras.main.worldView.width} ${this.cameras.main.worldView.height}`
+    }
   }
 
   handleKeyboardUpdate() {
