@@ -24,4 +24,8 @@ library Type {
   function getType(IUint256Component components, uint256 entity) public returns (uint32) {
     return TypeComponent(getAddressById(components, TID)).getValue(entity);
   }
+
+  function setType(IUint256Component components, uint256 entity, uint32 ty) public {
+    TypeComponent(getAddressById(components, TID)).set(entity, ty);
+  }
 }

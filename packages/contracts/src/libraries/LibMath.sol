@@ -11,6 +11,20 @@ library Math64 {
   }
 }
 
+library Math32 {
+  function min(uint32 a, uint32 b) public pure returns (uint32) {
+    return a > b ? b : a;
+  }
+
+  function max(uint32 a, uint32 b) public pure returns (uint32) {
+    return a > b ? a : b;
+  }
+
+  function between(uint32 _min, uint32 _max, uint32 value) public pure returns (uint32) {
+    return min(max(value, _max), _min);
+  }
+}
+
 library Math {
   function sqrt(uint256 y) public pure returns (uint256 z) {
     if (y > 3) {
