@@ -1,13 +1,18 @@
 {
     "components": [
         "LevelComponent",
+        "InventorComponent",
         "ResourceComponent",
         "NameComponent",
         "TypeComponent",
         "PositionComponent",
         "LocationComponent",
+        "BuildingBlueprintComponent",
+        "ResearchComponent",
         "OwnerComponent",
         "FactionComponent",
+        "BuildingComponent",
+        "ResearchCountComponent",
         "DefenseComponent",
         "DestroyedComponent",
         "CooldownComponent",
@@ -57,6 +62,39 @@
             ]
         },
         {
+            "name": "BuildBuildingSystem",
+            "writeAccess": [
+                "LevelComponent",
+                "InventorComponent",
+                "ResourceComponent",
+                "TypeComponent",
+                "PositionComponent",
+                "BuildingBlueprintComponent",
+                "ResearchComponent",
+                "OwnerComponent",
+                "FactionComponent",
+                "BuildingComponent",
+                "ResearchCountComponent",
+                "DefenseComponent",
+                "DestroyedComponent",
+                "AttackComponent"
+            ]
+        },
+        {
+            "name": "ResearchSystem",
+            "writeAccess": [
+                "InventorComponent",
+                "TypeComponent",
+                "PositionComponent",
+                "ResearchComponent",
+                "OwnerComponent",
+                "FactionComponent",
+                "ResearchCountComponent",
+                "DestroyedComponent",
+                "CooldownComponent"
+            ]
+        },
+        {
             "name": "InitResourceSystem",
             "writeAccess": [
                 "LevelComponent",
@@ -75,6 +113,13 @@
                 "OwnerComponent",
                 "DestroyedComponent",
                 "CooldownComponent"
+            ]
+        },
+        {
+            "name": "SetupBaseBuildingBlueprintSystem",
+            "writeAccess": [
+                "TypeComponent",
+                "BuildingBlueprintComponent"
             ]
         },
         {
