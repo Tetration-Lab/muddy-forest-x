@@ -3,6 +3,7 @@ pragma solidity >=0.8.0;
 import { System, IWorld } from "solecs/System.sol";
 import { getAddressById, addressToEntity } from "solecs/utils.sol";
 import { ResearchComponent, ID as RID } from "components/ResearchComponent.sol";
+import { BlueprintComponent, ID as BID } from "components/BlueprintComponent.sol";
 import { InventorComponent, ID as IID } from "components/InventorComponent.sol";
 import { OwnerComponent, ID as OID } from "components/OwnerComponent.sol";
 import { ResearchCountComponent, ID as RCID } from "components/ResearchCountComponent.sol";
@@ -40,11 +41,11 @@ contract ResearchSystem is System {
       ResearchComponent(getAddressById(components, RID)).set(
         researchId,
         ResearchComponent.Research(
-          args.blueprintId,
           Research.getPositiveMultiplier(researchCount, uint256(blockhash(block.number))),
           Research.getNegativeMultiplier(researchCount, uint256(blockhash(block.number)))
         )
       );
+      BlueprintComponent(getAddressById(components, BID)).set(researchId, args.blueprintId);
       InventorComponent(getAddressById(components, IID)).set(researchId, addressToEntity(msg.sender));
       OwnerComponent(getAddressById(components, OID)).set(researchId, faction);
       TypeComponent(getAddressById(components, TID)).set(researchId, uint32(EType.RESEARCH));

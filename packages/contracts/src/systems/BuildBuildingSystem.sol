@@ -8,6 +8,7 @@ import { ResourceComponent, ID as RID, getResourceEntity } from "components/Reso
 import { BuildingBlueprintComponent, ID as BBID } from "components/BuildingBlueprintComponent.sol";
 import { BuildingComponent, ID as BID } from "components/BuildingComponent.sol";
 import { ResearchComponent, ID as RSID } from "components/ResearchComponent.sol";
+import { BlueprintComponent, ID as BPID } from "components/BlueprintComponent.sol";
 import { Type } from "libraries/LibType.sol";
 import { Stat } from "libraries/LibStat.sol";
 import { Level } from "libraries/LibLevel.sol";
@@ -49,9 +50,11 @@ contract BuildBuildingSystem is System {
 
     // Check for valid blueprint
     BuildingBlueprintComponent bb = BuildingBlueprintComponent(getAddressById(components, BBID));
-    require(bb.has(research.blueprintId), "Building blueprint not found");
-    BuildingBlueprintComponent.BuildingBlueprint memory blueprint = bb.getValue(research.blueprintId);
+    uint256 blueprintId = BlueprintComponent(getAddressById(components, BPID)).getValue(args.researchId);
+    require(bb.has(blueprintId), "Building blueprint not found");
+    BuildingBlueprintComponent.BuildingBlueprint memory blueprint = bb.getValue(blueprintId);
 
+    // Deduct resources cost, multiply by research's negative multiplier
     for (uint256 i = 0; i < blueprint.cost.length; ++i) {
       Resource.deduct(
         components,
@@ -69,12 +72,13 @@ contract BuildBuildingSystem is System {
       Stat.incrementDefenseMult(components, args.planetEntity, (blueprint.defense * research.posMult) / 10000);
     }
 
+    // Increment resources cap and/or regen, multiply by research's positive multiplier
     {
       ResourceComponent r = ResourceComponent(getAddressById(components, RID));
       for (uint256 i = 0; i < blueprint.resources.length; ++i) {
         BuildingBlueprintComponent.Resource memory rA = blueprint.resources[i];
         uint256 id = getResourceEntity(args.planetEntity, rA.resourceId);
-        if (r.has(id)) {
+        if (r.has(id) && (rA.cap > 0 || rA.rpb > 0)) {
           r.regen(id);
           ResourceComponent.Resource memory resource = r.getValue(id);
           resource.cap += (rA.cap * research.posMult) / 10000;

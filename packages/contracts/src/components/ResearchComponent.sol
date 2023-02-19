@@ -6,8 +6,6 @@ uint256 constant ID = uint256(keccak256("component.Research"));
 
 contract ResearchComponent is Component {
   struct Research {
-    // Blueprint Id
-    uint256 blueprintId;
     // Positive Multiplier
     uint32 posMult; // 10000 = 100%
     // Negative Multiplier
@@ -17,17 +15,14 @@ contract ResearchComponent is Component {
   constructor(address world) Component(world, ID) {}
 
   function getSchema() public pure override returns (string[] memory keys, LibTypes.SchemaValue[] memory values) {
-    keys = new string[](3);
-    values = new LibTypes.SchemaValue[](3);
+    keys = new string[](2);
+    values = new LibTypes.SchemaValue[](2);
 
-    keys[0] = "blueprintId";
-    values[0] = LibTypes.SchemaValue.UINT256;
+    keys[0] = "posMult";
+    values[0] = LibTypes.SchemaValue.UINT32;
 
-    keys[1] = "posMult";
+    keys[1] = "negMult";
     values[1] = LibTypes.SchemaValue.UINT32;
-
-    keys[2] = "posMult";
-    values[2] = LibTypes.SchemaValue.UINT32;
   }
 
   function set(uint256 entity, Research calldata value) public virtual {
