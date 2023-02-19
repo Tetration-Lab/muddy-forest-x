@@ -24,6 +24,7 @@
     "@latticexyz/solecs": "^1.34.0",
     "@latticexyz/std-contracts": "^1.34.0",
     "@rari-capital/solmate": "https://github.com/rari-capital/solmate.git#851ea3baa4327f453da723df75b1093b58b964dc",
+    "@solidstate/contracts": "^0.0.52",
     "@typechain/ethers-v5": "^10.1.1",
     "@types/node": "^18.11.9",
     "ds-test": "https://github.com/dapphub/ds-test.git#c7a36fb236f298e04edf28e2fee385b80f53945f",
@@ -38,8 +39,9 @@
     "ts-node": "^10.7.0",
     "typechain": "^8.1.1",
     "typescript": "^4.6.2",
-    "wait-on": "^6.0.1",
-    "@solidstate/contracts": "^0.0.52"
+    "wait-on": "^6.0.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "poseidon-solidity": "^0.0.3"
+  }
 }
