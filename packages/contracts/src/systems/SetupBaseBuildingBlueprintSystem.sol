@@ -6,9 +6,9 @@ import { BuildingBlueprintComponent, ID as BBID } from "components/BuildingBluep
 import { TypeComponent, ID as TID } from "components/TypeComponent.sol";
 import { EType } from "../constants/type.sol";
 
-uint256 constant ID = uint256(keccak256("system.SetupFaction"));
+uint256 constant ID = uint256(keccak256("system.SetupBaseBuildingBlueprint"));
 
-contract SetupFactionSystem is System {
+contract SetupBaseBuildingBlueprintSystem is System {
   struct Args {
     BuildingBlueprintComponent.BuildingBlueprint[] blueprints;
   }
