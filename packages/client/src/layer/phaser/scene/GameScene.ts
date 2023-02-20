@@ -62,7 +62,7 @@ class GameScene extends Phaser.Scene {
     }
   }
 
-  handleWorker = async (data) => {
+  handleWorker = async (data, tList: Tile[]) => {
     const checkVal = BigInt('0x2d2f32534e97d979c3f2b616170489791c3f6706d539c62f89fd52bdb46c1c')
     const worker = workerStore.getState().worker
     if (worker) {
@@ -75,6 +75,8 @@ class GameScene extends Phaser.Scene {
             x: +data[i].x,
             y: +data[i].y,
           }
+          console.log('check', check, pos)
+          // const tile = tList[i] as Tile
           // this.add.circle(pos.x, pos.y, 2, 0x00ff00, 0.8)
           const sprite = this.add.sprite(pos.x, pos.y, 'dogeSheet')
           sprite.setDepth(100)
@@ -130,9 +132,9 @@ class GameScene extends Phaser.Scene {
     this.redRect = this.add.rectangle(1016, 0, 16, 16, 0xff0000)
     this.redRect.setDepth(100)
     this.redRect.setVisible(false)
-    const h = this.add.sprite(800, 800, 'H1Sheet')
-    h.setDepth(100)
-    h.play('H1Idle')
+    // const h = this.add.sprite(800, 800, 'H1Sheet')
+    // h.setDepth(100)
+    // h.play('H1Idle')
 
     const p8 = this.add.sprite(800, 600, 'p8Sheet')
     p8.setDepth(100)
@@ -183,8 +185,10 @@ class GameScene extends Phaser.Scene {
         this.events.emit('sendWorker', sendPos, tList)
         sendPos = []
       }
-      if (!this.perlin) return
-      t.alpha = Math.floor(this.perlin(t.x, t.y, 0, SCALE) * 2 ** PRECISION) / 2 ** PRECISION
+      t.alpha = 0.5
+      console.log('setUpdateCbToChunks')
+      // if (!this.perlin) return
+      // t.alpha = Math.floor(this.perlin(t.x, t.y, 0, SCALE) * 2 ** PRECISION) / 2 ** PRECISION
     })
 
     this.poseidon = await buildPoseidon()
@@ -267,11 +271,12 @@ class GameScene extends Phaser.Scene {
     }
     if (this.keyZ.isDown) {
       const camera = this.cameras.main
-      if (this.cameras.main.zoom <= 0.1) return
+      // if (this.cameras.main.zoom <= 1.25) return
       camera.setZoom(this.cameras.main.zoom - 0.1)
     }
     if (this.keyX.isDown) {
       const camera = this.cameras.main
+      // if (this.cameras.main.zoom >= 4) return
       camera.setZoom(this.cameras.main.zoom + 0.1)
     }
   }
