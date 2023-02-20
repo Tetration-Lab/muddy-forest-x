@@ -18,6 +18,10 @@ import { workerStore } from '../../../store/worker'
 
 type Worker = Remote<typeof import('../../../miner/hasher.worker')>
 type Poseidon = ReturnType<typeof buildPoseidon>
+
+const MIN_ZOOM = 1.2
+const MAX_ZOOM = 4
+const WORKER_TILE_SIZE = CHUNK_HEIGHT_SIZE * CHUNK_WIDTH_SIZE
 class GameScene extends Phaser.Scene {
   bg!: Phaser.GameObjects.TileSprite
   logo!: Phaser.Types.Physics.Arcade.ImageWithDynamicBody
@@ -71,12 +75,8 @@ class GameScene extends Phaser.Scene {
         const hVal = res[i]
         const check = BigInt(hVal) < checkVal
         if (check) {
-          const pos = {
-            x: +data[i].x,
-            y: +data[i].y,
-          }
-          console.log('check', check, pos)
-          // const tile = tList[i] as Tile
+          const tile = tList[i] as Tile
+          const pos = tile.centerPosition()
           // this.add.circle(pos.x, pos.y, 2, 0x00ff00, 0.8)
           const sprite = this.add.sprite(pos.x, pos.y, 'dogeSheet')
           sprite.setDepth(100)
@@ -132,9 +132,9 @@ class GameScene extends Phaser.Scene {
     this.redRect = this.add.rectangle(1016, 0, 16, 16, 0xff0000)
     this.redRect.setDepth(100)
     this.redRect.setVisible(false)
-    // const h = this.add.sprite(800, 800, 'H1Sheet')
-    // h.setDepth(100)
-    // h.play('H1Idle')
+    const h = this.add.sprite(800, 800, 'H1Sheet')
+    h.setDepth(100)
+    h.play('H1Idle')
 
     const p8 = this.add.sprite(800, 600, 'p8Sheet')
     p8.setDepth(100)
@@ -173,21 +173,20 @@ class GameScene extends Phaser.Scene {
     let sendPos = []
     const tList = []
     this.chunkLoader.setUpdateCbToChunks((t: Tile) => {
-      const SCALE = 100
-      const PRECISION = 10
-      const pos = t.centerPosition()
       const tileX = t.x
       const tileY = t.y
       sendPos.push({ x: tileX, y: tileY })
       tList.push(t)
-      if (sendPos.length >= 200) {
+      if (sendPos.length >= WORKER_TILE_SIZE) {
         console.log('send')
         this.events.emit('sendWorker', sendPos, tList)
         sendPos = []
       }
-      t.alpha = 0.5
+      t.alpha = 0.1
       console.log('setUpdateCbToChunks')
       // if (!this.perlin) return
+      // const SCALE = 100
+      // const PRECISION = 10
       // t.alpha = Math.floor(this.perlin(t.x, t.y, 0, SCALE) * 2 ** PRECISION) / 2 ** PRECISION
     })
 
@@ -271,12 +270,12 @@ class GameScene extends Phaser.Scene {
     }
     if (this.keyZ.isDown) {
       const camera = this.cameras.main
-      // if (this.cameras.main.zoom <= 1.25) return
+      if (this.cameras.main.zoom <= MIN_ZOOM) return
       camera.setZoom(this.cameras.main.zoom - 0.1)
     }
     if (this.keyX.isDown) {
       const camera = this.cameras.main
-      // if (this.cameras.main.zoom >= 4) return
+      if (this.cameras.main.zoom >= MAX_ZOOM) return
       camera.setZoom(this.cameras.main.zoom + 0.1)
     }
   }
