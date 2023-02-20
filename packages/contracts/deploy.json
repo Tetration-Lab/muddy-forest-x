@@ -10,15 +10,34 @@
         "BuildingBlueprintComponent",
         "ResearchComponent",
         "OwnerComponent",
+        "ShipBlueprintComponent",
         "FactionComponent",
         "BuildingComponent",
         "ResearchCountComponent",
         "DefenseComponent",
         "DestroyedComponent",
         "CooldownComponent",
-        "AttackComponent"
+        "AttackComponent",
+        "BlueprintComponent"
     ],
     "systems": [
+        {
+            "name": "BuildShipSystem",
+            "writeAccess": [
+                "LevelComponent",
+                "ResourceComponent",
+                "TypeComponent",
+                "PositionComponent",
+                "OwnerComponent",
+                "ShipBlueprintComponent",
+                "FactionComponent",
+                "BuildingComponent",
+                "DefenseComponent",
+                "DestroyedComponent",
+                "AttackComponent",
+                "BlueprintComponent"
+            ]
+        },
         {
             "name": "SetupFactionSystem",
             "writeAccess": [
@@ -35,7 +54,12 @@
                 "NameComponent",
                 "TypeComponent",
                 "PositionComponent",
-                "FactionComponent"
+                "OwnerComponent",
+                "ShipBlueprintComponent",
+                "FactionComponent",
+                "DefenseComponent",
+                "AttackComponent",
+                "BlueprintComponent"
             ]
         },
         {
@@ -77,7 +101,16 @@
                 "ResearchCountComponent",
                 "DefenseComponent",
                 "DestroyedComponent",
-                "AttackComponent"
+                "AttackComponent",
+                "BlueprintComponent"
+            ]
+        },
+        {
+            "name": "SetupBaseShipBlueprintSystem",
+            "writeAccess": [
+                "TypeComponent",
+                "ShipBlueprintComponent",
+                "BlueprintComponent"
             ]
         },
         {
@@ -91,7 +124,8 @@
                 "FactionComponent",
                 "ResearchCountComponent",
                 "DestroyedComponent",
-                "CooldownComponent"
+                "CooldownComponent",
+                "BlueprintComponent"
             ]
         },
         {
@@ -119,7 +153,8 @@
             "name": "SetupBaseBuildingBlueprintSystem",
             "writeAccess": [
                 "TypeComponent",
-                "BuildingBlueprintComponent"
+                "BuildingBlueprintComponent",
+                "BlueprintComponent"
             ]
         },
         {
