@@ -10,16 +10,17 @@ import { Tile } from '../utils/Tile'
 import GameUIScene from './GameUIScene'
 import { appStore } from '../../../store/app'
 import { Container } from 'windicss/types/utils/style'
-import { snapToGrid } from '../../../util/snapToGrid'
+import { snapPosToGrid, snapToGrid } from '../../../utils/snapToGrid'
 import { buildPoseidon } from 'circomlibjs'
 import { Hasher } from 'circuits'
 import { Remote } from 'comlink'
 import { workerStore } from '../../../store/worker'
+import { initConfigAnim } from '../anim'
 
 type Poseidon = ReturnType<typeof buildPoseidon>
 
-const MIN_ZOOM = 1.2
-const MAX_ZOOM = 4
+const ZOOM_OUT_LIMIT = 0.75
+const ZOOM_IN_LIMIT = 4
 class GameScene extends Phaser.Scene {
   bg!: Phaser.GameObjects.TileSprite
   logo!: Phaser.Types.Physics.Arcade.ImageWithDynamicBody
@@ -73,8 +74,7 @@ class GameScene extends Phaser.Scene {
         const check = BigInt(hVal) < checkVal
         if (check) {
           const tile = tList[i] as Tile
-          const pos = tile.centerPosition()
-          // this.add.circle(pos.x, pos.y, 2, 0x00ff00, 0.8)
+          const pos = snapPosToGrid(tile.centerPosition())
           const sprite = this.add.sprite(pos.x, pos.y, 'dogeSheet')
           sprite.setDepth(100)
           sprite.play('doge')
@@ -90,42 +90,7 @@ class GameScene extends Phaser.Scene {
     this.followPoint.y = +y
   }
   async onCreate() {
-    const idle = {
-      key: 'doge',
-      frames: this.anims.generateFrameNumbers('dogeSheet', { start: 0, end: 74 }),
-      frameRate: 12,
-      repeat: -1,
-    }
-    const p1Idle = {
-      key: 'p1Idle',
-      frames: this.anims.generateFrameNumbers('p1Sheet', { start: 0, end: 74 }),
-      frameRate: 12,
-      repeat: -1,
-    }
-    const p2Idle = {
-      key: 'p2Idle',
-      frames: this.anims.generateFrameNumbers('p2Sheet', { start: 0, end: 74 }),
-      frameRate: 12,
-      repeat: -1,
-    }
-    const p8Idle = {
-      key: 'p8Idle',
-      frames: this.anims.generateFrameNumbers('p8Sheet', { start: 0, end: 110 }),
-      frameRate: 12,
-      repeat: -1,
-    }
-    const H1Idle = {
-      key: 'H1Idle',
-      frames: this.anims.generateFrameNumbers('H1Sheet', { start: 0, end: 74 }),
-      frameRate: 12,
-      repeat: -1,
-    }
-    this.anims.create(idle)
-    this.anims.create(p1Idle)
-    this.anims.create(p2Idle)
-    this.anims.create(H1Idle)
-    this.anims.create(p8Idle)
-    console.log('game scene create')
+    initConfigAnim(this)
     this.redRect = this.add.rectangle(1016, 0, 16, 16, 0xff0000)
     this.redRect.setDepth(100)
     this.redRect.setVisible(false)
@@ -185,13 +150,8 @@ class GameScene extends Phaser.Scene {
 
     this.chunkLoader = new ChunkLoader(this, { tileSize: TILE_SIZE }, this.rt)
 
-    const tList = []
     this.chunkLoader.setUpdateCbToChunks((t: Tile) => {
       t.alpha = 0.1
-      // if (!this.perlin) return
-      // const SCALE = 100
-      // const PRECISION = 10
-      // t.alpha = Math.floor(this.perlin(t.x, t.y, 0, SCALE) * 2 ** PRECISION) / 2 ** PRECISION
     })
     this.chunkLoader.initChunks(this.followPoint.x, this.followPoint.y)
     this.chunkLoader.addObject(this.redRect)
@@ -199,7 +159,6 @@ class GameScene extends Phaser.Scene {
     const cam = this.cameras.main
     this.input.on('pointermove', (p) => {
       if (!p.isDown) return
-      console.log('pointermove', p.x, p.y, p.prevPosition.x, p.prevPosition.y, cam.zoom)
       this.followPoint.x -= (p.x - p.prevPosition.x) / cam.zoom
       this.followPoint.y -= (p.y - p.prevPosition.y) / cam.zoom
     })
@@ -207,10 +166,10 @@ class GameScene extends Phaser.Scene {
     this.input.on('wheel', function (pointer, gameObjects, deltaX, deltaY, deltaZ) {
       // handle zoom in range MAX and MIN zoom value
       const cam = this.cameras.main
-      if (deltaY > 0 && cam.zoom < MAX_ZOOM) {
+      if (deltaY > 0 && cam.zoom < ZOOM_IN_LIMIT) {
         cam.zoom += 0.1
       }
-      if (deltaY < 0 && cam.zoom > MIN_ZOOM) {
+      if (deltaY < 0 && cam.zoom > ZOOM_OUT_LIMIT) {
         cam.zoom -= 0.1
       }
     })

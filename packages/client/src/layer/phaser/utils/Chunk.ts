@@ -135,25 +135,17 @@ export class Chunk extends Phaser.GameObjects.Container {
   }
 
   draw(tList: Tile[][]) {
-    console.log('tList', tList)
     this.rt.clear()
     this.rt.beginDraw()
     for (let row = 0; row < CHUNK_WIDTH_SIZE; row++) {
       for (let col = 0; col < CHUNK_HEIGHT_SIZE; col++) {
-        // const tileX = this.chunkX * (CHUNK_WIDTH_SIZE * this.tileSize) + row * this.tileSize
-        // const tileY = this.chunkY * (CHUNK_HEIGHT_SIZE * this.tileSize) + col * this.tileSize
         const tileXRT = row * this.tileSize
         const tileYRT = col * this.tileSize
-        // const t = this.tiles.getFirstDead()
         const t = tList[row][col]
         if (t) {
-          // this.rt.batchDraw(t)
           this.updateCb(t)
           console.log('t.apha', t.alpha)
           this.rt.batchDraw(t, tileXRT, tileYRT)
-          // t.setActive(true)
-          // t.setVisible(true)
-          // t.setPosition(tileX, tileY)
         }
       }
     }
