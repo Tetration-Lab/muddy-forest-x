@@ -19,7 +19,7 @@ import { initConfigAnim } from '../anim'
 
 type Poseidon = ReturnType<typeof buildPoseidon>
 
-const ZOOM_OUT_LIMIT = 0.75
+const ZOOM_OUT_LIMIT = 0.5
 const ZOOM_IN_LIMIT = 4
 class GameScene extends Phaser.Scene {
   bg!: Phaser.GameObjects.TileSprite

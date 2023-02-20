@@ -63,10 +63,6 @@ export class Chunk extends Phaser.GameObjects.Container {
     if (!this.isLoaded) {
       this.loadTile()
       this.killAll()
-      this.tiles.getChildren().forEach((t) => {
-        const tile = t as Tile
-        console.log('t', tile.x, tile.visible, tile.y, tile.alpha, tile.active)
-      })
       this.drawBounceRect()
       this.isLoaded = true
     }
