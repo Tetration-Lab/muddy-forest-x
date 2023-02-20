@@ -47,8 +47,6 @@ export class Chunk extends Phaser.GameObjects.Container {
       for (let col = 0; col < CHUNK_HEIGHT_SIZE; col++) {
         const tileX = this.chunkX * (CHUNK_WIDTH_SIZE * this.tileSize) + row * this.tileSize
         const tileY = this.chunkY * (CHUNK_HEIGHT_SIZE * this.tileSize) + col * this.tileSize
-        // const tileX = this.chunkX * (CHUNK_WIDTH_SIZE * this.tileSize) + row * this.tileSize
-        // const tileY = this.chunkY * (CHUNK_HEIGHT_SIZE * this.tileSize) + col * this.tileSize
         const t = new Tile(this.scene, tileX, tileY, 'tile')
         this.tiles.add(t)
       }
@@ -110,17 +108,11 @@ export class Chunk extends Phaser.GameObjects.Container {
         const tileX = this.chunkX * (CHUNK_WIDTH_SIZE * this.tileSize) + row * this.tileSize
         const tileY = this.chunkY * (CHUNK_HEIGHT_SIZE * this.tileSize) + col * this.tileSize
         const t = this.tiles.getFirstDead() as Tile
-        // this.tiles.getChildren().forEach((_t) => {
-        // const t = _t as Tile
         if (t) {
           t.setActive(true)
-          // t.setVisible(true)
           t.setPosition(tileX, tileY)
           rowT.push(t)
-          // this.updateCb(t)
         }
-        // })
-        // console.log('update', this.tiles.getChildren().length, this.tiles.getLength())
       }
       taListTable.push(rowT)
     }
@@ -140,7 +132,6 @@ export class Chunk extends Phaser.GameObjects.Container {
         const t = tList[row][col]
         if (t) {
           this.updateCb(t)
-          console.log('t.apha', t.alpha)
           this.rt.batchDraw(t, tileXRT, tileYRT)
         }
       }

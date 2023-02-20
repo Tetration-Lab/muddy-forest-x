@@ -1,5 +1,7 @@
-export function snapToGrid(x, y, gridSize = 16) {
-  return { x: Math.round(x / gridSize) * gridSize, y: Math.round(y / gridSize) * gridSize }
+import { TILE_SIZE } from '../layer/phaser/config/chunk'
+
+export function snapToGrid(x, y, gridSize = TILE_SIZE / 2) {
+  return { x: Math.floor(x / gridSize) * gridSize, y: Math.floor(y / gridSize) * gridSize }
 }
 
 export interface Position {
@@ -7,7 +9,7 @@ export interface Position {
   y: number
 }
 
-export function snapPosToGrid(pos: Position, gridSize = 16) {
+export function snapPosToGrid(pos: Position, gridSize = TILE_SIZE / 2) {
   const { x, y } = pos
-  return { x: Math.round(x / gridSize) * gridSize, y: Math.round(y / gridSize) * gridSize }
+  return { x: Math.floor(x / gridSize) * gridSize, y: Math.floor(y / gridSize) * gridSize }
 }

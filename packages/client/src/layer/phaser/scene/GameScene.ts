@@ -16,6 +16,7 @@ import { Hasher } from 'circuits'
 import { Remote } from 'comlink'
 import { workerStore } from '../../../store/worker'
 import { initConfigAnim } from '../anim'
+import { CursorExplorer } from '../gameobject/CursorExplorer'
 
 type Poseidon = ReturnType<typeof buildPoseidon>
 
@@ -147,6 +148,9 @@ class GameScene extends Phaser.Scene {
 
     this.rt = this.add.renderTexture(0, 0, GAME_WIDTH, GAME_HEIGHT)
     this.followPoint = new Phaser.Math.Vector2(800, 800)
+    const cursorPos = snapToGrid(1000, 590)
+    console.log('cursorPos', cursorPos)
+    new CursorExplorer(this, cursorPos.x, cursorPos.y, 'explorerSheet')
 
     this.chunkLoader = new ChunkLoader(this, { tileSize: TILE_SIZE }, this.rt)
 
@@ -242,12 +246,12 @@ class GameScene extends Phaser.Scene {
     }
     if (this.keyZ.isDown) {
       const camera = this.cameras.main
-      if (this.cameras.main.zoom <= MIN_ZOOM) return
+      if (this.cameras.main.zoom <= ZOOM_OUT_LIMIT) return
       camera.setZoom(this.cameras.main.zoom - 0.1)
     }
     if (this.keyX.isDown) {
       const camera = this.cameras.main
-      if (this.cameras.main.zoom >= MAX_ZOOM) return
+      if (this.cameras.main.zoom >= ZOOM_IN_LIMIT) return
       camera.setZoom(this.cameras.main.zoom + 0.1)
     }
   }
