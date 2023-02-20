@@ -46,7 +46,7 @@ contract InitResourceSystem is System {
       r.cap = (baseCap * mult) / 100;
       r.rpb = (baseRegen * mult) / 100;
       rC.set(args.entity, r);
-    } else {
+    } else if (ty == uint32(EType.SPACESHIP) || ty == uint32(EType.HQSHIP)) {
       // Non storage
       ResourceComponent.Resource memory r = rC.getValue(args.entity);
       rC.regen(args.entity);

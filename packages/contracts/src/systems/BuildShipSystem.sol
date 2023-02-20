@@ -31,21 +31,24 @@ contract BuildShipSystem is System {
     uint32 faction = Faction.getFaction(components, msg.sender);
 
     ShipBlueprintComponent sb = ShipBlueprintComponent(getAddressById(components, SBID));
-    TypeComponent ty = TypeComponent(getAddressById(components, TID));
-    FactionComponent fac = FactionComponent(getAddressById(components, FID));
 
     require(sb.has(args.blueprintId), "Blueprint not found");
-    ShipBlueprintComponent.ShipBlueprint memory blueprint = sb.getValue(args.blueprintId);
 
     // for (uint256 i = 0; i < blueprint.cost.length; ++i) {
     //   Resource.deduct(components, args.planetEntity, blueprint.cost[i].resourceId, blueprint.cost[i].value);
     // }
     uint256 newEntity = world.getUniqueEntityId();
-    ty.set(newEntity, uint32(EType.SPACESHIP));
-    fac.set(newEntity, faction);
+    TypeComponent(getAddressById(components, TID)).set(newEntity, uint32(EType.SPACESHIP));
+    // FactionComponent fac = FactionComponent(getAddressById(components, FID));
+    // fac.set(newEntity, faction);
 
-    Spaceship.initNewShip(components, newEntity, Faction.getCapitalPosition(components, faction), blueprint);
-    OwnerComponent(getAddressById(components, OID)).set(newEntity, addressToEntity(msg.sender));
+    Spaceship.initNewShip(
+      components,
+      newEntity,
+      Faction.getCapitalPosition(components, faction),
+      sb.getValue(args.blueprintId),
+      addressToEntity(msg.sender)
+    );
   }
 
   function executeTyped(Args memory args) public returns (bytes memory) {

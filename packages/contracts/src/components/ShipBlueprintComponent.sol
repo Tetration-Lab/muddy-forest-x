@@ -14,10 +14,11 @@ contract ShipBlueprintComponent is Component {
 
   struct ShipBlueprint {
     // Upgrade
+    uint32 level;
     uint32 attack;
     uint32 defense;
-    uint64 energyCap;
-    uint64 energyRegen;
+    // Energy;
+    Resource energy;
     // Cost
     Resource[] cost;
   }
@@ -28,17 +29,17 @@ contract ShipBlueprintComponent is Component {
     keys = new string[](5);
     values = new LibTypes.SchemaValue[](5);
 
-    keys[0] = "attack";
+    keys[0] = "level";
     values[0] = LibTypes.SchemaValue.UINT32;
 
-    keys[1] = "defense";
+    keys[1] = "attack";
     values[1] = LibTypes.SchemaValue.UINT32;
 
-    keys[2] = "energyCap";
-    values[2] = LibTypes.SchemaValue.UINT64;
+    keys[2] = "defense";
+    values[2] = LibTypes.SchemaValue.UINT32;
 
-    keys[3] = "energyRegen";
-    values[3] = LibTypes.SchemaValue.UINT32;
+    keys[3] = "energy";
+    values[3] = LibTypes.SchemaValue.BYTES;
 
     keys[4] = "cost";
     values[4] = LibTypes.SchemaValue.BYTES_ARRAY;

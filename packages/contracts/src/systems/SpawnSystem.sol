@@ -35,7 +35,12 @@ contract SpawnSystem is System {
     ty.set(addressToEntity(msg.sender), uint32(EType.PLAYER));
     fac.set(addressToEntity(msg.sender), args.factionId);
 
-    Spaceship.initHQShip(components, args.HQShipId, Faction.getCapitalPosition(components, args.factionId));
+    Spaceship.initHQShip(
+      components,
+      args.HQShipId,
+      Faction.getCapitalPosition(components, args.factionId),
+      addressToEntity(msg.sender)
+    );
   }
 
   function executeTyped(Args memory args) public returns (bytes memory) {
