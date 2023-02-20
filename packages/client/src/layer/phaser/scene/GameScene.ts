@@ -16,12 +16,10 @@ import { Hasher } from 'circuits'
 import { Remote } from 'comlink'
 import { workerStore } from '../../../store/worker'
 
-type Worker = Remote<typeof import('../../../miner/hasher.worker')>
 type Poseidon = ReturnType<typeof buildPoseidon>
 
 const MIN_ZOOM = 1.2
 const MAX_ZOOM = 4
-const WORKER_TILE_SIZE = CHUNK_HEIGHT_SIZE * CHUNK_WIDTH_SIZE
 class GameScene extends Phaser.Scene {
   bg!: Phaser.GameObjects.TileSprite
   logo!: Phaser.Types.Physics.Arcade.ImageWithDynamicBody
@@ -46,7 +44,6 @@ class GameScene extends Phaser.Scene {
   rt!: Phaser.GameObjects.RenderTexture
   ready = false
   perlin: Perlin | null = null
-  poseidon: Poseidon
   hasher: Hasher
   constructor() {
     super(GAME_SCENE)
@@ -155,7 +152,24 @@ class GameScene extends Phaser.Scene {
           startAt,
           delay: 50,
           callback: () => {
-            this.chunkLoader.updateChunksRePositionWithOffset(this.followPoint.x, this.followPoint.y, i, j)
+            const targetChunk = this.chunkLoader.updateChunksRePositionWithOffset(
+              this.followPoint.x,
+              this.followPoint.y,
+              i,
+              j,
+            )
+            if (!targetChunk) return
+            const sendPos = []
+            const tList = []
+            targetChunk.tiles.getChildren().forEach((_t) => {
+              const t = _t as Tile
+              const tileX = t.x
+              const tileY = t.y
+              sendPos.push({ x: tileX, y: tileY })
+              tList.push(t)
+              t.alpha = 0.1
+            })
+            this.events.emit('sendWorker', sendPos, tList)
           },
           loop: true,
         })
@@ -170,27 +184,15 @@ class GameScene extends Phaser.Scene {
     this.followPoint = new Phaser.Math.Vector2(800, 800)
 
     this.chunkLoader = new ChunkLoader(this, { tileSize: TILE_SIZE }, this.rt)
-    let sendPos = []
+
     const tList = []
     this.chunkLoader.setUpdateCbToChunks((t: Tile) => {
-      const tileX = t.x
-      const tileY = t.y
-      sendPos.push({ x: tileX, y: tileY })
-      tList.push(t)
-      if (sendPos.length >= WORKER_TILE_SIZE) {
-        console.log('send')
-        this.events.emit('sendWorker', sendPos, tList)
-        sendPos = []
-      }
       t.alpha = 0.1
-      console.log('setUpdateCbToChunks')
       // if (!this.perlin) return
       // const SCALE = 100
       // const PRECISION = 10
       // t.alpha = Math.floor(this.perlin(t.x, t.y, 0, SCALE) * 2 ** PRECISION) / 2 ** PRECISION
     })
-
-    this.poseidon = await buildPoseidon()
     this.chunkLoader.initChunks(this.followPoint.x, this.followPoint.y)
     this.chunkLoader.addObject(this.redRect)
 
@@ -200,6 +202,17 @@ class GameScene extends Phaser.Scene {
       console.log('pointermove', p.x, p.y, p.prevPosition.x, p.prevPosition.y, cam.zoom)
       this.followPoint.x -= (p.x - p.prevPosition.x) / cam.zoom
       this.followPoint.y -= (p.y - p.prevPosition.y) / cam.zoom
+    })
+
+    this.input.on('wheel', function (pointer, gameObjects, deltaX, deltaY, deltaZ) {
+      // handle zoom in range MAX and MIN zoom value
+      const cam = this.cameras.main
+      if (deltaY > 0 && cam.zoom < MAX_ZOOM) {
+        cam.zoom += 0.1
+      }
+      if (deltaY < 0 && cam.zoom > MIN_ZOOM) {
+        cam.zoom -= 0.1
+      }
     })
 
     this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W, false)
