@@ -17,7 +17,7 @@ contract ShipBlueprintComponent is Component {
     uint32 attack;
     uint32 defense;
     uint64 energyCap;
-    uint32 energyRegen;
+    uint64 energyRegen;
     // Cost
     Resource[] cost;
   }
