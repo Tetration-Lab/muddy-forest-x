@@ -10,9 +10,15 @@ import { EType } from "../constants/type.sol";
 import { Level } from "./LibLevel.sol";
 import { BASE_ENERGY, BASE_ENERGY_REGEN, BASE_ENERGY_CAP } from "../constants/resources.sol";
 import { PositionComponent, ID as PID } from "components/PositionComponent.sol";
+import { ShipBlueprintComponent } from "components/ShipBlueprintComponent.sol";
+import { Stat } from "libraries/LibStat.sol";
 
 library Spaceship {
-  function initHQShip(IUint256Component components, uint256 entity, PositionComponent.Position memory position) public {
+  function initHQShip(
+    IUint256Component components,
+    uint256 entity,
+    PositionComponent.Position memory position
+  ) public {
     {
       uint32 mult = Level.getHQShipEnergyLevelMultiplier(1);
       LevelComponent(getAddressById(components, LID)).set(entity, LevelComponent.Level(1, 0, 0));
@@ -29,5 +35,25 @@ library Spaceship {
     }
     TypeComponent(getAddressById(components, TID)).set(entity, uint32(EType.HQSHIP));
     PositionComponent(getAddressById(components, PID)).set(entity, position);
+  }
+
+  function initNewShip(
+    IUint256Component components,
+    uint256 entity,
+    PositionComponent.Position memory position,
+    ShipBlueprintComponent.ShipBlueprint memory sb
+  ) public {
+    {
+      LevelComponent(getAddressById(components, LID)).set(entity, LevelComponent.Level(1, 0, 0));
+      ResourceComponent(getAddressById(components, RID)).set(
+        entity,
+        ResourceComponent.Resource(sb.energyCap, sb.energyCap, sb.energyRegen, uint32(block.number), 0)
+      );
+    }
+    TypeComponent(getAddressById(components, TID)).set(entity, uint32(EType.SPACESHIP));
+    PositionComponent(getAddressById(components, PID)).set(entity, position);
+    Stat.incrementAttackMult(components, entity, sb.attack);
+    Stat.incrementDefenseMult(components, entity, sb.defense);
+
   }
 }

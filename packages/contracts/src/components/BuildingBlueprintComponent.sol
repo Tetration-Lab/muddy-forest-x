@@ -36,7 +36,7 @@ contract BuildingBlueprintComponent is Component {
     keys[2] = "resources";
     values[2] = LibTypes.SchemaValue.BYTES_ARRAY;
 
-    keys[3] = "resources";
+    keys[3] = "cost";
     values[3] = LibTypes.SchemaValue.BYTES_ARRAY;
   }
 
