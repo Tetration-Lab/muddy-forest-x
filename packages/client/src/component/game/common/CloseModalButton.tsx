@@ -1,10 +1,11 @@
 import { Box, ButtonBase, useTheme } from '@mui/material'
 import { HiXMark } from 'react-icons/hi2'
 
-export const CloseModalButton = () => {
+export const CloseModalButton = ({ onClick }: { onClick: () => void }) => {
   const theme = useTheme()
   return (
     <ButtonBase
+      onClick={onClick}
       sx={{
         width: 28,
         height: 28,

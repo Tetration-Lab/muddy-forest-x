@@ -6,8 +6,11 @@ import { GameActionBox, GameActionBoxMode } from '../../component/game/GameActio
 import { SendResourceModal } from '../../component/game/Modals/SendResourceModal'
 import { ToolButton } from '../../component/ToolButton'
 import { appStore } from '../../store/app'
+import { gameStore as GameStore } from '../../store/game'
+
 export const UILayer = () => {
   const store = useStore(appStore, (state) => state)
+  const gameStore = useStore(GameStore, (state) => state)
   const toolsContainerRef = useRef()
 
   const [openGameActionBox, setOpenGameActionBox] = React.useState(false)
@@ -93,7 +96,10 @@ export const UILayer = () => {
         </div>
       </ClickAwayListener>
       {/* Modals */}
-      <SendResourceModal open />
+      <SendResourceModal
+        open={gameStore.sendResourceModal.open}
+        onClose={() => gameStore.setSendResource({ open: false })}
+      />
     </>
   )
 }

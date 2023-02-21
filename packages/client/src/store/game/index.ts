@@ -6,11 +6,12 @@ export interface SendResourceData {
 }
 export interface SendResourceModal {
   open: boolean
-  data: SendResourceData
+  data?: SendResourceData
 }
 
 export type Store = {
   sendResourceModal: SendResourceModal
+  setSendResource: (sendResourceModal: SendResourceModal) => void
 }
 
 const initialState = {
@@ -25,7 +26,7 @@ const initialState = {
 
 export const gameStore = createStore<Store>((set) => ({
   ...initialState,
-  setSetResource: (sendResourceModal: SendResourceModal) => {
+  setSendResource: (sendResourceModal: SendResourceModal) => {
     set({ sendResourceModal })
   },
 }))
