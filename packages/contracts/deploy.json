@@ -1,16 +1,16 @@
 {
     "components": [
         "LevelComponent",
+        "BaseBlueprintComponent",
+        "BlueprintTypeComponent",
         "InventorComponent",
         "ResourceComponent",
         "NameComponent",
         "TypeComponent",
         "PositionComponent",
         "LocationComponent",
-        "BuildingBlueprintComponent",
         "ResearchComponent",
         "OwnerComponent",
-        "ShipBlueprintComponent",
         "FactionComponent",
         "BuildingComponent",
         "ResearchCountComponent",
@@ -25,11 +25,12 @@
             "name": "BuildShipSystem",
             "writeAccess": [
                 "LevelComponent",
+                "BaseBlueprintComponent",
+                "BlueprintTypeComponent",
                 "ResourceComponent",
                 "TypeComponent",
                 "PositionComponent",
                 "OwnerComponent",
-                "ShipBlueprintComponent",
                 "FactionComponent",
                 "BuildingComponent",
                 "DefenseComponent",
@@ -50,12 +51,12 @@
             "name": "SpawnSystem",
             "writeAccess": [
                 "LevelComponent",
+                "BaseBlueprintComponent",
                 "ResourceComponent",
                 "NameComponent",
                 "TypeComponent",
                 "PositionComponent",
                 "OwnerComponent",
-                "ShipBlueprintComponent",
                 "FactionComponent",
                 "DefenseComponent",
                 "AttackComponent",
@@ -89,11 +90,12 @@
             "name": "BuildBuildingSystem",
             "writeAccess": [
                 "LevelComponent",
+                "BaseBlueprintComponent",
+                "BlueprintTypeComponent",
                 "InventorComponent",
                 "ResourceComponent",
                 "TypeComponent",
                 "PositionComponent",
-                "BuildingBlueprintComponent",
                 "ResearchComponent",
                 "OwnerComponent",
                 "FactionComponent",
@@ -108,14 +110,16 @@
         {
             "name": "SetupBaseShipBlueprintSystem",
             "writeAccess": [
+                "BaseBlueprintComponent",
+                "BlueprintTypeComponent",
                 "TypeComponent",
-                "ShipBlueprintComponent",
                 "BlueprintComponent"
             ]
         },
         {
             "name": "ResearchSystem",
             "writeAccess": [
+                "BlueprintTypeComponent",
                 "InventorComponent",
                 "TypeComponent",
                 "PositionComponent",
@@ -152,8 +156,9 @@
         {
             "name": "SetupBaseBuildingBlueprintSystem",
             "writeAccess": [
+                "BaseBlueprintComponent",
+                "BlueprintTypeComponent",
                 "TypeComponent",
-                "BuildingBlueprintComponent",
                 "BlueprintComponent"
             ]
         },
