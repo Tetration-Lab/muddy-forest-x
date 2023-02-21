@@ -7,7 +7,6 @@ class GameUIScene extends Phaser.Scene {
   }
 
   create() {
-
     this.resize(this.scale.gameSize)
 
     this.events.on(Phaser.GameObjects.Events.DESTROY, this.onDestroy)
@@ -15,7 +14,6 @@ class GameUIScene extends Phaser.Scene {
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   resize = (gameSize: Phaser.Structs.Size) => {}
-
 
   getCenter() {
     return new Phaser.Math.Vector2(GAME_WIDTH / 2, GAME_HEIGHT / 2)

@@ -6,7 +6,7 @@ import { FaMinus, FaPlus } from 'react-icons/fa'
 import { MOCK_INVENTORY_ITEMS } from '../../../const/mocks'
 import { ActionButton } from './ActionButton'
 import { FilterButton } from './FilterButton'
-import { GameItem } from './GameItem'
+import { GameItem } from '../common/GameItem'
 import { IInventoryItem, InventoryTabType, InventoryType, ItemVisibility } from './types'
 import { TypeTag } from './TypeTag'
 

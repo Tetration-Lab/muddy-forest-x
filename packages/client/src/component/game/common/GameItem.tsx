@@ -1,6 +1,6 @@
 import { useTheme } from '@mui/material/styles'
 import { Box } from '@mui/system'
-import { ItemVisibility } from './types'
+import { ItemVisibility } from '../GameActionBox/types'
 
 export const GameItem = ({
   imageUrl,

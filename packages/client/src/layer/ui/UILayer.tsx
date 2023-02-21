@@ -3,6 +3,7 @@ import React, { useRef, useState } from 'react'
 import { useStore } from 'zustand'
 import { ChatBox } from '../../component/Chatbox'
 import { GameActionBox, GameActionBoxMode } from '../../component/game/GameActionBox'
+import { SendResourceModal } from '../../component/game/Modals/SendResourceModal'
 import { ToolButton } from '../../component/ToolButton'
 import { appStore } from '../../store/app'
 export const UILayer = () => {
@@ -14,7 +15,6 @@ export const UILayer = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 
   const handleClick = (mode: GameActionBoxMode) => () => {
-    console.log('handleClick!!', mode)
     setCurrentMode(mode)
     setAnchorEl(toolsContainerRef.current)
     if (mode === currentMode) {
@@ -92,6 +92,8 @@ export const UILayer = () => {
           </div>
         </div>
       </ClickAwayListener>
+      {/* Modals */}
+      <SendResourceModal open />
     </>
   )
 }

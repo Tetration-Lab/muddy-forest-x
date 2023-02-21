@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material'
 import { Stack } from '@mui/system'
-import { GameItem } from './GameItem'
+import { GameItem } from '../common/GameItem'
 import { useTheme } from '@mui/material/styles'
 
 export const GameItemRow = ({
