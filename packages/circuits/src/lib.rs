@@ -42,7 +42,6 @@ pub struct DistanceCircuit<F: PrimeField, HG: FieldHasherGadget<F>> {
     pub target_location: F,
     pub seed: F,
     pub max_distance: F,
-    pub max_radius: F,
     pub hasher: HG::Native,
 }
 
@@ -54,7 +53,6 @@ impl<F: PrimeField, HG: FieldHasherGadget<F>> ConstraintSynthesizer<F> for Dista
         let hasher = HG::from_native(&mut cs.clone(), self.hasher)?;
         let seed = FpVar::new_input(cs.clone(), || Ok(self.seed))?;
         let max_distance = FpVar::new_input(cs.clone(), || Ok(self.max_distance))?;
-        let max_radius = FpVar::new_input(cs.clone(), || Ok(self.max_radius))?;
         let from_coord_x = FpVar::new_witness(cs.clone(), || Ok(self.from_coord[0]))?;
         let from_coord_y = FpVar::new_witness(cs.clone(), || Ok(self.from_coord[1]))?;
         let from_location = FpVar::new_input(cs.clone(), || Ok(self.from_location))?;
@@ -69,18 +67,10 @@ impl<F: PrimeField, HG: FieldHasherGadget<F>> ConstraintSynthesizer<F> for Dista
             .hash(&[target_coord_x.clone(), target_coord_y.clone(), seed])?
             .enforce_equal(&target_location)?;
 
-        max_distance.square()?.enforce_cmp(
-            &(&(&from_coord_x - &target_coord_x).square()?
-                + &(&from_coord_y - &target_coord_y).square()?),
-            std::cmp::Ordering::Greater,
-            true,
-        )?;
-
-        max_radius.square()?.enforce_cmp(
-            &(&target_coord_x.square()? + &target_coord_y.square()?),
-            std::cmp::Ordering::Greater,
-            true,
-        )?;
+        (max_distance.square()?
+            - &(&(&from_coord_x - &target_coord_x).square()?
+                + &(&from_coord_y - &target_coord_y).square()?))
+            .enforce_smaller_or_equal_than_mod_minus_one_div_two()?;
 
         Ok(())
     }
@@ -95,10 +85,10 @@ mod tests {
     use arkworks_native_gadgets::poseidon::FieldHasher;
     use arkworks_r1cs_gadgets::poseidon::PoseidonGadget;
 
-    use crate::{utils::setup_poseidon, LocationCircuit};
+    use crate::{utils::setup_poseidon, DistanceCircuit, LocationCircuit};
 
     #[test]
-    fn poseidon() {
+    fn location() {
         let x = 0;
         let y = 0;
         let seed = 0;
@@ -133,5 +123,65 @@ mod tests {
         .unwrap();
 
         assert!(Groth16::verify(&vk, &[seed, result], &proof).unwrap());
+    }
+
+    #[test]
+    fn distance() {
+        let poseidon = setup_poseidon::<Fr>();
+        let rng = &mut test_rng();
+
+        let x1: i128 = 1285;
+        let y1: i128 = 192058;
+        let x2: i128 = 8943760;
+        let y2: i128 = 182;
+        let dist_square = (x1 - x2).pow(2) + (y1 - y2).pow(2) - 100000;
+        let seed = 128195;
+
+        let seed = Fr::from(seed);
+        let from_coord = [Fr::from(x1), Fr::from(y1)];
+        let from_location = poseidon
+            .hash(&[from_coord[0], from_coord[1], seed])
+            .unwrap();
+        let target_coord = [Fr::from(x2), Fr::from(y2)];
+        let target_location = poseidon
+            .hash(&[target_coord[0], target_coord[1], seed])
+            .unwrap();
+        let max_distance = Fr::from(dist_square);
+
+        let (pk, vk) = Groth16::<Bn254>::setup(
+            DistanceCircuit::<_, PoseidonGadget<Fr>> {
+                from_coord,
+                from_location,
+                target_coord,
+                target_location,
+                seed,
+                max_distance,
+                hasher: poseidon.clone(),
+            },
+            rng,
+        )
+        .unwrap();
+
+        let proof = Groth16::prove(
+            &pk,
+            DistanceCircuit::<_, PoseidonGadget<Fr>> {
+                from_coord,
+                from_location,
+                target_coord,
+                target_location,
+                seed,
+                max_distance,
+                hasher: poseidon.clone(),
+            },
+            rng,
+        )
+        .unwrap();
+
+        assert!(Groth16::verify(
+            &vk,
+            &[seed, max_distance, from_location, target_location],
+            &proof
+        )
+        .unwrap());
     }
 }

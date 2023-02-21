@@ -3,6 +3,8 @@ import { createStore } from 'zustand/vanilla'
 export interface SendResourceData {
   name: string
   imageSrc: string
+  mouseScreenX: number
+  mouseScreenY: number
 }
 export interface SendResourceModal {
   open: boolean
@@ -20,6 +22,8 @@ const initialState = {
     data: {
       name: '',
       imageSrc: '',
+      mouseScreenX: 0,
+      mouseScreenY: 0,
     },
   },
 }

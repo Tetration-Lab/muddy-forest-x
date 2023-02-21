@@ -1,5 +1,5 @@
 import { Perlin } from '@latticexyz/noise'
-import Phaser from 'phaser'
+import Phaser, { GameObjects } from 'phaser'
 import { Pane } from 'tweakpane'
 import { Chunk } from '../utils/Chunk'
 import { ChunkLoader } from '../utils/ChunkLoader'
@@ -44,6 +44,7 @@ class GameScene extends Phaser.Scene {
   redRect!: Phaser.GameObjects.Rectangle
   rt!: Phaser.GameObjects.RenderTexture
   ready = false
+  spawnPlanetMap = new Map<string, boolean>()
   perlin: Perlin | null = null
   hasher: Hasher
   constructor() {
@@ -71,10 +72,12 @@ class GameScene extends Phaser.Scene {
       const res = await worker.HashTwo(data)
       for (let i = 0; i < res.length; i++) {
         const hVal = res[i]
+        const tile = tList[i] as Tile
         const check = BigInt(hVal) < checkVal
-
-        if (check) {
-          const tile = tList[i] as Tile
+        const spawnKey = `${tile.x}-${tile.y}`
+        const notSpawn = !this.spawnPlanetMap.has(spawnKey)
+        if (check && notSpawn) {
+          this.spawnPlanetMap.set(spawnKey, true)
           const sprite = new Planet(this, 0, 0, 'dogeSheet')
           console.log('sprite', sprite.displayWidth)
           const pos = snapPosToGrid(tile.tilePosition(), TILE_SIZE, sprite.displayWidth)
@@ -82,10 +85,12 @@ class GameScene extends Phaser.Scene {
           sprite.setDepth(100)
           sprite.play('doge')
           const imageUri = this.textures.getBase64('dogeSheet', 0)
-          sprite.registerOnClick(() => {
+          sprite.registerOnClick((pointer: Phaser.Input.Pointer) => {
             const payload: SendResourceData = {
               name: 'doge',
               imageSrc: imageUri,
+              mouseScreenX: pointer.position.x,
+              mouseScreenY: pointer.position.y,
             }
             console.log(payload)
             gameStore.setState({
@@ -118,11 +123,13 @@ class GameScene extends Phaser.Scene {
     )
     mockHQ.setDepth(100)
     mockHQ.play('H1Idle')
-    mockHQ.registerOnClick(() => {
-      console.log('click')
-      alert('ok')
+    mockHQ.registerOnClick((pointer: Phaser.Input.Pointer) => {
+      console.log('mockHQ click', pointer.position)
     })
 
+    // document.addEventListener('mousedown', (event: MouseEvent) => {
+    //   console.log('native click', event.clientX, event.clientY)
+    // })
     const p8 = new Planet(this, 0, 0, 'p8Sheet')
     p8.setPositionWithDebug(
       snapValToGrid(800, TILE_SIZE, p8.displayWidth),
