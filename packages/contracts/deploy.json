@@ -18,6 +18,7 @@
         "DestroyedComponent",
         "CooldownComponent",
         "AttackComponent",
+        "UpgradeCountComponent",
         "BlueprintComponent"
     ],
     "systems": [
@@ -36,6 +37,15 @@
                 "DefenseComponent",
                 "DestroyedComponent",
                 "AttackComponent",
+                "BlueprintComponent"
+            ]
+        },
+        {
+            "name": "SetupBaseShipUpgradeBlueprintSystem",
+            "writeAccess": [
+                "BaseBlueprintComponent",
+                "BlueprintTypeComponent",
+                "TypeComponent",
                 "BlueprintComponent"
             ]
         },
@@ -159,6 +169,21 @@
                 "BaseBlueprintComponent",
                 "BlueprintTypeComponent",
                 "TypeComponent",
+                "BlueprintComponent"
+            ]
+        },
+        {
+            "name": "UpgradeShipSystem",
+            "writeAccess": [
+                "BaseBlueprintComponent",
+                "BlueprintTypeComponent",
+                "ResourceComponent",
+                "TypeComponent",
+                "OwnerComponent",
+                "DefenseComponent",
+                "DestroyedComponent",
+                "AttackComponent",
+                "UpgradeCountComponent",
                 "BlueprintComponent"
             ]
         },

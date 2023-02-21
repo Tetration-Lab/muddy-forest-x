@@ -11,10 +11,11 @@ import { appStore } from '../../../store/app'
 import { snapPosToGrid, snapToGrid, snapValToGrid } from '../../../utils/snapToGrid'
 import { buildPoseidon } from 'circomlibjs'
 import { Hasher } from 'circuits'
-import { Remote } from 'comlink'
 import { workerStore } from '../../../store/worker'
 import { initConfigAnim } from '../anim'
 import { CursorExplorer } from '../gameobject/CursorExplorer'
+import { Planet } from '../gameobject/Planet'
+import { gameStore, SendResourceData } from '../../../store/game'
 
 type Poseidon = ReturnType<typeof buildPoseidon>
 
@@ -74,14 +75,26 @@ class GameScene extends Phaser.Scene {
 
         if (check) {
           const tile = tList[i] as Tile
-          const sprite = this.add.sprite(0, 0, 'dogeSheet')
+          const sprite = new Planet(this, 0, 0, 'dogeSheet')
           console.log('sprite', sprite.displayWidth)
           const pos = snapPosToGrid(tile.tilePosition(), TILE_SIZE, sprite.displayWidth)
-          sprite.setPosition(pos.x, pos.y)
-          const posRect = snapPosToGrid(tile.tilePosition(), TILE_SIZE, sprite.displayWidth)
-          this.add.rectangle(posRect.x, posRect.y, sprite.displayWidth, sprite.displayHeight, 0xff0000)
+          sprite.setPositionWithDebug(pos.x, pos.y, 0x00ff00)
           sprite.setDepth(100)
           sprite.play('doge')
+          const imageUri = this.textures.getBase64('dogeSheet', 0)
+          sprite.registerOnClick(() => {
+            const payload: SendResourceData = {
+              name: 'doge',
+              imageSrc: imageUri,
+            }
+            console.log(payload)
+            gameStore.setState({
+              sendResourceModal: {
+                open: true,
+                data: payload,
+              },
+            })
+          })
         }
       }
     }
@@ -97,38 +110,42 @@ class GameScene extends Phaser.Scene {
     this.redRect = this.add.rectangle(1016, 0, 16, 16, 0xff0000)
     this.redRect.setDepth(100)
     this.redRect.setVisible(false)
-    const h = this.add.sprite(0, 0, 'H1Sheet')
-    h.setPosition(snapValToGrid(800, TILE_SIZE, h.displayWidth), snapValToGrid(600, TILE_SIZE, h.displayWidth))
 
-    h.setDepth(100)
-    h.play('H1Idle')
+    const mockHQ = new Planet(this, 0, 0, 'H1Sheet')
+    mockHQ.setPositionWithDebug(
+      snapValToGrid(800, TILE_SIZE, mockHQ.displayWidth),
+      snapValToGrid(600, TILE_SIZE, mockHQ.displayWidth),
+    )
+    mockHQ.setDepth(100)
+    mockHQ.play('H1Idle')
+    mockHQ.registerOnClick(() => {
+      console.log('click')
+      alert('ok')
+    })
 
-    const p8 = this.add.sprite(0, 0, 'p8Sheet')
-    p8.setPosition(snapValToGrid(800, TILE_SIZE, p8.displayWidth), snapValToGrid(600, TILE_SIZE, p8.displayWidth))
+    const p8 = new Planet(this, 0, 0, 'p8Sheet')
+    p8.setPositionWithDebug(
+      snapValToGrid(800, TILE_SIZE, p8.displayWidth),
+      snapValToGrid(600, TILE_SIZE, p8.displayWidth),
+    )
     p8.setDepth(100)
     p8.play('p8Idle')
 
-    const sprite = this.add.sprite(0, 0, 'dogeSheet')
-    sprite.setPosition(
+    const sprite = new Planet(this, 0, 0, 'dogeSheet')
+    sprite.setPositionWithDebug(
       snapValToGrid(800, TILE_SIZE, sprite.displayWidth),
       snapValToGrid(451, TILE_SIZE, sprite.displayWidth),
     )
     sprite.setDepth(100)
     sprite.play('doge')
 
-    const sprite2 = this.add.sprite(0, 0, 'p1Sheet')
-    sprite2.setPosition(
+    const sprite2 = new Planet(this, 0, 0, 'p1Sheet')
+    sprite2.setPositionWithDebug(
       snapValToGrid(800, TILE_SIZE, sprite2.displayWidth),
       snapValToGrid(500, TILE_SIZE, sprite2.displayWidth),
     )
     sprite2.setDepth(100)
     sprite2.play('p1Idle')
-    const rect = this.add.rectangle(0, 0, sprite2.displayWidth, sprite2.displayHeight, 0xff0000)
-    rect.setPosition(
-      snapValToGrid(800, TILE_SIZE, sprite2.displayWidth),
-      snapValToGrid(500, TILE_SIZE, sprite2.displayWidth),
-    )
-    console.log('sprite2', sprite2.displayWidth)
 
     let startAt = 0
     for (let i = -1; i <= LOAD_RADIUS; i++) {
