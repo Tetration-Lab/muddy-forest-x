@@ -8,7 +8,7 @@ export class Planet extends Phaser.GameObjects.Sprite {
     this.setInteractive()
   }
 
-  registerOnClick(callback: () => void): this {
+  registerOnClick(callback: (pointer?: Phaser.Input.Pointer) => void): this {
     this.on('pointerup', callback)
     return this
   }
