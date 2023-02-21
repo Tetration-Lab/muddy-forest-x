@@ -16,7 +16,7 @@ library Cooldown {
   function setCooldown(IUint256Component components, uint256 entity, uint256 cooldownId, uint256 cooldown) public {
     CooldownComponent(getAddressById(components, CID)).set(
       getCooldownEntity(entity, cooldownId),
-      uint32(block.timestamp + cooldown)
+      block.timestamp + cooldown
     );
   }
 }

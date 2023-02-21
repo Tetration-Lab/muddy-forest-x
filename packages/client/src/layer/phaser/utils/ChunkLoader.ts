@@ -90,6 +90,7 @@ export class ChunkLoader {
       this.alivePosition.set(this.makeChunkPositionKey(i, j), true)
       c.update(i, j)
     }
+    return c
   }
 
   makeChunkPositionKey(x: number, y: number) {

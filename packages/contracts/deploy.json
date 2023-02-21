@@ -1,19 +1,44 @@
 {
     "components": [
         "LevelComponent",
+        "BaseBlueprintComponent",
+        "BlueprintTypeComponent",
+        "InventorComponent",
         "ResourceComponent",
         "NameComponent",
         "TypeComponent",
         "PositionComponent",
         "LocationComponent",
+        "ResearchComponent",
         "OwnerComponent",
         "FactionComponent",
+        "BuildingComponent",
+        "ResearchCountComponent",
         "DefenseComponent",
         "DestroyedComponent",
         "CooldownComponent",
-        "AttackComponent"
+        "AttackComponent",
+        "BlueprintComponent"
     ],
     "systems": [
+        {
+            "name": "BuildShipSystem",
+            "writeAccess": [
+                "LevelComponent",
+                "BaseBlueprintComponent",
+                "BlueprintTypeComponent",
+                "ResourceComponent",
+                "TypeComponent",
+                "PositionComponent",
+                "OwnerComponent",
+                "FactionComponent",
+                "BuildingComponent",
+                "DefenseComponent",
+                "DestroyedComponent",
+                "AttackComponent",
+                "BlueprintComponent"
+            ]
+        },
         {
             "name": "SetupFactionSystem",
             "writeAccess": [
@@ -26,11 +51,16 @@
             "name": "SpawnSystem",
             "writeAccess": [
                 "LevelComponent",
+                "BaseBlueprintComponent",
                 "ResourceComponent",
                 "NameComponent",
                 "TypeComponent",
                 "PositionComponent",
-                "FactionComponent"
+                "OwnerComponent",
+                "FactionComponent",
+                "DefenseComponent",
+                "AttackComponent",
+                "BlueprintComponent"
             ]
         },
         {
@@ -57,6 +87,52 @@
             ]
         },
         {
+            "name": "BuildBuildingSystem",
+            "writeAccess": [
+                "LevelComponent",
+                "BaseBlueprintComponent",
+                "BlueprintTypeComponent",
+                "InventorComponent",
+                "ResourceComponent",
+                "TypeComponent",
+                "PositionComponent",
+                "ResearchComponent",
+                "OwnerComponent",
+                "FactionComponent",
+                "BuildingComponent",
+                "ResearchCountComponent",
+                "DefenseComponent",
+                "DestroyedComponent",
+                "AttackComponent",
+                "BlueprintComponent"
+            ]
+        },
+        {
+            "name": "SetupBaseShipBlueprintSystem",
+            "writeAccess": [
+                "BaseBlueprintComponent",
+                "BlueprintTypeComponent",
+                "TypeComponent",
+                "BlueprintComponent"
+            ]
+        },
+        {
+            "name": "ResearchSystem",
+            "writeAccess": [
+                "BlueprintTypeComponent",
+                "InventorComponent",
+                "TypeComponent",
+                "PositionComponent",
+                "ResearchComponent",
+                "OwnerComponent",
+                "FactionComponent",
+                "ResearchCountComponent",
+                "DestroyedComponent",
+                "CooldownComponent",
+                "BlueprintComponent"
+            ]
+        },
+        {
             "name": "InitResourceSystem",
             "writeAccess": [
                 "LevelComponent",
@@ -75,6 +151,15 @@
                 "OwnerComponent",
                 "DestroyedComponent",
                 "CooldownComponent"
+            ]
+        },
+        {
+            "name": "SetupBaseBuildingBlueprintSystem",
+            "writeAccess": [
+                "BaseBlueprintComponent",
+                "BlueprintTypeComponent",
+                "TypeComponent",
+                "BlueprintComponent"
             ]
         },
         {

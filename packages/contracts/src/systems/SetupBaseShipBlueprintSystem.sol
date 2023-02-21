@@ -6,11 +6,12 @@ import { BaseBlueprintComponent, ID as BBID } from "components/BaseBlueprintComp
 import { TypeComponent, ID as TID } from "components/TypeComponent.sol";
 import { BlueprintTypeComponent, ID as BTID } from "components/BlueprintTypeComponent.sol";
 import { EType } from "../constants/type.sol";
+import { BASE_ENERGY } from "../constants/resources.sol";
 import { BlueprintType } from "../constants/blueprint.sol";
 
-uint256 constant ID = uint256(keccak256("system.SetupBaseBuildingBlueprint"));
+uint256 constant ID = uint256(keccak256("system.SetupBaseShipBlueprint"));
 
-contract SetupBaseBuildingBlueprintSystem is System {
+contract SetupBaseShipBlueprintSystem is System {
   struct Args {
     BaseBlueprintComponent.Blueprint[] blueprints;
   }
@@ -25,11 +26,15 @@ contract SetupBaseBuildingBlueprintSystem is System {
     BlueprintTypeComponent bt = BlueprintTypeComponent(getAddressById(components, TID));
 
     for (uint256 i = 0; i < args.blueprints.length; ++i) {
-      uint256 id = uint256(keccak256(abi.encode(BlueprintType.BUILDING, args.blueprints[i])));
+      uint256 id = uint256(keccak256(abi.encode(BlueprintType.SHIP, args.blueprints[i])));
+      require(args.blueprints[i].resources.length == 1, "Must specify resources");
+      require(args.blueprints[i].resources[0].resourceId == BASE_ENERGY, "Resource must be energy");
+      require(args.blueprints[i].resources[0].cap > 0, "Energy cap must be gt 0");
+      require(args.blueprints[i].resources[0].rpb > 0, "Energy regen must be gt 0");
       require(!bb.has(id), "Duplicate blueprint");
       bb.set(id, args.blueprints[i]);
       t.set(id, uint32(EType.BLUEPRINT));
-      bt.set(id, uint32(BlueprintType.BUILDING));
+      bt.set(id, uint32(BlueprintType.SHIP));
     }
   }
 

@@ -10,6 +10,10 @@ library Faction {
     return FactionComponent(getAddressById(components, FID)).getValue(addressToEntity(player));
   }
 
+  function getFaction(IUint256Component components, uint256 entity) public returns (uint32) {
+    return FactionComponent(getAddressById(components, FID)).getValue(entity);
+  }
+
   function getCapitalPosition(
     IUint256Component components,
     uint32 factionId

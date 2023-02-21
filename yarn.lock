@@ -4527,6 +4527,11 @@ picomatch@^2.0.4, picomatch@^2.2.1, picomatch@^2.3.1:
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.3.1.tgz#3ba3833733646d9d3e4995946c1365a67fb07a42"
   integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
 
+poseidon-solidity@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/poseidon-solidity/-/poseidon-solidity-0.0.3.tgz#8521eaad3abb56c711372f7a4a1ba82ba0deaa12"
+  integrity sha512-8eCb5Wz/fhgRK1yC1KZBafZmZC3STvLe7DQMpL9471gKtcgkjsCLN7HoTjDPI9UKxsFzUmXZxaEOrWfvOxXP/w==
+
 postcss-windicss@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/postcss-windicss/-/postcss-windicss-1.0.0.tgz#9225eacfc9497dca6b9cb0416bfbace046ecfcbb"
@@ -5524,6 +5529,14 @@ vite-plugin-comlink@^3.0.5:
   dependencies:
     json5 "2.2.1"
     magic-string "0.26.7"
+
+vite-plugin-full-reload@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/vite-plugin-full-reload/-/vite-plugin-full-reload-1.0.5.tgz#6cddfa94e51909843bc7156ab728dbac972b8560"
+  integrity sha512-kVZFDFWr0DxiHn6MuDVTQf7gnWIdETGlZh0hvTiMXzRN80vgF4PKbONSq8U1d0WtHsKaFODTQgJeakLacoPZEQ==
+  dependencies:
+    picocolors "^1.0.0"
+    picomatch "^2.3.1"
 
 vite-plugin-static-copy@^0.13.0:
   version "0.13.0"

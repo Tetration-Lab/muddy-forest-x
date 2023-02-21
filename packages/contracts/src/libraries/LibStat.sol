@@ -14,6 +14,16 @@ library Stat {
     return DefenseComponent(getAddressById(components, DID)).getValue(entity);
   }
 
+  function incrementAttackMult(IUint256Component components, uint256 entity, uint32 value) public {
+    AttackComponent a = AttackComponent(getAddressById(components, AID));
+    a.set(entity, a.getValue(entity) + value);
+  }
+
+  function incrementDefenseMult(IUint256Component components, uint256 entity, uint32 value) public {
+    DefenseComponent d = DefenseComponent(getAddressById(components, DID));
+    d.set(entity, d.getValue(entity) + value);
+  }
+
   function calculateFinalEnergyReceived(
     IUint256Component components,
     uint256 attackEntity,

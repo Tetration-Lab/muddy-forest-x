@@ -29,7 +29,7 @@ export class Chunk extends Phaser.GameObjects.Container {
     this.isLoaded = false
     this.tileSize = TILE_SIZE
     this.graphics = this.scene.add.graphics()
-    // this.rt = this.scene.add.renderTexture(chunkX, chunkY, CHUNK_WIDTH_SIZE * TILE_SIZE, CHUNK_HEIGHT_SIZE * TILE_SIZE)
+
     this.rt = this.scene.add.renderTexture(
       this.chunkX * (CHUNK_WIDTH_SIZE * this.tileSize),
       this.chunkY * (CHUNK_HEIGHT_SIZE * this.tileSize),
@@ -83,14 +83,14 @@ export class Chunk extends Phaser.GameObjects.Container {
 
   killAll() {
     this.tiles.getChildren().forEach((t) => {
-      this.tiles.killAndHide(t)
+      this.tiles.kill(t)
     })
   }
 
   forceUpdateCb() {
     this.tiles.getChildren().forEach((t) => {
       this.updateCb(t as Tile)
-      this.draw()
+      // this.draw()
     })
   }
 
@@ -101,41 +101,38 @@ export class Chunk extends Phaser.GameObjects.Container {
       this.chunkX * (CHUNK_WIDTH_SIZE * this.tileSize),
       this.chunkY * (CHUNK_HEIGHT_SIZE * this.tileSize),
     )
+    const taListTable = [] as Tile[][]
     for (let row = 0; row < CHUNK_WIDTH_SIZE; row++) {
+      const rowT = []
       for (let col = 0; col < CHUNK_HEIGHT_SIZE; col++) {
         const tileX = this.chunkX * (CHUNK_WIDTH_SIZE * this.tileSize) + row * this.tileSize
         const tileY = this.chunkY * (CHUNK_HEIGHT_SIZE * this.tileSize) + col * this.tileSize
-        const t = this.tiles.getFirstDead()
+        const t = this.tiles.getFirstDead() as Tile
         if (t) {
           t.setActive(true)
-          t.setVisible(true)
           t.setPosition(tileX, tileY)
-          this.updateCb(t)
+          rowT.push(t)
         }
       }
+      taListTable.push(rowT)
     }
 
     this.killAll()
     this.drawBounceRect()
-    this.draw()
+    this.draw(taListTable)
   }
 
-  draw() {
+  draw(tList: Tile[][]) {
+    this.rt.clear()
     this.rt.beginDraw()
     for (let row = 0; row < CHUNK_WIDTH_SIZE; row++) {
       for (let col = 0; col < CHUNK_HEIGHT_SIZE; col++) {
-        // const tileX = this.chunkX * (CHUNK_WIDTH_SIZE * this.tileSize) + row * this.tileSize
-        // const tileY = this.chunkY * (CHUNK_HEIGHT_SIZE * this.tileSize) + col * this.tileSize
         const tileXRT = row * this.tileSize
         const tileYRT = col * this.tileSize
-        const t = this.tiles.getFirstDead()
+        const t = tList[row][col]
         if (t) {
-          // this.rt.batchDraw(t)
-          this.rt.batchDraw(t, tileXRT, tileYRT)
-          // t.setActive(true)
-          // t.setVisible(true)
-          // t.setPosition(tileX, tileY)
           this.updateCb(t)
+          this.rt.batchDraw(t, tileXRT, tileYRT)
         }
       }
     }

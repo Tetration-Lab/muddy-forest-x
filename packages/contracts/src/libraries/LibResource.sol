@@ -32,23 +32,15 @@ library Resource {
     return 100 + (20 * distance);
   }
 
-  function sendEnergyCost(
-    uint64 distance,
-    uint64 weight,
-    uint64 upgrade
-  ) public pure returns (uint64 cost) {
+  function sendEnergyCost(uint64 distance, uint64 weight, uint64 upgrade) public pure returns (uint64 cost) {
     return 100 + 10 * distance + (weight * distance) / (50 + upgrade);
   }
 
   function attackEnergyCost(uint64 distance) public pure returns (uint64 cost) {
-    return 100 + distance**2;
+    return 100 + distance ** 2;
   }
 
-  function deductEnergy(
-    IUint256Component components,
-    uint256 entity,
-    uint64 energy
-  ) public {
+  function deductEnergy(IUint256Component components, uint256 entity, uint64 energy) public {
     ResourceComponent r = ResourceComponent(getAddressById(components, RID));
     uint256 id = getResourceEntity(entity, BASE_ENERGY);
     r.regen(id);
@@ -58,11 +50,7 @@ library Resource {
     r.set(id, resource);
   }
 
-  function deductEnergyCap(
-    IUint256Component components,
-    uint256 entity,
-    uint64 energy
-  ) public {
+  function deductEnergyCap(IUint256Component components, uint256 entity, uint64 energy) public {
     ResourceComponent r = ResourceComponent(getAddressById(components, RID));
     uint256 id = getResourceEntity(entity, BASE_ENERGY);
     r.regen(id);
@@ -75,11 +63,7 @@ library Resource {
     r.set(id, resource);
   }
 
-  function increaseEnergy(
-    IUint256Component components,
-    uint256 entity,
-    uint64 energy
-  ) public {
+  function increaseEnergy(IUint256Component components, uint256 entity, uint64 energy) public {
     ResourceComponent r = ResourceComponent(getAddressById(components, RID));
     uint256 id = getResourceEntity(entity, BASE_ENERGY);
     r.regen(id);
@@ -109,5 +93,16 @@ library Resource {
     targetR.value = Math64.min(targetR.cap, targetR.value + amount);
     r.set(senderId, senderR);
     r.set(targetId, targetR);
+  }
+
+  function deduct(IUint256Component components, uint256 entity, uint256 resourceId, uint64 amount) public {
+    ResourceComponent r = ResourceComponent(getAddressById(components, RID));
+    uint256 id = getResourceEntity(entity, resourceId);
+    require(r.has(id), "Resource do not exsist on sender");
+    r.regen(id);
+    ResourceComponent.Resource memory resource = r.getValue(id);
+    require(amount > resource.value, "Not enough resource amount");
+    resource.value -= amount;
+    r.set(id, resource);
   }
 }

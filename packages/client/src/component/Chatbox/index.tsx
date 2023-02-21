@@ -90,6 +90,7 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ focusInputCallback, focusOutIn
         <div className="mt-2">
           <div className="flex space-x-2">
             <input
+              id="chat-input"
               tabIndex={-1}
               ref={inputChat}
               placeholder="Enter text here..."

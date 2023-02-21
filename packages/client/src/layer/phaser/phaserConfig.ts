@@ -2,6 +2,7 @@ import MainScene from './scene/MainScene'
 import GameScene from './scene/GameScene'
 import { GAME_HEIGHT, GAME_WIDTH } from './config/game'
 import GameUIScene from './scene/GameUIScene'
+import PreloaderScene from './scene/PreloaderScene'
 
 const phaserConfig = {
   type: Phaser.AUTO,
@@ -20,6 +21,6 @@ const phaserConfig = {
   pixelArt: true,
   roundPixels: true,
   plugins: {},
-  scene: [MainScene, GameScene, GameUIScene],
+  scene: [PreloaderScene, MainScene, GameScene, GameUIScene],
 }
 export default phaserConfig

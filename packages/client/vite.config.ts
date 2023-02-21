@@ -5,6 +5,7 @@ import { comlink } from 'vite-plugin-comlink'
 import wasm from 'vite-plugin-wasm'
 // import { viteStaticCopy } from 'vite-plugin-static-copy'
 import topLevelAwait from 'vite-plugin-top-level-await'
+import FullReload from 'vite-plugin-full-reload'
 
 export default defineConfig({
   build: {
@@ -12,6 +13,7 @@ export default defineConfig({
     assetsInlineLimit: 0,
   },
   plugins: [
+    FullReload(['src/layers/phaser/**/*.*']),
     svgr(),
     react(),
     topLevelAwait(),

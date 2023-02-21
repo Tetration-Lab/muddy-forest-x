@@ -8,3 +8,4 @@ ds-test/=../../node_modules/ds-test/src/
 solmate/=../../node_modules/@rari-capital/solmate/src/
 forge-std/=../../node_modules/forge-std/src/
 @solidstate/=../../node_modules/@solidstate/
+poseidon-solidity/=../../node_modules/poseidon-solidity/
