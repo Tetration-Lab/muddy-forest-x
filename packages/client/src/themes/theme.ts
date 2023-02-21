@@ -41,7 +41,7 @@ export const theme = createTheme({
   typography: {
     fontFamily: ['Fira Mono', 'Roboto', 'sans-serif'].join(','),
   },
-  shape: {
-    borderRadius: 4,
-  },
+  // shape: {
+  //   borderRadius: 4,
+  // },
 })

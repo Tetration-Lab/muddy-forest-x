@@ -1,0 +1,32 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g clip-path="url(#clip0_575_97921)">
+    <rect width="24" height="24" fill="#5582BF" />
+    <path d="M4 0V24" stroke="#EBF3FF" stroke-opacity="0.49" stroke-width="0.5" />
+    <path d="M4 0V24" stroke="#EBF3FF" stroke-opacity="0.49" stroke-width="0.5" />
+    <path d="M8 0V24" stroke="#EBF3FF" stroke-opacity="0.49" stroke-width="0.5" />
+    <path d="M8 0V24" stroke="#EBF3FF" stroke-opacity="0.49" stroke-width="0.5" />
+    <path d="M12 0V24" stroke="#EBF3FF" stroke-opacity="0.49" stroke-width="0.5" />
+    <path d="M12 0V24" stroke="#EBF3FF" stroke-opacity="0.49" stroke-width="0.5" />
+    <path d="M16 0V24" stroke="#EBF3FF" stroke-opacity="0.49" stroke-width="0.5" />
+    <path d="M16 0V24" stroke="#EBF3FF" stroke-opacity="0.49" stroke-width="0.5" />
+    <path d="M20 0V24" stroke="#EBF3FF" stroke-opacity="0.49" stroke-width="0.5" />
+    <path d="M20 0V24" stroke="#EBF3FF" stroke-opacity="0.49" stroke-width="0.5" />
+    <path d="M24 0V24" stroke="#EBF3FF" stroke-opacity="0.49" stroke-width="0.5" />
+    <path d="M24 0V24" stroke="#EBF3FF" stroke-opacity="0.49" stroke-width="0.5" />
+    <path d="M0 4L24 4" stroke="#EBF3FF" stroke-opacity="0.49" stroke-width="0.5" />
+    <path d="M0 0L24 0" stroke="#EBF3FF" stroke-opacity="0.49" stroke-width="0.5" />
+    <path d="M0 8L24 8" stroke="#EBF3FF" stroke-opacity="0.49" stroke-width="0.5" />
+    <path d="M0 12L24 12" stroke="#EBF3FF" stroke-opacity="0.49" stroke-width="0.5" />
+    <path d="M0 16H24" stroke="#EBF3FF" stroke-opacity="0.49" stroke-width="0.5" />
+    <path d="M0 20H24" stroke="#EBF3FF" stroke-opacity="0.49" stroke-width="0.5" />
+    <path d="M0 24H24" stroke="#EBF3FF" stroke-opacity="0.49" stroke-width="0.5" />
+    <path d="M0 0V24" stroke="#EBF3FF" stroke-opacity="0.49" stroke-width="0.5" />
+    <path d="M0 0V24" stroke="#EBF3FF" stroke-opacity="0.49" stroke-width="0.5" />
+  </g>
+  <rect x="0.25" y="0.25" width="23.5" height="23.5" stroke="#D7E4F6" stroke-width="0.5" />
+  <defs>
+    <clipPath id="clip0_575_97921">
+      <rect width="24" height="24" fill="white" />
+    </clipPath>
+  </defs>
+</svg>

@@ -39,4 +39,11 @@ export interface IBuildItem {
   imageUrl: string
   description: string
   type: BuildItemType
+  requireItems?: (IInventoryItem & { amount: number })[]
+}
+
+/* -------------- Research -------------- */
+export enum ResearchAndDiscoveryTabType {
+  Inventory = 'inventory',
+  Discovered = 'discovered',
 }
