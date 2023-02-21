@@ -13,12 +13,21 @@ type Pos = {
   y: number
 }
 
+export interface HashTwoRespItem {
+  val: string
+  x: number
+  y: number
+}
 export const HashTwo = async (chunk: Pos[]) => {
   const hash = await createHasher()
-  const res = []
+  const res = [] as HashTwoRespItem[]
   for (const c of chunk) {
     const val = hash.hash_two_i(BigInt(c.x), BigInt(c.y))
-    res.push(val)
+    res.push({
+      val: val.toString(),
+      x: c.x,
+      y: c.y,
+    })
   }
   return res
 }

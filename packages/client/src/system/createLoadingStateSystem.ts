@@ -11,7 +11,7 @@ export function createLoadingStateSystem(network: NetworkLayer, cb: CallbackFunc
   } = network
 
   defineComponentSystem(world, LoadingState, (update) => {
-    console.log('==> LoadingState system: ', update.value[0])
+    // console.log('==> LoadingState system: ', update.value[0])
     const { state, msg, percentage } = update.value[0]
     const _s = state as number
     cb(_s, msg, percentage)

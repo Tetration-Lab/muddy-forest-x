@@ -8,7 +8,7 @@ import { GAME_HEIGHT, GAME_WIDTH } from '../config/game'
 import { GAME_SCENE } from '../constant/scene'
 import { Tile } from '../utils/Tile'
 import { appStore } from '../../../store/app'
-import { snapPosToGrid, snapToGrid, snapValToGrid } from '../../../utils/snapToGrid'
+import { Position, snapPosToGrid, snapToGrid, snapValToGrid } from '../../../utils/snapToGrid'
 import { buildPoseidon } from 'circomlibjs'
 import { Hasher } from 'circuits'
 import { workerStore } from '../../../store/worker'
@@ -65,22 +65,34 @@ class GameScene extends Phaser.Scene {
     }
   }
 
-  handleWorker = async (data, tList: Tile[]) => {
+  handleWorker = async (data: Position[], tList: Tile[]) => {
+    data = data.filter((d) => {
+      const key = `${d.x}-${d.y}`
+      return !this.spawnPlanetMap.has(key)
+    })
     const checkVal = BigInt('0x2d2f32534e97d979c3f2b616170489791c3f6706d539c62f89fd52bdb46c1c')
     const worker = workerStore.getState().worker
     if (worker) {
       const res = await worker.HashTwo(data)
       for (let i = 0; i < res.length; i++) {
-        const hVal = res[i]
-        const tile = tList[i] as Tile
+        const hVal = res[i].val
+        const tileX = res[i].x
+        const tileY = res[i].y
         const check = BigInt(hVal) < checkVal
-        const spawnKey = `${tile.x}-${tile.y}`
+        const spawnKey = `${tileX}-${tileY}`
         const notSpawn = !this.spawnPlanetMap.has(spawnKey)
         if (check && notSpawn) {
           this.spawnPlanetMap.set(spawnKey, true)
           const sprite = new Planet(this, 0, 0, 'dogeSheet')
           console.log('sprite', sprite.displayWidth)
-          const pos = snapPosToGrid(tile.tilePosition(), TILE_SIZE, sprite.displayWidth)
+          const pos = snapPosToGrid(
+            {
+              x: tileX,
+              y: tileY,
+            },
+            TILE_SIZE,
+            sprite.displayWidth,
+          )
           sprite.setPositionWithDebug(pos.x, pos.y, 0x00ff00)
           sprite.setDepth(100)
           sprite.play('doge')
@@ -92,7 +104,6 @@ class GameScene extends Phaser.Scene {
               mouseScreenX: pointer.position.x,
               mouseScreenY: pointer.position.y,
             }
-            console.log(payload)
             gameStore.setState({
               sendResourceModal: {
                 open: true,
@@ -123,9 +134,6 @@ class GameScene extends Phaser.Scene {
     )
     mockHQ.setDepth(100)
     mockHQ.play('H1Idle')
-    mockHQ.registerOnClick((pointer: Phaser.Input.Pointer) => {
-      console.log('mockHQ click', pointer.position)
-    })
 
     // document.addEventListener('mousedown', (event: MouseEvent) => {
     //   console.log('native click', event.clientX, event.clientY)
@@ -157,7 +165,6 @@ class GameScene extends Phaser.Scene {
     let startAt = 0
     for (let i = -1; i <= LOAD_RADIUS; i++) {
       for (let j = -1; j <= LOAD_RADIUS; j++) {
-        console.log('updateChunksEvent', i, j)
         this.time.addEvent({
           startAt,
           delay: 50,
