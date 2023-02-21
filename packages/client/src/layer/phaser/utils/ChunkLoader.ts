@@ -85,7 +85,6 @@ export class ChunkLoader {
     const c = this.chunkGroup.getFirstDead() as Chunk
 
     if (c && !this.alivePosition.has(this.makeChunkPositionKey(i, j))) {
-      console.log('ok')
       c.setActive(true)
       c.setVisible(true)
       this.alivePosition.set(this.makeChunkPositionKey(i, j), true)

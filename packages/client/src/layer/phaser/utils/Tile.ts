@@ -11,6 +11,14 @@ export class Tile extends Phaser.GameObjects.Container {
     this.add(sprite)
     this.setVisible(false)
   }
+
+  tilePosition() {
+    return {
+      x: this.x,
+      y: this.y,
+    }
+  }
+
   centerPosition() {
     return {
       x: this.x + TILE_SIZE / 2,

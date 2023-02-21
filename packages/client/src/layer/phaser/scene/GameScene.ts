@@ -7,10 +7,8 @@ import { CHUNK_HEIGHT_SIZE, CHUNK_WIDTH_SIZE, LOAD_RADIUS, TILE_SIZE } from '../
 import { GAME_HEIGHT, GAME_WIDTH } from '../config/game'
 import { GAME_SCENE } from '../constant/scene'
 import { Tile } from '../utils/Tile'
-import GameUIScene from './GameUIScene'
 import { appStore } from '../../../store/app'
-import { Container } from 'windicss/types/utils/style'
-import { snapPosToGrid, snapToGrid } from '../../../utils/snapToGrid'
+import { snapPosToGrid, snapToGrid, snapValToGrid } from '../../../utils/snapToGrid'
 import { buildPoseidon } from 'circomlibjs'
 import { Hasher } from 'circuits'
 import { Remote } from 'comlink'
@@ -73,13 +71,17 @@ class GameScene extends Phaser.Scene {
       for (let i = 0; i < res.length; i++) {
         const hVal = res[i]
         const check = BigInt(hVal) < checkVal
+
         if (check) {
           const tile = tList[i] as Tile
-          const pos = snapPosToGrid(tile.centerPosition())
-          const sprite = this.add.sprite(pos.x, pos.y, 'dogeSheet')
+          const sprite = this.add.sprite(0, 0, 'dogeSheet')
+          console.log('sprite', sprite.displayWidth)
+          const pos = snapPosToGrid(tile.tilePosition(), TILE_SIZE, sprite.displayWidth)
+          sprite.setPosition(pos.x, pos.y)
+          const posRect = snapPosToGrid(tile.tilePosition(), TILE_SIZE, sprite.displayWidth)
+          this.add.rectangle(posRect.x, posRect.y, sprite.displayWidth, sprite.displayHeight, 0xff0000)
           sprite.setDepth(100)
           sprite.play('doge')
-          sprite.setScale(0.5)
         }
       }
     }
@@ -95,21 +97,39 @@ class GameScene extends Phaser.Scene {
     this.redRect = this.add.rectangle(1016, 0, 16, 16, 0xff0000)
     this.redRect.setDepth(100)
     this.redRect.setVisible(false)
-    const h = this.add.sprite(800, 800, 'H1Sheet')
+    const h = this.add.sprite(0, 0, 'H1Sheet')
+    h.setPosition(snapValToGrid(800, TILE_SIZE, h.displayWidth), snapValToGrid(600, TILE_SIZE, h.displayWidth))
+
     h.setDepth(100)
     h.play('H1Idle')
 
-    const p8 = this.add.sprite(800, 600, 'p8Sheet')
+    const p8 = this.add.sprite(0, 0, 'p8Sheet')
+    p8.setPosition(snapValToGrid(800, TILE_SIZE, p8.displayWidth), snapValToGrid(600, TILE_SIZE, p8.displayWidth))
     p8.setDepth(100)
     p8.play('p8Idle')
 
-    const sprite = this.add.sprite(800, 451, 'dogeSheet')
+    const sprite = this.add.sprite(0, 0, 'dogeSheet')
+    sprite.setPosition(
+      snapValToGrid(800, TILE_SIZE, sprite.displayWidth),
+      snapValToGrid(451, TILE_SIZE, sprite.displayWidth),
+    )
     sprite.setDepth(100)
     sprite.play('doge')
-    const sprite2 = this.add.sprite(800, 500, 'p1Sheet')
+
+    const sprite2 = this.add.sprite(0, 0, 'p1Sheet')
+    sprite2.setPosition(
+      snapValToGrid(800, TILE_SIZE, sprite2.displayWidth),
+      snapValToGrid(500, TILE_SIZE, sprite2.displayWidth),
+    )
     sprite2.setDepth(100)
     sprite2.play('p1Idle')
-    window.addEventListener('position', this.handleUIEventPosition)
+    const rect = this.add.rectangle(0, 0, sprite2.displayWidth, sprite2.displayHeight, 0xff0000)
+    rect.setPosition(
+      snapValToGrid(800, TILE_SIZE, sprite2.displayWidth),
+      snapValToGrid(500, TILE_SIZE, sprite2.displayWidth),
+    )
+    console.log('sprite2', sprite2.displayWidth)
+
     let startAt = 0
     for (let i = -1; i <= LOAD_RADIUS; i++) {
       for (let j = -1; j <= LOAD_RADIUS; j++) {
@@ -178,6 +198,7 @@ class GameScene extends Phaser.Scene {
       }
     })
 
+    window.addEventListener('position', this.handleUIEventPosition)
     this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W, false)
     this.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S, false)
     this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A, false)
@@ -262,6 +283,7 @@ class GameScene extends Phaser.Scene {
 
   onDestroy = () => {
     this.time.removeAllEvents()
+    window.removeEventListener('position', this.handleUIEventPosition)
     /**
      * TODO: clean up for event listeners in this scene
      */
