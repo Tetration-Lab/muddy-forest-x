@@ -14,6 +14,8 @@ import { Type } from "libraries/LibType.sol";
 import { Research } from "libraries/LibResearch.sol";
 import { Cooldown } from "libraries/LibCooldown.sol";
 import { Faction } from "libraries/LibFaction.sol";
+import { BlueprintType } from "../constants/blueprint.sol";
+import { Blueprint } from "libraries/LibBlueprint.sol";
 
 uint256 constant ID = uint256(keccak256("system.Research"));
 
@@ -31,6 +33,10 @@ contract ResearchSystem is System {
     Cooldown.setCooldown(components, addressToEntity(msg.sender), RESEARCH_ID, RESEARCH_COOLDOWN);
 
     require(Type.getType(components, args.blueprintId) == uint32(EType.BLUEPRINT), "Must research on blueprint");
+
+    uint32 blueprintType = Blueprint.getBlueprintType(components, args.blueprintId);
+    require(blueprintType != uint32(BlueprintType.SHIP));
+    require(blueprintType != uint32(BlueprintType.SHIP_UPGRADE));
 
     uint32 faction = Faction.getFaction(components, msg.sender);
     uint32 researchCount = Research.getResearchCount(components, faction);

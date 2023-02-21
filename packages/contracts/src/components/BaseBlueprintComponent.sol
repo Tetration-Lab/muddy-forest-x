@@ -2,9 +2,9 @@
 pragma solidity >=0.8.0;
 import "solecs/Component.sol";
 
-uint256 constant ID = uint256(keccak256("component.BuildingBlueprint"));
+uint256 constant ID = uint256(keccak256("component.BaseBlueprint"));
 
-contract BuildingBlueprintComponent is Component {
+contract BaseBlueprintComponent is Component {
   struct Resource {
     uint256 resourceId;
     uint64 value;
@@ -12,7 +12,9 @@ contract BuildingBlueprintComponent is Component {
     uint64 rpb;
   }
 
-  struct BuildingBlueprint {
+  struct Blueprint {
+    // level of the blueprint
+    uint32 level;
     // Upgrade
     uint32 attack;
     uint32 defense;
@@ -40,17 +42,15 @@ contract BuildingBlueprintComponent is Component {
     values[3] = LibTypes.SchemaValue.BYTES_ARRAY;
   }
 
-  function set(uint256 entity, BuildingBlueprint calldata value) public virtual {
+  function set(uint256 entity, Blueprint calldata value) public virtual {
     set(entity, abi.encode(value));
   }
 
-  function getValue(uint256 entity) public view virtual returns (BuildingBlueprint memory) {
-    return abi.decode(getRawValue(entity), (BuildingBlueprint));
+  function getValue(uint256 entity) public view virtual returns (Blueprint memory) {
+    return abi.decode(getRawValue(entity), (Blueprint));
   }
 
-  function getEntitiesWithValue(
-    BuildingBlueprint calldata buildingBlueprint
-  ) public view virtual returns (uint256[] memory) {
-    return getEntitiesWithValue(abi.encode(buildingBlueprint));
+  function getEntitiesWithValue(Blueprint calldata blueprint) public view virtual returns (uint256[] memory) {
+    return getEntitiesWithValue(abi.encode(blueprint));
   }
 }

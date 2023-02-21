@@ -11,7 +11,7 @@ import { Level } from "./LibLevel.sol";
 import { BASE_ENERGY, BASE_ENERGY_REGEN, BASE_ENERGY_CAP } from "../constants/resources.sol";
 import { PositionComponent, ID as PID } from "components/PositionComponent.sol";
 import { OwnerComponent, ID as OID } from "components/OwnerComponent.sol";
-import { ShipBlueprintComponent } from "components/ShipBlueprintComponent.sol";
+import { BaseBlueprintComponent } from "components/BaseBlueprintComponent.sol";
 import { Stat } from "libraries/LibStat.sol";
 
 library Spaceship {
@@ -44,17 +44,17 @@ library Spaceship {
     IUint256Component components,
     uint256 entity,
     PositionComponent.Position memory position,
-    ShipBlueprintComponent.ShipBlueprint memory sb,
+    BaseBlueprintComponent.Blueprint memory bp,
     uint256 owner
   ) public {
     {
-      LevelComponent(getAddressById(components, LID)).set(entity, LevelComponent.Level(sb.level, 0, 0));
+      LevelComponent(getAddressById(components, LID)).set(entity, LevelComponent.Level(bp.level, 0, 0));
       ResourceComponent(getAddressById(components, RID)).set(
         entity,
         ResourceComponent.Resource(
-          (sb.energy.cap) / 100,
-          (sb.energy.cap) / 100,
-          (sb.energy.rpb) / 100,
+          (bp.resources[0].cap) / 100,
+          (bp.resources[0].cap) / 100,
+          (bp.resources[0].rpb) / 100,
           uint32(block.number),
           0
         )
@@ -62,8 +62,8 @@ library Spaceship {
     }
     TypeComponent(getAddressById(components, TID)).set(entity, uint32(EType.SPACESHIP));
     PositionComponent(getAddressById(components, PID)).set(entity, position);
-    Stat.incrementAttackMult(components, entity, sb.attack);
-    Stat.incrementDefenseMult(components, entity, sb.defense);
+    Stat.incrementAttackMult(components, entity, bp.attack);
+    Stat.incrementDefenseMult(components, entity, bp.defense);
     OwnerComponent(getAddressById(components, OID)).set(entity, owner);
   }
 }

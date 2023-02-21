@@ -5,7 +5,7 @@ import { getAddressById, addressToEntity } from "solecs/utils.sol";
 import { OwnerComponent, ID as OID } from "components/OwnerComponent.sol";
 import { InventorComponent, ID as IID } from "components/InventorComponent.sol";
 import { ResourceComponent, ID as RID, getResourceEntity } from "components/ResourceComponent.sol";
-import { BuildingBlueprintComponent, ID as BBID } from "components/BuildingBlueprintComponent.sol";
+import { BaseBlueprintComponent, ID as BBID } from "components/BaseBlueprintComponent.sol";
 import { BuildingComponent, ID as BID } from "components/BuildingComponent.sol";
 import { ResearchComponent, ID as RSID } from "components/ResearchComponent.sol";
 import { BlueprintComponent, ID as BPID } from "components/BlueprintComponent.sol";
@@ -17,6 +17,8 @@ import { EType } from "../constants/type.sol";
 import { MAX_BUILDING_PER_LEVEL } from "../constants/planet.sol";
 import { Research } from "libraries/LibResearch.sol";
 import { Faction } from "libraries/LibFaction.sol";
+import { BlueprintType } from "../constants/blueprint.sol";
+import { Blueprint } from "libraries/LibBlueprint.sol";
 
 uint256 constant ID = uint256(keccak256("system.BuildBuilding"));
 
@@ -49,10 +51,14 @@ contract BuildBuildingSystem is System {
     ResearchComponent.Research memory research = rs.getValue(args.researchId);
 
     // Check for valid blueprint
-    BuildingBlueprintComponent bb = BuildingBlueprintComponent(getAddressById(components, BBID));
+    BaseBlueprintComponent bb = BaseBlueprintComponent(getAddressById(components, BBID));
     uint256 blueprintId = BlueprintComponent(getAddressById(components, BPID)).getValue(args.researchId);
-    require(bb.has(blueprintId), "Building blueprint not found");
-    BuildingBlueprintComponent.BuildingBlueprint memory blueprint = bb.getValue(blueprintId);
+    require(bb.has(blueprintId), "Blueprint not found");
+    require(
+      Blueprint.getBlueprintType(components, blueprintId) == uint32(BlueprintType.BUILDING),
+      "Invalid blueprint type"
+    );
+    BaseBlueprintComponent.Blueprint memory blueprint = bb.getValue(blueprintId);
 
     // Deduct resources cost, multiply by research's negative multiplier
     for (uint256 i = 0; i < blueprint.cost.length; ++i) {
@@ -76,7 +82,7 @@ contract BuildBuildingSystem is System {
     {
       ResourceComponent r = ResourceComponent(getAddressById(components, RID));
       for (uint256 i = 0; i < blueprint.resources.length; ++i) {
-        BuildingBlueprintComponent.Resource memory rA = blueprint.resources[i];
+        BaseBlueprintComponent.Resource memory rA = blueprint.resources[i];
         uint256 id = getResourceEntity(args.planetEntity, rA.resourceId);
         if (r.has(id) && (rA.cap > 0 || rA.rpb > 0)) {
           r.regen(id);

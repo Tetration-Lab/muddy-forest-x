@@ -4,7 +4,7 @@ import { System, IWorld } from "solecs/System.sol";
 import { getAddressById, addressToEntity } from "solecs/utils.sol";
 import { OwnerComponent, ID as OID } from "components/OwnerComponent.sol";
 import { ResourceComponent, ID as RID, getResourceEntity } from "components/ResourceComponent.sol";
-import { ShipBlueprintComponent, ID as SBID } from "components/ShipBlueprintComponent.sol";
+import { BaseBlueprintComponent, ID as BBID } from "components/BaseBlueprintComponent.sol";
 import { BuildingComponent, ID as BID } from "components/BuildingComponent.sol";
 import { Type } from "libraries/LibType.sol";
 import { Stat } from "libraries/LibStat.sol";
@@ -16,6 +16,8 @@ import { Faction } from "../libraries/LibFaction.sol";
 import { TypeComponent, ID as TID } from "components/TypeComponent.sol";
 import { FactionComponent, ID as FID } from "components/FactionComponent.sol";
 import { Spaceship } from "libraries/LibSpaceship.sol";
+import { BlueprintType } from "../constants/blueprint.sol";
+import { Blueprint } from "libraries/LibBlueprint.sol";
 
 uint256 constant ID = uint256(keccak256("system.BuildShip"));
 
@@ -30,9 +32,13 @@ contract BuildShipSystem is System {
     Args memory args = abi.decode(arguments, (Args));
     uint32 faction = Faction.getFaction(components, msg.sender);
 
-    ShipBlueprintComponent sb = ShipBlueprintComponent(getAddressById(components, SBID));
+    BaseBlueprintComponent bb = BaseBlueprintComponent(getAddressById(components, BBID));
 
-    require(sb.has(args.blueprintId), "Blueprint not found");
+    require(bb.has(args.blueprintId), "Blueprint not found");
+    require(
+      Blueprint.getBlueprintType(components, args.blueprintId) == uint32(BlueprintType.SHIP),
+      "Invalid blueprint type"
+    );
 
     // for (uint256 i = 0; i < blueprint.cost.length; ++i) {
     //   Resource.deduct(components, args.planetEntity, blueprint.cost[i].resourceId, blueprint.cost[i].value);
@@ -46,7 +52,7 @@ contract BuildShipSystem is System {
       components,
       newEntity,
       Faction.getCapitalPosition(components, faction),
-      sb.getValue(args.blueprintId),
+      bb.getValue(args.blueprintId),
       addressToEntity(msg.sender)
     );
   }
