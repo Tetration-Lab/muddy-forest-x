@@ -3,9 +3,12 @@ import { useTheme } from '@mui/material/styles'
 import { Box, Stack } from '@mui/system'
 import { useMemo, useState } from 'react'
 import { MOCK_BUILD_ITEMS } from '../../../const/mocks'
+import { ActionButton } from './ActionButton'
 import { FilterButton } from './FilterButton'
 import { GameItem } from './GameItem'
+import { GameItemRow } from './GameItemRow'
 import { BuildItemType, BuildTabType, IBuildItem, ItemVisibility } from './types'
+import { TypeTag } from './TypeTag'
 
 const BuildTabs = ({
   activeTab,
@@ -141,6 +144,7 @@ const BuildItemList = ({
           onClick={() => onClickItem(item.id)}
           active={item.id === selectedItemId}
           visibility={activeFilters.includes(item.type) ? ItemVisibility.Visible : ItemVisibility.Dimmed}
+          withBadge={item.type === BuildItemType.Available}
         />
       ))}
     </Box>
@@ -156,6 +160,14 @@ export const BuildBox = () => {
   const [items] = useState<IBuildItem[]>(MOCK_BUILD_ITEMS)
 
   const selectedItem = useMemo(() => items.find((item) => item.id === selectedItemId), [selectedItemId, items])
+
+  const handleSelectItem = (itemId: string) => {
+    if (itemId === selectedItemId) {
+      setSelectedItemId('')
+    } else {
+      setSelectedItemId(itemId)
+    }
+  }
 
   return (
     <Stack direction="row" spacing={2} width="100%" height="100%">
@@ -173,42 +185,128 @@ export const BuildBox = () => {
         <BuildItemList
           items={MOCK_BUILD_ITEMS}
           selectedItemId={selectedItemId}
-          onClickItem={(itemId) => setSelectedItemId(itemId)}
+          onClickItem={handleSelectItem}
           activeFilters={activeFilters}
         />
       </Stack>
-      <Stack
-        sx={{
-          borderRadius: '4px',
-          border: `2px solid ${theme.palette.common.black}`,
-          flex: 4,
-          backgroundColor: theme.palette.grayScale.black,
-        }}
-      >
-        {selectedItem && (
-          <>
+
+      {selectedItem ? (
+        <Stack spacing={2} sx={{ flex: 4 }}>
+          <Stack
+            sx={{
+              borderRadius: '4px',
+              border: `2px solid ${theme.palette.common.black}`,
+              backgroundColor: theme.palette.grayScale.almostBlack,
+              px: 1,
+              py: 0.5,
+              alignItems: 'center',
+            }}
+            direction="row"
+            spacing={1}
+          >
+            <Box
+              component="img"
+              src="/assets/empty-build.png"
+              sx={{
+                width: 48,
+                height: 48,
+              }}
+            />
+            <Stack alignItems="flex-start">
+              <Typography sx={{ fontSize: 16, fontWeight: 700 }}>Lorem ipsum.</Typography>
+              <TypeTag type="RESOURCE" />
+            </Stack>
+          </Stack>
+          <Stack
+            sx={{
+              flex: 1,
+              borderRadius: '4px',
+              border: `2px solid ${theme.palette.common.black}`,
+              backgroundColor: theme.palette.grayScale.black,
+            }}
+          >
+            <Stack sx={{ flex: 1, p: 2 }}>
+              <Stack direction="row" spacing={0.5} alignItems="center">
+                <GameItem imageUrl={selectedItem.imageUrl} />
+                <Stack>
+                  <Typography sx={{ fontSize: 12, fontWeight: 700 }}>Item Name </Typography>
+                  <Typography sx={{ fontSize: 12, fontWeight: 400, color: theme.palette.grayScale.almostGray }}>
+                    Item description
+                  </Typography>
+                </Stack>
+              </Stack>
+              <Stack mt={2} spacing={0.5}>
+                <Typography sx={{ fontSize: 12, fontWeight: 400 }}>Require items:</Typography>
+                {selectedItem.requireItems?.map((requireItem) => (
+                  <GameItemRow
+                    key={requireItem.id}
+                    name={requireItem.name}
+                    imageUrl={requireItem.imageUrl}
+                    num1={1}
+                    num2={2}
+                  />
+                ))}
+              </Stack>
+            </Stack>
             <Box
               sx={{
-                width: '100%',
+                backgroundColor: theme.palette.grayScale.almostDarkGray,
+                // borderRadius: '8px 8px 0 0',
+                py: '12px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: theme.palette.grayScale.almostBlack,
-                p: 2,
               }}
             >
-              <Box
-                component="img"
-                src={selectedItem.imageUrl}
-                sx={{
-                  width: 128,
-                  height: 120,
-                }}
-              />
+              <ActionButton>
+                <Typography variant="body2">Build</Typography>
+              </ActionButton>
             </Box>
-          </>
-        )}
-      </Stack>
+          </Stack>
+        </Stack>
+      ) : (
+        <Stack
+          sx={{
+            borderRadius: '4px',
+            border: `2px solid ${theme.palette.common.black}`,
+            flex: 4,
+            backgroundColor: theme.palette.grayScale.black,
+          }}
+        >
+          <Box
+            sx={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: theme.palette.grayScale.almostBlack,
+            }}
+          >
+            <Box
+              component="img"
+              src="/assets/empty-build.png"
+              sx={{
+                width: 128,
+                height: 128,
+              }}
+            />
+          </Box>
+          <Stack mt="12px" px={2} alignItems="flex-start" spacing="4px">
+            <Typography sx={{ fontSize: 16, fontWeight: 700 }}>Lorem ipsum.</Typography>
+            <TypeTag type="RESOURCE" />
+            <Typography
+              sx={{
+                fontSize: 12,
+                fontWeight: 400,
+                lineHeight: '14px',
+                color: theme.palette.grayScale.almostGray,
+              }}
+            >
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            </Typography>
+          </Stack>
+        </Stack>
+      )}
     </Stack>
   )
 }

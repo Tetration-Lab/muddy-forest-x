@@ -2,11 +2,13 @@ import { ButtonBase, Typography } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { Box, Stack } from '@mui/system'
 import { useMemo, useState } from 'react'
-import { FaCheck, FaMinus, FaPlus } from 'react-icons/fa'
+import { FaMinus, FaPlus } from 'react-icons/fa'
 import { MOCK_INVENTORY_ITEMS } from '../../../const/mocks'
+import { ActionButton } from './ActionButton'
 import { FilterButton } from './FilterButton'
 import { GameItem } from './GameItem'
 import { IInventoryItem, InventoryTabType, InventoryType, ItemVisibility } from './types'
+import { TypeTag } from './TypeTag'
 
 const InventoryTabs = ({
   activeTab,
@@ -148,15 +150,6 @@ const InventoryItemList = ({
   )
 }
 
-const InventoryTypeTag = ({ type }: { type: InventoryType }) => {
-  const theme = useTheme()
-  return (
-    <Box sx={{ borderRadius: '4px', backgroundColor: theme.palette.common.green }}>
-      <Typography sx={{ fontSize: '12px', fontWeight: 500, px: '4px', py: '2px' }}>{type.toUpperCase()}</Typography>
-    </Box>
-  )
-}
-
 const IInventoryItemWIthName = ({ item }: { item: IInventoryItem }) => {
   const theme = useTheme()
   return (
@@ -164,7 +157,7 @@ const IInventoryItemWIthName = ({ item }: { item: IInventoryItem }) => {
       <GameItem imageUrl={item.imageUrl} />
       <Stack>
         <Typography sx={{ fontSize: 16, fontWeight: 700 }}>{item.name}</Typography>
-        <InventoryTypeTag type={item.type} />
+        <TypeTag type={item.type} />
       </Stack>
     </Stack>
   )
@@ -287,24 +280,9 @@ export const InventoryBox = () => {
                     <Box component={FaPlus} sx={{ fontSize: 18 }} />
                   </ButtonBase>
                 </Stack>
-                <ButtonBase
-                  sx={{
-                    height: 32,
-                    backgroundColor: theme.palette.grayScale.darkGray,
-                    borderRadius: '10px',
-                    px: 1,
-                    ml: 3,
-                    mt: '-2px',
-                    transition: 'margin .1s, box-shadow .1s',
-                    boxShadow: `0 4px 0 0 ${theme.palette.grayScale.soBlack}`,
-                    '&:active': {
-                      mt: '0px',
-                      boxShadow: `0 2px 0 0 ${theme.palette.grayScale.soBlack}`,
-                    },
-                  }}
-                >
+                <ActionButton>
                   <Typography variant="body2">Craft</Typography>
-                </ButtonBase>
+                </ActionButton>
               </Stack>
             </Box>
           </>

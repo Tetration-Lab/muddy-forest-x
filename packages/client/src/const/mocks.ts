@@ -53,6 +53,20 @@ export const MOCK_BUILD_ITEMS: IBuildItem[] = [
     imageUrl: './assets/svg/mock-items/build-item1.svg',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     type: BuildItemType.Available,
+    requireItems: [
+      {
+        ...MOCK_INVENTORY_ITEMS[0],
+        amount: 1,
+      },
+      {
+        ...MOCK_INVENTORY_ITEMS[1],
+        amount: 1,
+      },
+      {
+        ...MOCK_INVENTORY_ITEMS[2],
+        amount: 2,
+      },
+    ],
   },
   {
     id: '2',
