@@ -41,3 +41,9 @@ export interface IBuildItem {
   type: BuildItemType
   requireItems?: (IInventoryItem & { amount: number })[]
 }
+
+/* -------------- Research -------------- */
+export enum ResearchAndDiscoveryTabType {
+  Inventory = 'inventory',
+  Discovered = 'discovered',
+}
