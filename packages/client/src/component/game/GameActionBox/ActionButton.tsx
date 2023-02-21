@@ -14,7 +14,7 @@ export const ActionButton = (props: ButtonBaseProps) => {
         px: 1,
         ml: 3,
         mt: '-2px',
-        transition: 'margin .1s, box-shadow .1s',
+        transition: 'margin .05s, box-shadow .05s',
         boxShadow: `0 4px 0 0 ${theme.palette.grayScale.soBlack}`,
         '&:active': {
           mt: '0px',

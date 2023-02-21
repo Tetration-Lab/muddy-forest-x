@@ -251,11 +251,11 @@ export const BuildBox = () => {
             <Box
               sx={{
                 backgroundColor: theme.palette.grayScale.almostDarkGray,
-                // borderRadius: '8px 8px 0 0',
                 py: '12px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                height: 54,
               }}
             >
               <ActionButton>
@@ -291,7 +291,7 @@ export const BuildBox = () => {
               }}
             />
           </Box>
-          <Stack mt="12px" px={2} alignItems="flex-start" spacing="4px">
+          <Stack mt="12px" px={2} alignItems="flex-start" spacing="4px" flex={1}>
             <Typography sx={{ fontSize: 16, fontWeight: 700 }}>Lorem ipsum.</Typography>
             <TypeTag type="RESOURCE" />
             <Typography
@@ -305,6 +305,33 @@ export const BuildBox = () => {
               Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             </Typography>
           </Stack>
+          <Box
+            sx={{
+              m: 2,
+              backgroundColor: theme.palette.grayScale.almostBlack,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: '100px',
+              flexShrink: 0,
+              position: 'relative',
+              '&:before': {
+                content: '""',
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                right: 0,
+                bottom: 0,
+                backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='${encodeURIComponent(
+                  theme.palette.grayScale.white,
+                )}' stroke-width='6' stroke-dasharray='12%2c12' stroke-dashoffset='3' stroke-linecap='round'/%3e%3c/svg%3e");`,
+              },
+            }}
+          >
+            <Typography sx={{ fontSize: 12, fontWeight: 400, whiteSpace: 'pre-wrap' }}>
+              {'Select any infrastructure\nto build / upgrade'}
+            </Typography>
+          </Box>
         </Stack>
       )}
     </Stack>
