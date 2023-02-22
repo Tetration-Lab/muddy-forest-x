@@ -4,8 +4,8 @@ import { UILayer } from '../layer/ui/UILayer'
 export const Game = () => {
   return (
     <>
-      <UILayer />
       <PhaserLayer />
+      <UILayer />
     </>
   )
 }
