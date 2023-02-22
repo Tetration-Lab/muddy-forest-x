@@ -47,6 +47,7 @@ class GameScene extends Phaser.Scene {
   spawnPlanetMap = new Map<string, boolean>()
   perlin: Perlin | null = null
   hasher: Hasher
+  cursorExplorer!: CursorExplorer
   constructor() {
     super(GAME_SCENE)
     if (import.meta.env.DEV) {
@@ -65,7 +66,7 @@ class GameScene extends Phaser.Scene {
     }
   }
 
-  handleWorker = async (data: Position[], tList: Tile[]) => {
+  handleWorker = async (data: Position[]) => {
     data = data.filter((d) => {
       const key = `${d.x}-${d.y}`
       return !this.spawnPlanetMap.has(key)
@@ -74,6 +75,7 @@ class GameScene extends Phaser.Scene {
     const worker = workerStore.getState().worker
     if (worker) {
       const res = await worker.HashTwo(data)
+      console.log('data', data)
       for (let i = 0; i < res.length; i++) {
         const hVal = res[i].val
         const tileX = res[i].x
@@ -81,6 +83,7 @@ class GameScene extends Phaser.Scene {
         const check = BigInt(hVal) < checkVal
         const spawnKey = `${tileX}-${tileY}`
         const notSpawn = !this.spawnPlanetMap.has(spawnKey)
+        console.log('check', check)
         if (check && notSpawn) {
           this.spawnPlanetMap.set(spawnKey, true)
           const sprite = new Planet(this, 0, 0, 'dogeSheet')
@@ -113,6 +116,7 @@ class GameScene extends Phaser.Scene {
           })
         }
       }
+      this.cursorExplorer.run()
     }
   }
 
@@ -176,17 +180,17 @@ class GameScene extends Phaser.Scene {
               j,
             )
             if (!targetChunk) return
-            const sendPos = []
-            const tList = []
-            targetChunk.tiles.getChildren().forEach((_t) => {
-              const t = _t as Tile
-              const tileX = t.x
-              const tileY = t.y
-              sendPos.push({ x: tileX, y: tileY })
-              tList.push(t)
-              t.alpha = 0.1
-            })
-            this.events.emit('sendWorker', sendPos, tList)
+            // const sendPos = []
+            // const tList = []
+            // targetChunk.tiles.getChildren().forEach((_t) => {
+            //   const t = _t as Tile
+            //   const tileX = t.x
+            //   const tileY = t.y
+            //   sendPos.push({ x: tileX, y: tileY })
+            //   tList.push(t)
+            //   t.alpha = 0.1
+            // })
+            // this.events.emit('sendWorker', sendPos)
           },
           loop: true,
         })
@@ -199,9 +203,8 @@ class GameScene extends Phaser.Scene {
 
     this.rt = this.add.renderTexture(0, 0, GAME_WIDTH, GAME_HEIGHT)
     this.followPoint = new Phaser.Math.Vector2(800, 800)
-    const cursorPos = snapToGrid(1000, 590)
-    console.log('cursorPos', cursorPos)
-    new CursorExplorer(this, cursorPos.x, cursorPos.y, 'explorerSheet')
+    const cursorPos = snapToGrid(this.followPoint.x, this.followPoint.y)
+    this.cursorExplorer = new CursorExplorer(this, cursorPos.x, cursorPos.y, 'explorerSheet')
 
     this.chunkLoader = new ChunkLoader(this, { tileSize: TILE_SIZE }, this.rt)
 
@@ -237,6 +240,14 @@ class GameScene extends Phaser.Scene {
     this.keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z, false)
     this.keyX = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X, false)
     this.navigation = this.add.rectangle(this.followPoint.y, this.followPoint.x, 1, 1, 0x00ff00)
+    const keyG = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G, false)
+    keyG.on('down', () => {
+      this.cursorExplorer.move()
+    })
+    const keyH = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H, false)
+    keyH.on('down', () => {
+      this.cursorExplorer.updateExplorerSize()
+    })
 
     this.navigation.setDepth(10)
     this.cameras.main.startFollow(this.navigation)
@@ -256,6 +267,14 @@ class GameScene extends Phaser.Scene {
       return
     }
     const cursor = this.input.activePointer
+    this.cursorExplorer.move()
+    const cursorPos = snapToGrid(
+      this.cursorExplorer.currentTilePosition.x,
+      this.cursorExplorer.currentTilePosition.y,
+      16,
+    )
+    this.events.emit('sendWorker', [cursorPos])
+    this.cursorExplorer.wait()
     const gridPos = snapToGrid(cursor.x, cursor.y, 16)
     this.chunkLoader.updateChunks(this.followPoint.x, this.followPoint.y)
     this.updateDebug()
