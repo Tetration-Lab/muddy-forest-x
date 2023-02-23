@@ -1,12 +1,10 @@
 import { createPerlin } from '@latticexyz/noise'
 import { createWorld } from '@latticexyz/recs'
 import { createActionSystem, setupMUDNetwork, SetupContractConfig } from '@latticexyz/std-client'
-import { defineNumberComponent } from '@latticexyz/std-client'
-
 import { SystemTypes } from 'contracts/types/SystemTypes'
 import { SystemAbis } from 'contracts/types/SystemAbis.mjs'
 import { GodID } from '@latticexyz/network'
-import { Wallet } from 'ethers'
+import { setupComponents } from './components'
 
 export async function createNetworkLayer(config: SetupContractConfig) {
   const perlin = await createPerlin()
@@ -17,13 +15,7 @@ export async function createNetworkLayer(config: SetupContractConfig) {
   const singletonIndex = world.registerEntity({ id: GodID })
 
   // --- COMPONENTS -----------------------------------------------------------------
-  const _components = {
-    Counter: defineNumberComponent(world, {
-      metadata: {
-        contractId: 'component.Counter',
-      },
-    }),
-  }
+  const _components = setupComponents(world)
   // --- SETUP ----------------------------------------------------------------------
   const { txQueue, systems, txReduced$, network, startSync, encoders, components } = await setupMUDNetwork<
     typeof _components,
@@ -34,27 +26,39 @@ export async function createNetworkLayer(config: SetupContractConfig) {
   const actions = createActionSystem(world, txReduced$)
   // --- API ------------------------------------------------------------------------
 
-  const increment = () => {
-    systems['system.Increment'].executeTyped('0x00')
-  }
-
   const setupFaction = async () => {
-    const w = new Wallet('0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80')
-    const system = await systems['system.SetupFaction'].connect(w)
-
-    system.executeTyped({
+    await systems['system.SetupFaction'].executeTyped({
       capitalPosition: {
         x: 100,
         y: 100,
       },
       name: 'Ape Ape',
-      id: 10, // random
+      id: 10,
+    })
+    await systems['system.SetupFaction'].executeTyped({
+      capitalPosition: {
+        x: 100,
+        y: -100,
+      },
+      name: 'AI Ape',
+      id: 11,
+    })
+
+    await systems['system.SetupFaction'].executeTyped({
+      capitalPosition: {
+        x: -100,
+        y: 100,
+      },
+      name: 'Alien Ape',
+      id: 12,
     })
   }
+
+  const debug = async () => {}
   // FOR DEV
   const w = window as any
-  w.increment = increment
   w.setupFaction = setupFaction
+  w.debug = debug
 
   // --- CONTEXT --------------------------------------------------------------------
   const context = {
