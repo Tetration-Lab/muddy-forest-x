@@ -54,7 +54,8 @@
             "writeAccess": [
                 "NameComponent",
                 "TypeComponent",
-                "PositionComponent"
+                "PositionComponent",
+                "FactionComponent"
             ]
         },
         {
