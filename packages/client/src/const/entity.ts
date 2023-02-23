@@ -1,0 +1,10 @@
+export enum EntityType {
+  PLANET,
+  FACTION,
+  PLAYER,
+  HQSHIP,
+  SPACESHIP,
+  CAPITAL,
+  BLUEPRINT,
+  RESEARCH,
+}
