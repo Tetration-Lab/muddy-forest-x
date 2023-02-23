@@ -8,3 +8,9 @@ export enum EntityType {
   BLUEPRINT,
   RESEARCH,
 }
+
+export enum BlueprintType {
+  BUILDING,
+  SHIP,
+  SHIP_UPGRADE,
+}
