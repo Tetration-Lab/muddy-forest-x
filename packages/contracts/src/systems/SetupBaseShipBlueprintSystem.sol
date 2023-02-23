@@ -18,7 +18,7 @@ contract SetupBaseShipBlueprintSystem is System {
 
   constructor(IWorld _world, address _components) System(_world, _components) {}
 
-  function execute(bytes memory arguments) public onlyOwner returns (bytes memory) {
+  function execute(bytes memory arguments) public returns (bytes memory) {
     Args memory args = abi.decode(arguments, (Args));
 
     BaseBlueprintComponent bb = BaseBlueprintComponent(getAddressById(components, BBID));
