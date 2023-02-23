@@ -162,7 +162,7 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
     bottomPath.pop()
     const leftPath = this.makeLeftPath(path)
     const result = [...topPath, ...rightPath, ...bottomPath, ...leftPath]
-    console.log(result)
+    // console.log(result)
     // make result to linked list
     const linkedList = new LinkedList<Position>()
     for (let i = 0; i < result.length; i++) {

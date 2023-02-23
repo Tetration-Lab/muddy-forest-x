@@ -5,7 +5,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "cross-env NODE_ENV=dev vite",
+    "dev": "cross-env NODE_ENV=dev vite -- port 3000",
     "build": "vite build",
     "build:staging": "vite build --mode staging",
     "preview": "vite preview",

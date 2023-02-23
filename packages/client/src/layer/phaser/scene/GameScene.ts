@@ -75,7 +75,7 @@ class GameScene extends Phaser.Scene {
     const worker = workerStore.getState().worker
     if (worker) {
       const res = await worker.HashTwo(data)
-      console.log('data', data)
+      // console.log('data', data)
       for (let i = 0; i < res.length; i++) {
         const hVal = res[i].val
         const tileX = res[i].x
@@ -86,7 +86,6 @@ class GameScene extends Phaser.Scene {
         if (check && notSpawn) {
           this.spawnPlanetMap.set(spawnKey, true)
           const sprite = new Planet(this, 0, 0, 'dogeSheet')
-          console.log('sprite', sprite.displayWidth)
           const pos = snapPosToGrid(
             {
               x: tileX,
