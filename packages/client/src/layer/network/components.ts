@@ -23,5 +23,10 @@ export const setupComponents = (world: World) => {
         contractId: 'component.Owner',
       },
     }),
+    Faction: defineNumberComponent(world, {
+      metadata: {
+        contractId: 'component.Faction',
+      },
+    }),
   }
 }
