@@ -12,7 +12,9 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
   centerTilePosition: { x: number; y: number }
   path: LinkedList<Position>
   status: string
-  constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
+  isStop = false
+  debug = false
+  constructor(scene: Phaser.Scene, x: number, y: number, texture: string, explorerSize = 3) {
     super(scene, x, y, texture)
     this.scene.add.existing(this)
     this.setOrigin(0)
@@ -24,6 +26,7 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
     this.currentTilePosition = { x, y }
     this.centerTilePosition = { x, y }
     this.path = this.makePath()
+    this.explorerSize = explorerSize
   }
 
   wait() {
@@ -34,7 +37,14 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
     this.status = 'run'
   }
 
+  setDebug(debug: boolean) {
+    this.debug = debug
+  }
+
   move() {
+    if (this.isStop) {
+      return
+    }
     if (this.status === 'wait') {
       return
     }
@@ -42,9 +52,11 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
       const nextMove = this.getNextMove()
       this.currentTilePosition = nextMove
       this.setPosition(this.currentTilePosition.x, this.currentTilePosition.y)
-      this.scene.add
-        .rectangle(this.currentTilePosition.x, this.currentTilePosition.y, TILE_SIZE, TILE_SIZE, 0xff0000, 0.1)
-        .setOrigin(0)
+      if (this.debug) {
+        this.scene.add
+          .rectangle(this.currentTilePosition.x, this.currentTilePosition.y, TILE_SIZE, TILE_SIZE, 0xff0000, 0.1)
+          .setOrigin(0)
+      }
     } else {
       this.updateExplorerSize()
       this.path = this.makePath()
@@ -78,6 +90,10 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
 
   setExplorerSize(size: number) {
     this.explorerSize = size
+  }
+
+  toggleisStop() {
+    this.isStop = !this.isStop
   }
 
   private makeTableFromSize(explorerSize: number) {

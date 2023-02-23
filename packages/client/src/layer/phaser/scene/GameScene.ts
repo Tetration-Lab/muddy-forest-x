@@ -83,7 +83,6 @@ class GameScene extends Phaser.Scene {
         const check = BigInt(hVal) < checkVal
         const spawnKey = `${tileX}-${tileY}`
         const notSpawn = !this.spawnPlanetMap.has(spawnKey)
-        console.log('check', check)
         if (check && notSpawn) {
           this.spawnPlanetMap.set(spawnKey, true)
           const sprite = new Planet(this, 0, 0, 'dogeSheet')
@@ -202,9 +201,10 @@ class GameScene extends Phaser.Scene {
     this.events.on(Phaser.GameObjects.Events.DESTROY, this.onDestroy)
 
     this.rt = this.add.renderTexture(0, 0, GAME_WIDTH, GAME_HEIGHT)
-    this.followPoint = new Phaser.Math.Vector2(800, 800)
+    this.followPoint = new Phaser.Math.Vector2(mockHQ.x, mockHQ.y)
     const cursorPos = snapToGrid(this.followPoint.x, this.followPoint.y)
-    this.cursorExplorer = new CursorExplorer(this, cursorPos.x, cursorPos.y, 'explorerSheet')
+    this.cursorExplorer = new CursorExplorer(this, cursorPos.x, cursorPos.y, 'explorerSheet', 3)
+    this.cursorExplorer.setDebug(false)
 
     this.chunkLoader = new ChunkLoader(this, { tileSize: TILE_SIZE }, this.rt)
 
@@ -247,6 +247,11 @@ class GameScene extends Phaser.Scene {
     const keyH = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H, false)
     keyH.on('down', () => {
       this.cursorExplorer.updateExplorerSize()
+    })
+
+    const keyJ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.J, false)
+    keyJ.on('down', () => {
+      this.cursorExplorer.toggleisStop()
     })
 
     this.navigation.setDepth(10)
