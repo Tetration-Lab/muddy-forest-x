@@ -26,20 +26,23 @@ contract BaseBlueprintComponent is Component {
   constructor(address world) Component(world, ID) {}
 
   function getSchema() public pure override returns (string[] memory keys, LibTypes.SchemaValue[] memory values) {
-    keys = new string[](4);
-    values = new LibTypes.SchemaValue[](4);
+    keys = new string[](5);
+    values = new LibTypes.SchemaValue[](5);
 
-    keys[0] = "attack";
+    keys[0] = "level";
     values[0] = LibTypes.SchemaValue.UINT32;
 
-    keys[1] = "defense";
+    keys[1] = "attack";
     values[1] = LibTypes.SchemaValue.UINT32;
 
-    keys[2] = "resources";
-    values[2] = LibTypes.SchemaValue.BYTES_ARRAY;
+    keys[2] = "defense";
+    values[2] = LibTypes.SchemaValue.UINT32;
 
-    keys[3] = "cost";
+    keys[3] = "resources";
     values[3] = LibTypes.SchemaValue.BYTES_ARRAY;
+
+    keys[4] = "cost";
+    values[4] = LibTypes.SchemaValue.BYTES_ARRAY;
   }
 
   function set(uint256 entity, Blueprint calldata value) public virtual {

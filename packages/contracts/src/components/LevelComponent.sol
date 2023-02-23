@@ -14,14 +14,17 @@ contract LevelComponent is Component {
   constructor(address world) Component(world, ID) {}
 
   function getSchema() public pure override returns (string[] memory keys, LibTypes.SchemaValue[] memory values) {
-    keys = new string[](2);
-    values = new LibTypes.SchemaValue[](2);
+    keys = new string[](3);
+    values = new LibTypes.SchemaValue[](3);
 
     keys[0] = "level";
     values[0] = LibTypes.SchemaValue.UINT32;
 
     keys[1] = "tier";
     values[1] = LibTypes.SchemaValue.UINT32;
+
+    keys[2] = "multiplier";
+    values[2] = LibTypes.SchemaValue.UINT32;
   }
 
   function set(uint256 entity, Level calldata value) public virtual {
