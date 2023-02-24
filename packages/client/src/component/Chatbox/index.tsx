@@ -97,6 +97,8 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ focusInputCallback, focusOutIn
               className="appearance-none bg-black  bg-opacity-50 w-full rounded-md text-white p-2 focus:outline-none"
               onFocus={onFocusInput}
               onBlur={onFocusOutInput}
+              autoComplete="off"
+              autoCorrect="off"
             />
             <button
               tabIndex={-1}
