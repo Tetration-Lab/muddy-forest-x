@@ -5,8 +5,10 @@ import { SystemTypes } from 'contracts/types/SystemTypes'
 import { SystemAbis } from 'contracts/types/SystemAbis.mjs'
 import { GodID } from '@latticexyz/network'
 import { setupComponents } from './components'
+import { Wallet } from 'ethers'
 
 export async function createNetworkLayer(config: SetupContractConfig) {
+  console.log(config, 'config')
   const perlin = await createPerlin()
 
   // --- WORLD ----------------------------------------------------------------------

@@ -13,18 +13,18 @@ import { createLoadingStateSystem } from './system/createLoadingStateSystem'
 import { theme } from './themes/theme'
 
 function App() {
-  const store = useStore(appStore, (state) => state)
+  // const store = useStore(appStore, (state) => state)
   const wStore = useStore(workerStore, (state) => state)
   const onInitialSync = useCallback(async () => {
-    const networkLayer = await createNetworkLayer(config)
-    networkLayer.startSync()
-    store.setNetworkLayer(networkLayer)
-    createLoadingStateSystem(networkLayer, (stage, msg, percentage) => {
-      if (stage === SyncState.LIVE) {
-        console.log('SYNC DONE')
-      }
-      console.log('loading state', stage, msg, percentage)
-    })
+    //   const networkLayer = await createNetworkLayer(config)
+    //   networkLayer.startSync()
+    //   store.setNetworkLayer(networkLayer)
+    //   createLoadingStateSystem(networkLayer, (stage, msg, percentage) => {
+    //     if (stage === SyncState.LIVE) {
+    //       console.log('SYNC DONE')
+    //     }
+    //     console.log('loading state', stage, msg, percentage)
+    //   })
     const worker = new ComlinkWorker<typeof import('./miner/hasher.worker')>(
       new URL('./miner/hasher.worker.ts', import.meta.url),
     )

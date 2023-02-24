@@ -16,6 +16,7 @@ import { initConfigAnim } from '../anim'
 import { CursorExplorer } from '../gameobject/CursorExplorer'
 import { Planet } from '../gameobject/Planet'
 import { gameStore, SendResourceData } from '../../../store/game'
+import { createSpawnCapitalSystem } from '../../../system/createSpawnCapitalSystem'
 
 type Poseidon = ReturnType<typeof buildPoseidon>
 
@@ -125,6 +126,11 @@ class GameScene extends Phaser.Scene {
   }
   async onCreate() {
     initConfigAnim(this)
+
+    const { networkLayer } = appStore.getState()
+    if (networkLayer) {
+      createSpawnCapitalSystem(networkLayer, this)
+    }
     this.redRect = this.add.rectangle(1016, 0, 16, 16, 0xff0000)
     this.redRect.setDepth(100)
     this.redRect.setVisible(false)

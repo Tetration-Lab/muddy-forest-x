@@ -43,8 +43,15 @@ export const UILayer = () => {
     store.setFocusUI(false)
   }
   return (
-    <>
-      <div className="absolute bottom-0">
+    <div
+      onMouseDown={(e) => {
+        e.stopPropagation()
+      }}
+      onMouseUp={(e) => {
+        e.stopPropagation()
+      }}
+    >
+      <div className="absolute bottom-0 z-10">
         <div className="p-4">
           <ChatBox focusInputCallback={onInputFocus} focusOutInputCallback={onInputFocusOut} />
         </div>
@@ -100,6 +107,6 @@ export const UILayer = () => {
         open={gameStore.sendResourceModal.open}
         onClose={() => gameStore.setSendResource({ open: false })}
       />
-    </>
+    </div>
   )
 }

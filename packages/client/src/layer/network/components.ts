@@ -13,11 +13,18 @@ export const setupComponents = (world: World) => {
         contractId: 'component.Type',
       },
     }),
-    Position: defineCoordComponent(world, {
-      metadata: {
-        contractId: 'component.Position',
+    Position: defineComponent(
+      world,
+      {
+        x: Type.String,
+        y: Type.String,
       },
-    }),
+      {
+        metadata: {
+          contractId: 'component.Position',
+        },
+      },
+    ),
     Name: defineStringComponent(world, {
       metadata: {
         contractId: 'component.Name',
