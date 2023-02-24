@@ -18,6 +18,7 @@ import { Planet } from '../gameobject/Planet'
 import { gameStore, SendResourceData } from '../../../store/game'
 import { createSpawnCapitalSystem } from '../../../system/createSpawnCapitalSystem'
 import { NetworkLayer } from '../../network/types'
+import { IDLE_ANIM, SPRITE } from '../constant/resouce'
 
 type Poseidon = ReturnType<typeof buildPoseidon>
 
@@ -127,9 +128,27 @@ class GameScene extends Phaser.Scene {
   }
 
   onSetUpSystem(networkLayer: NetworkLayer) {
-    createSpawnCapitalSystem(networkLayer, (x: number, y: number) => {
-      const p = new Planet(this, x, y, 'H1Sheet')
-      p.play('H1Idle')
+    createSpawnCapitalSystem(networkLayer, (x: number, y: number, entityID: number, fractionID: number) => {
+      //
+      console.log(entityID, fractionID, 'fractionID')
+      let spriteKey = SPRITE.Capital_1
+      let idleKey = IDLE_ANIM.Capital_1
+      switch (fractionID) {
+        case 10:
+          spriteKey = SPRITE.Capital_1
+          idleKey = IDLE_ANIM.Capital_1
+          break
+        case 11:
+          spriteKey = SPRITE.Capital_2
+          idleKey = IDLE_ANIM.Capital_2
+          break
+        case 12:
+          spriteKey = SPRITE.Capital_3
+          idleKey = IDLE_ANIM.Capital_3
+          break
+      }
+      const p = new Planet(this, x, y, spriteKey)
+      p.play(idleKey)
     })
   }
 
@@ -144,17 +163,13 @@ class GameScene extends Phaser.Scene {
     this.redRect.setDepth(100)
     this.redRect.setVisible(false)
 
-    const mockHQ = new Planet(this, 0, 0, 'H1Sheet')
+    const mockHQ = new Planet(this, 0, 0, SPRITE.Capital_1)
     mockHQ.setPositionWithDebug(
       snapValToGrid(800, TILE_SIZE, mockHQ.displayWidth),
       snapValToGrid(600, TILE_SIZE, mockHQ.displayWidth),
     )
     mockHQ.setDepth(100)
-    mockHQ.play('H1Idle')
-
-    // document.addEventListener('mousedown', (event: MouseEvent) => {
-    //   console.log('native click', event.clientX, event.clientY)
-    // })
+    mockHQ.play(IDLE_ANIM.Capital_1)
     const p8 = new Planet(this, 0, 0, 'p8Sheet')
     p8.setPositionWithDebug(
       snapValToGrid(800, TILE_SIZE, p8.displayWidth),

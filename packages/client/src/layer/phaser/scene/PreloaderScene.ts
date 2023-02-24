@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import { SPRITE } from '../constant/resouce'
 import { MAIN_SCENE, PRELOADER_SCENE } from '../constant/scene'
 class PreloaderScene extends Phaser.Scene {
   constructor() {
@@ -11,9 +12,13 @@ class PreloaderScene extends Phaser.Scene {
     this.load.spritesheet('p2Sheet', 'assets/sprite/P2_48px_v3.png', { frameWidth: 48, frameHeight: 48 })
     this.load.spritesheet('p3Sheet', 'assets/sprite/P3_48px.png', { frameWidth: 48, frameHeight: 48 })
     this.load.spritesheet('p8Sheet', 'assets/sprite/P8.png', { frameWidth: 128, frameHeight: 128 })
-    this.load.spritesheet('H1Sheet', 'assets/sprite/H1_320px.png', { frameWidth: 320, frameHeight: 320 })
     this.load.image('explorerSheet', 'assets/sprite/explorer.jpg')
     this.load.image('tile', 'assets/tile.png')
+
+    this.load.spritesheet(SPRITE.Capital_1, 'assets/sprite/H1_320px.png', { frameWidth: 320, frameHeight: 320 })
+    this.load.spritesheet(SPRITE.Capital_2, 'assets/sprite/H2_320px.png', { frameWidth: 320, frameHeight: 320 })
+    this.load.spritesheet(SPRITE.Capital_3, 'assets/sprite/H3_320px.png', { frameWidth: 320, frameHeight: 320 })
+    this.load.spritesheet(SPRITE.Capital_4, 'assets/sprite/H4_320px.png', { frameWidth: 320, frameHeight: 320 })
   }
 
   create() {
