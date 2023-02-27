@@ -41,8 +41,6 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
 
   async mine() {
     if (this.status === 'run') {
-      //const cursorPos = snapToGrid(this.currentTilePosition.x, this.currentTilePosition.y, 16)
-      //console.log(cursorPos)
       const positions = []
       for (let height = 0; height < CHUNK_HEIGHT_SIZE; height++) {
         for (let width = 0; width < CHUNK_WIDTH_SIZE; width++) {
@@ -52,15 +50,7 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
           })
         }
       }
-      //console.log(cursorPos)
-      //const chunkX = Math.floor(this.navigation.x / (TILE_SIZE * CHUNK_WIDTH_SIZE))
-      //const chunkY = Math.floor(this.navigation.y / (TILE_SIZE * CHUNK_HEIGHT_SIZE))
-      //
-      //const res = await workerStore.getState().worker.HashTwo(data)
-      //this.scene.events.emit('sendWorker', [cursorPos])
       await this.exploreCallback(positions)
-      //await this.exploreCallback([this.currentTilePosition])
-      //this.minedChunk++
       this.move()
       this.mine()
     }
@@ -88,11 +78,11 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
         this.currentTilePosition.x * TILE_SIZE * CHUNK_WIDTH_SIZE,
         this.currentTilePosition.y * TILE_SIZE * CHUNK_HEIGHT_SIZE,
       )
-      //if (this.debug) {
-      //this.scene.add
-      //.rectangle(this.currentTilePosition.x, this.currentTilePosition.y, TILE_SIZE, TILE_SIZE, 0xff0000, 0.1)
-      //.setOrigin(0)
-      //}
+      if (this.debug) {
+        this.scene.add
+          .rectangle(this.currentTilePosition.x, this.currentTilePosition.y, TILE_SIZE, TILE_SIZE, 0xff0000, 0.1)
+          .setOrigin(0)
+      }
     } else {
       this.updateExplorerSize()
       this.path = this.makePath()

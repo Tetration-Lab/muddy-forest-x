@@ -1,14 +1,14 @@
 import { Perlin } from '@latticexyz/noise'
-import Phaser, { GameObjects } from 'phaser'
+import Phaser from 'phaser'
 import { Pane } from 'tweakpane'
 import { Chunk } from '../utils/Chunk'
 import { ChunkLoader } from '../utils/ChunkLoader'
-import { CHUNK_HEIGHT_SIZE, CHUNK_WIDTH_SIZE, LOAD_RADIUS, TILE_SIZE } from '../config/chunk'
+import { CHUNK_HEIGHT_SIZE, CHUNK_WIDTH_SIZE, TILE_SIZE } from '../config/chunk'
 import { GAME_HEIGHT, GAME_WIDTH } from '../config/game'
 import { GAME_SCENE } from '../constant/scene'
 import { Tile } from '../utils/Tile'
 import { appStore } from '../../../store/app'
-import { Position, snapPosToGrid, snapToGrid, snapValToGrid } from '../../../utils/snapToGrid'
+import { Position, snapPosToGrid, snapValToGrid } from '../../../utils/snapToGrid'
 import { Hasher } from 'circuits'
 import { workerStore } from '../../../store/worker'
 import { initConfigAnim } from '../anim'
@@ -157,17 +157,10 @@ class GameScene extends Phaser.Scene {
     if (networkLayer) {
       this.onSetUpSystem(networkLayer)
     }
-    this.redRect = this.add.rectangle(1016, 0, 16, 16, 0xff0000)
-    this.redRect.setDepth(100)
-    this.redRect.setVisible(false)
+    //this.redRect = this.add.rectangle(0, 0, TILE_SIZE / 2, TILE_SIZE / 2, 0xff0000)
+    //this.redRect.setDepth(100)
+    //this.redRect.setVisible(false)
 
-    const mockHQ = new Planet(this, 0, 0, SPRITE.Capital_1)
-    mockHQ.setPositionWithDebug(
-      snapValToGrid(800, TILE_SIZE, mockHQ.displayWidth),
-      snapValToGrid(600, TILE_SIZE, mockHQ.displayWidth),
-    )
-    mockHQ.setDepth(100)
-    mockHQ.play(IDLE_ANIM.Capital_1)
     const p8 = new Planet(this, 0, 0, 'p8Sheet')
     p8.setPositionWithDebug(
       snapValToGrid(800, TILE_SIZE, p8.displayWidth),
@@ -192,56 +185,22 @@ class GameScene extends Phaser.Scene {
     sprite2.setDepth(100)
     sprite2.play('p1Idle')
 
-    //let startAt = 0
-    //for (let i = -1; i <= LOAD_RADIUS; i++) {
-    //for (let j = -1; j <= LOAD_RADIUS; j++) {
-    //this.time.addEvent({
-    //startAt,
-    //delay: 50,
-    //callback: () => {
-    //const targetChunk = this.chunkLoader.updateChunksRePositionWithOffset(
-    //this.followPoint.x,
-    //this.followPoint.y,
-    //i,
-    //j,
-    //)
-    //if (!targetChunk) return
-    //// const sendPos = []
-    //// const tList = []
-    //// targetChunk.tiles.getChildren().forEach((_t) => {
-    ////   const t = _t as Tile
-    ////   const tileX = t.x
-    ////   const tileY = t.y
-    ////   sendPos.push({ x: tileX, y: tileY })
-    ////   tList.push(t)
-    ////   t.alpha = 0.1
-    //// })
-    //// this.events.emit('sendWorker', sendPos)
-    //},
-    //loop: true,
-    //})
-    //startAt += 50
-    //}
-    //}
-    this.events.on('sendWorker', this.handleWorker)
+    this.followPoint = new Phaser.Math.Vector2(0, 0)
 
+    this.events.on('sendWorker', this.handleWorker)
     this.events.on(Phaser.GameObjects.Events.DESTROY, this.onDestroy)
 
     this.rt = this.add.renderTexture(0, 0, GAME_WIDTH, GAME_HEIGHT)
-    this.followPoint = new Phaser.Math.Vector2(mockHQ.x, mockHQ.y)
-    const cursorPos = snapToGrid(this.followPoint.x, this.followPoint.y)
     this.cursorExplorer = new CursorExplorer(this, 0, 0, 'explorerSheet', 3, this.handleWorker)
     this.cursorExplorer.run()
     this.cursorExplorer.setDebug(false)
     this.cursorExplorer.play(IDLE_ANIM.Explorer_Idle)
 
     this.chunkLoader = new ChunkLoader(this, { tileSize: TILE_SIZE }, this.rt)
-
     this.chunkLoader.setUpdateCbToChunks((t: Tile) => {
       t.alpha = 0.1
     })
     this.chunkLoader.initChunks(this.followPoint.x, this.followPoint.y)
-    this.chunkLoader.addObject(this.redRect)
 
     const cam = this.cameras.main
     this.input.on('pointermove', (p) => {
