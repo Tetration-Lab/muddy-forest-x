@@ -19,8 +19,8 @@ import { createSpawnCapitalSystem } from '../../../system/createSpawnCapitalSyst
 import { NetworkLayer } from '../../network/types'
 import { IDLE_ANIM, SPRITE } from '../constant/resouce'
 
-const ZOOM_OUT_LIMIT = 0.5
-const ZOOM_IN_LIMIT = 4
+const ZOOM_OUT_LIMIT = 0.1
+const ZOOM_IN_LIMIT = 2
 class GameScene extends Phaser.Scene {
   bg!: Phaser.GameObjects.TileSprite
   logo!: Phaser.Types.Physics.Arcade.ImageWithDynamicBody
@@ -145,7 +145,7 @@ class GameScene extends Phaser.Scene {
           idleKey = IDLE_ANIM.Capital_3
           break
       }
-      const p = new Planet(this, x, y, spriteKey)
+      const p = new Planet(this, x * TILE_SIZE, y * TILE_SIZE, spriteKey)
       p.play(idleKey)
     })
   }
@@ -203,6 +203,7 @@ class GameScene extends Phaser.Scene {
     this.chunkLoader.initChunks(this.followPoint.x, this.followPoint.y)
 
     const cam = this.cameras.main
+    cam.zoom = 0.5
     this.input.on('pointermove', (p) => {
       if (!p.isDown) return
       this.followPoint.x -= (p.x - p.prevPosition.x) / cam.zoom
@@ -213,10 +214,10 @@ class GameScene extends Phaser.Scene {
       // handle zoom in range MAX and MIN zoom value
       const cam = this.cameras.main
       if (deltaY > 0 && cam.zoom < ZOOM_IN_LIMIT) {
-        cam.zoom += 0.1
+        cam.zoom *= 1.05
       }
       if (deltaY < 0 && cam.zoom > ZOOM_OUT_LIMIT) {
-        cam.zoom -= 0.1
+        cam.zoom /= 1.05
       }
     })
 
@@ -296,17 +297,18 @@ class GameScene extends Phaser.Scene {
       return
     }
 
+    const cam = this.cameras.main
     if (this.keyW.isDown) {
-      this.followPoint.y -= this.cameraSpeed
+      this.followPoint.y -= this.cameraSpeed / cam.zoom
     }
     if (this.keyS.isDown) {
-      this.followPoint.y += this.cameraSpeed
+      this.followPoint.y += this.cameraSpeed / cam.zoom
     }
     if (this.keyA.isDown) {
-      this.followPoint.x -= this.cameraSpeed
+      this.followPoint.x -= this.cameraSpeed / cam.zoom
     }
     if (this.keyD.isDown) {
-      this.followPoint.x += this.cameraSpeed
+      this.followPoint.x += this.cameraSpeed / cam.zoom
     }
     if (this.keyZ.isDown) {
       const camera = this.cameras.main

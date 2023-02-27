@@ -31,16 +31,16 @@ export async function createNetworkLayer(config: SetupContractConfig) {
   const setupFaction = async () => {
     await systems['system.SetupFaction'].executeTyped({
       capitalPosition: {
-        x: 100,
-        y: 100,
+        x: 0,
+        y: 250,
       },
       name: 'Ape Ape',
       id: 10,
     })
     await systems['system.SetupFaction'].executeTyped({
       capitalPosition: {
-        x: 100,
-        y: -100,
+        x: 500,
+        y: -500,
       },
       name: 'AI Ape',
       id: 11,
@@ -48,8 +48,8 @@ export async function createNetworkLayer(config: SetupContractConfig) {
 
     await systems['system.SetupFaction'].executeTyped({
       capitalPosition: {
-        x: -100,
-        y: 100,
+        x: -500,
+        y: 500,
       },
       name: 'Alien Ape',
       id: 12,
