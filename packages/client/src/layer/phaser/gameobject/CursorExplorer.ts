@@ -1,40 +1,74 @@
+import { createEndpoint } from 'comlink'
 import { generatePath } from 'react-router-dom'
-import { TILE_SIZE } from '../config/chunk'
-
-interface Position {
-  x: number
-  y: number
-}
+import { Position, snapToGrid } from '../../../utils/snapToGrid'
+import { CHUNK_HEIGHT_SIZE, CHUNK_WIDTH_SIZE, TILE_SIZE } from '../config/chunk'
 
 export class CursorExplorer extends Phaser.GameObjects.Sprite {
   explorerSize = 3
-  currentTilePosition: { x: number; y: number }
-  centerTilePosition: { x: number; y: number }
+  currentTilePosition: Position
+  centerTilePosition: Position
   path: LinkedList<Position>
   status: string
   isStop = false
   debug = false
-  constructor(scene: Phaser.Scene, x: number, y: number, texture: string, explorerSize = 3) {
+  exploreCallback: (c: Position[]) => Promise<void>
+  minedChunk = 0
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    texture: string,
+    explorerSize = 3,
+    exploreCallback: (c: Position[]) => Promise<void>,
+  ) {
     super(scene, x, y, texture)
     this.scene.add.existing(this)
     this.setOrigin(0)
-    this.setDisplaySize(TILE_SIZE, TILE_SIZE)
+    this.setDisplaySize(TILE_SIZE * CHUNK_WIDTH_SIZE, TILE_SIZE * CHUNK_HEIGHT_SIZE)
     this.setPosition(x, y)
     this.scene.add.rectangle(x, y, TILE_SIZE, TILE_SIZE, 0xff0000).setOrigin(0)
     this.setDepth(1000)
-
     this.currentTilePosition = { x, y }
     this.centerTilePosition = { x, y }
     this.path = this.makePath()
     this.explorerSize = explorerSize
+    this.exploreCallback = exploreCallback
   }
 
   wait() {
     this.status = 'wait'
   }
 
+  async mine() {
+    if (this.status === 'run') {
+      //const cursorPos = snapToGrid(this.currentTilePosition.x, this.currentTilePosition.y, 16)
+      //console.log(cursorPos)
+      const positions = []
+      for (let height = 0; height < CHUNK_HEIGHT_SIZE; height++) {
+        for (let width = 0; width < CHUNK_WIDTH_SIZE; width++) {
+          positions.push({
+            x: CHUNK_WIDTH_SIZE * this.currentTilePosition.x + width,
+            y: CHUNK_HEIGHT_SIZE * this.currentTilePosition.y + height,
+          })
+        }
+      }
+      //console.log(cursorPos)
+      //const chunkX = Math.floor(this.navigation.x / (TILE_SIZE * CHUNK_WIDTH_SIZE))
+      //const chunkY = Math.floor(this.navigation.y / (TILE_SIZE * CHUNK_HEIGHT_SIZE))
+      //
+      //const res = await workerStore.getState().worker.HashTwo(data)
+      //this.scene.events.emit('sendWorker', [cursorPos])
+      await this.exploreCallback(positions)
+      //await this.exploreCallback([this.currentTilePosition])
+      //this.minedChunk++
+      this.move()
+      this.mine()
+    }
+  }
+
   run() {
     this.status = 'run'
+    this.mine()
   }
 
   setDebug(debug: boolean) {
@@ -49,14 +83,16 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
       return
     }
     if (this.path.hasNext()) {
-      const nextMove = this.getNextMove()
-      this.currentTilePosition = nextMove
-      this.setPosition(this.currentTilePosition.x, this.currentTilePosition.y)
-      if (this.debug) {
-        this.scene.add
-          .rectangle(this.currentTilePosition.x, this.currentTilePosition.y, TILE_SIZE, TILE_SIZE, 0xff0000, 0.1)
-          .setOrigin(0)
-      }
+      this.currentTilePosition = this.getNextMove()
+      this.setPosition(
+        this.currentTilePosition.x * TILE_SIZE * CHUNK_WIDTH_SIZE,
+        this.currentTilePosition.y * TILE_SIZE * CHUNK_HEIGHT_SIZE,
+      )
+      //if (this.debug) {
+      //this.scene.add
+      //.rectangle(this.currentTilePosition.x, this.currentTilePosition.y, TILE_SIZE, TILE_SIZE, 0xff0000, 0.1)
+      //.setOrigin(0)
+      //}
     } else {
       this.updateExplorerSize()
       this.path = this.makePath()
@@ -70,8 +106,8 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
 
   topLeftTile() {
     return {
-      x: this.centerTilePosition.x - Math.floor(this.explorerSize / 2) * TILE_SIZE,
-      y: this.centerTilePosition.y - Math.floor(this.explorerSize / 2) * TILE_SIZE,
+      x: this.centerTilePosition.x - Math.floor(this.explorerSize / 2),
+      y: this.centerTilePosition.y - Math.floor(this.explorerSize / 2),
     }
   }
 
@@ -101,7 +137,7 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
     for (let i = 0; i < explorerSize; i++) {
       const row = []
       for (let j = 0; j < explorerSize; j++) {
-        row.push({ x: this.topLeftTile().x + j * TILE_SIZE, y: this.topLeftTile().y + i * TILE_SIZE })
+        row.push({ x: this.topLeftTile().x + j, y: this.topLeftTile().y + i })
         // row.push({ x: j, y: i })
       }
       result.push(row)

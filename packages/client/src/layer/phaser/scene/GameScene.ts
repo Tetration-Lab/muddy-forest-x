@@ -9,7 +9,6 @@ import { GAME_SCENE } from '../constant/scene'
 import { Tile } from '../utils/Tile'
 import { appStore } from '../../../store/app'
 import { Position, snapPosToGrid, snapToGrid, snapValToGrid } from '../../../utils/snapToGrid'
-import { buildPoseidon } from 'circomlibjs'
 import { Hasher } from 'circuits'
 import { workerStore } from '../../../store/worker'
 import { initConfigAnim } from '../anim'
@@ -19,8 +18,6 @@ import { gameStore, SendResourceData } from '../../../store/game'
 import { createSpawnCapitalSystem } from '../../../system/createSpawnCapitalSystem'
 import { NetworkLayer } from '../../network/types'
 import { IDLE_ANIM, SPRITE } from '../constant/resouce'
-
-type Poseidon = ReturnType<typeof buildPoseidon>
 
 const ZOOM_OUT_LIMIT = 0.5
 const ZOOM_IN_LIMIT = 4
@@ -78,21 +75,22 @@ class GameScene extends Phaser.Scene {
     const worker = workerStore.getState().worker
     if (worker) {
       const res = await worker.HashTwo(data)
-      // console.log('data', data)
       for (let i = 0; i < res.length; i++) {
         const hVal = res[i].val
         const tileX = res[i].x
         const tileY = res[i].y
+        //console.log(tileX, tileY, hVal)
         const check = BigInt(hVal) < checkVal
         const spawnKey = `${tileX}-${tileY}`
         const notSpawn = !this.spawnPlanetMap.has(spawnKey)
         if (check && notSpawn) {
+          //console.log('spawn!', tileX, tileY)
           this.spawnPlanetMap.set(spawnKey, true)
           const sprite = new Planet(this, 0, 0, 'dogeSheet')
           const pos = snapPosToGrid(
             {
-              x: tileX,
-              y: tileY,
+              x: tileX * TILE_SIZE,
+              y: tileY * TILE_SIZE,
             },
             TILE_SIZE,
             sprite.displayWidth,
@@ -117,7 +115,7 @@ class GameScene extends Phaser.Scene {
           })
         }
       }
-      this.cursorExplorer.run()
+      //this.cursorExplorer.run()
     }
   }
 
@@ -194,37 +192,37 @@ class GameScene extends Phaser.Scene {
     sprite2.setDepth(100)
     sprite2.play('p1Idle')
 
-    let startAt = 0
-    for (let i = -1; i <= LOAD_RADIUS; i++) {
-      for (let j = -1; j <= LOAD_RADIUS; j++) {
-        this.time.addEvent({
-          startAt,
-          delay: 50,
-          callback: () => {
-            const targetChunk = this.chunkLoader.updateChunksRePositionWithOffset(
-              this.followPoint.x,
-              this.followPoint.y,
-              i,
-              j,
-            )
-            if (!targetChunk) return
-            // const sendPos = []
-            // const tList = []
-            // targetChunk.tiles.getChildren().forEach((_t) => {
-            //   const t = _t as Tile
-            //   const tileX = t.x
-            //   const tileY = t.y
-            //   sendPos.push({ x: tileX, y: tileY })
-            //   tList.push(t)
-            //   t.alpha = 0.1
-            // })
-            // this.events.emit('sendWorker', sendPos)
-          },
-          loop: true,
-        })
-        startAt += 50
-      }
-    }
+    //let startAt = 0
+    //for (let i = -1; i <= LOAD_RADIUS; i++) {
+    //for (let j = -1; j <= LOAD_RADIUS; j++) {
+    //this.time.addEvent({
+    //startAt,
+    //delay: 50,
+    //callback: () => {
+    //const targetChunk = this.chunkLoader.updateChunksRePositionWithOffset(
+    //this.followPoint.x,
+    //this.followPoint.y,
+    //i,
+    //j,
+    //)
+    //if (!targetChunk) return
+    //// const sendPos = []
+    //// const tList = []
+    //// targetChunk.tiles.getChildren().forEach((_t) => {
+    ////   const t = _t as Tile
+    ////   const tileX = t.x
+    ////   const tileY = t.y
+    ////   sendPos.push({ x: tileX, y: tileY })
+    ////   tList.push(t)
+    ////   t.alpha = 0.1
+    //// })
+    //// this.events.emit('sendWorker', sendPos)
+    //},
+    //loop: true,
+    //})
+    //startAt += 50
+    //}
+    //}
     this.events.on('sendWorker', this.handleWorker)
 
     this.events.on(Phaser.GameObjects.Events.DESTROY, this.onDestroy)
@@ -232,7 +230,8 @@ class GameScene extends Phaser.Scene {
     this.rt = this.add.renderTexture(0, 0, GAME_WIDTH, GAME_HEIGHT)
     this.followPoint = new Phaser.Math.Vector2(mockHQ.x, mockHQ.y)
     const cursorPos = snapToGrid(this.followPoint.x, this.followPoint.y)
-    this.cursorExplorer = new CursorExplorer(this, cursorPos.x, cursorPos.y, 'explorerSheet', 3)
+    this.cursorExplorer = new CursorExplorer(this, 0, 0, 'explorerSheet', 3, this.handleWorker)
+    this.cursorExplorer.run()
     this.cursorExplorer.setDebug(false)
     this.cursorExplorer.play(IDLE_ANIM.Explorer_Idle)
 
@@ -301,16 +300,16 @@ class GameScene extends Phaser.Scene {
     if (!this.ready) {
       return
     }
-    const cursor = this.input.activePointer
-    this.cursorExplorer.move()
-    const cursorPos = snapToGrid(
-      this.cursorExplorer.currentTilePosition.x,
-      this.cursorExplorer.currentTilePosition.y,
-      16,
-    )
-    this.events.emit('sendWorker', [cursorPos])
-    this.cursorExplorer.wait()
-    const gridPos = snapToGrid(cursor.x, cursor.y, 16)
+    //this.cursorExplorer.move()
+    //const cursorPos = snapToGrid(
+    //this.cursorExplorer.currentTilePosition.x,
+    //this.cursorExplorer.currentTilePosition.y,
+    //16,
+    //)
+    //this.events.emit('sendWorker', [cursorPos])
+    //this.cursorExplorer.wait()
+    //const cursor = this.input.activePointer
+    //const gridPos = snapToGrid(cursor.x, cursor.y, 16)
     this.chunkLoader.updateChunks(this.followPoint.x, this.followPoint.y)
     this.updateDebug()
 
