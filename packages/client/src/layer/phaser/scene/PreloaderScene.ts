@@ -12,7 +12,11 @@ class PreloaderScene extends Phaser.Scene {
     this.load.spritesheet('p2Sheet', 'assets/sprite/P2_48px_v3.png', { frameWidth: 48, frameHeight: 48 })
     this.load.spritesheet('p3Sheet', 'assets/sprite/P3_48px.png', { frameWidth: 48, frameHeight: 48 })
     this.load.spritesheet('p8Sheet', 'assets/sprite/P8.png', { frameWidth: 128, frameHeight: 128 })
-    this.load.image('explorerSheet', 'assets/sprite/explorer.jpg')
+    this.load.spritesheet('explorerSheet', 'assets/sprite/Scouting.png', {
+      frameWidth: 16,
+      frameHeight: 16,
+    })
+    // this.load.image('explorerSheet', 'assets/sprite/explorer.jpg')
     this.load.image('tile', 'assets/tile.png')
 
     this.load.spritesheet(SPRITE.Capital_1, 'assets/sprite/H1_320px.png', { frameWidth: 320, frameHeight: 320 })

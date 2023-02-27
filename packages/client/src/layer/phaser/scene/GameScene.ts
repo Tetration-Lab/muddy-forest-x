@@ -234,6 +234,7 @@ class GameScene extends Phaser.Scene {
     const cursorPos = snapToGrid(this.followPoint.x, this.followPoint.y)
     this.cursorExplorer = new CursorExplorer(this, cursorPos.x, cursorPos.y, 'explorerSheet', 3)
     this.cursorExplorer.setDebug(false)
+    this.cursorExplorer.play(IDLE_ANIM.Explorer_Idle)
 
     this.chunkLoader = new ChunkLoader(this, { tileSize: TILE_SIZE }, this.rt)
 

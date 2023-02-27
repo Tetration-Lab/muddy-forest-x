@@ -10,4 +10,5 @@ export const IDLE_ANIM = {
   Capital_2: 'Capital_2_idle',
   Capital_3: 'Capital_3_idle',
   Capital_4: 'Capital_4_idle',
+  Explorer_Idle: 'explorer_idle',
 }
