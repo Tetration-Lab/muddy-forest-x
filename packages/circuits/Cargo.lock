@@ -230,6 +230,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "arkworks-mimc"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "62fd72df93b1a879c1a55bd09696da2416f26170e88c876c704d378e018b65c2"
+dependencies = [
+ "ark-crypto-primitives",
+ "ark-ff",
+ "ark-r1cs-std",
+ "ark-relations",
+ "ark-std",
+]
+
+[[package]]
 name = "arkworks-native-gadgets"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -356,6 +369,7 @@ dependencies = [
  "ark-serialize",
  "ark-snark",
  "ark-std",
+ "arkworks-mimc",
  "arkworks-native-gadgets",
  "arkworks-r1cs-gadgets",
  "arkworks-utils",
