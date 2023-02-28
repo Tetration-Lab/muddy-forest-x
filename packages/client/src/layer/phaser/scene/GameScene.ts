@@ -140,7 +140,7 @@ class GameScene extends Phaser.Scene {
           break
       }
       const p = new Planet(this, x * TILE_SIZE, y * TILE_SIZE, spriteKey)
-      p.setSize(TILE_SIZE ** 4, TILE_SIZE ** 4)
+      p.setDisplaySize(4 * TILE_SIZE ** 2, 4 * TILE_SIZE ** 2)
       p.play(idleKey)
     })
   }
@@ -234,7 +234,7 @@ class GameScene extends Phaser.Scene {
     this.cameras.main.startFollow(this.navigation)
 
     this.input.on('pointerdown', (pointer: any) => {
-      console.log(pointer.worldX, this.cameras.main.worldView.width)
+      console.log(Math.floor(+pointer.worldX / 16), Math.floor(+pointer.worldY / 16))
     })
 
     this.ready = true
