@@ -31,3 +31,21 @@ export const HashTwo = async (chunk: Pos[]) => {
   }
   return res
 }
+
+export const HashChunk = async (
+  CHUNK_WIDTH_SIZE: number,
+  CHUNK_HEIGHT_SIZE: number,
+  currentChunkX: number,
+  currentChunkY: number,
+) => {
+  const positions = []
+  for (let height = 0; height < CHUNK_HEIGHT_SIZE; height++) {
+    for (let width = 0; width < CHUNK_WIDTH_SIZE; width++) {
+      positions.push({
+        x: CHUNK_WIDTH_SIZE * currentChunkX + width,
+        y: CHUNK_HEIGHT_SIZE * currentChunkY + height,
+      })
+    }
+  }
+  return await HashTwo(positions)
+}

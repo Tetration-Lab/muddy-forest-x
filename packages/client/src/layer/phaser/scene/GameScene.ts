@@ -19,7 +19,7 @@ import { createSpawnCapitalSystem } from '../../../system/createSpawnCapitalSyst
 import { NetworkLayer } from '../../network/types'
 import { IDLE_ANIM, SPRITE } from '../constant/resouce'
 
-const ZOOM_OUT_LIMIT = 0.1
+const ZOOM_OUT_LIMIT = 0.01
 const ZOOM_IN_LIMIT = 2
 class GameScene extends Phaser.Scene {
   bg!: Phaser.GameObjects.TileSprite
@@ -41,10 +41,11 @@ class GameScene extends Phaser.Scene {
   paramsDebug: { position: string; chunkCoordinate: string; tileCoordinate: string; cameraSize: string } | null
   keyZ!: Phaser.Input.Keyboard.Key
   keyX!: Phaser.Input.Keyboard.Key
+  keyF!: Phaser.Input.Keyboard.Key
+  keyG!: Phaser.Input.Keyboard.Key
   redRect!: Phaser.GameObjects.Rectangle
   rt!: Phaser.GameObjects.RenderTexture
   ready = false
-  spawnPlanetMap = new Map<string, boolean>()
   perlin: Perlin | null = null
   hasher: Hasher
   cursorExplorer!: CursorExplorer
@@ -66,26 +67,19 @@ class GameScene extends Phaser.Scene {
     }
   }
 
-  handleWorker = async (data: Position[]) => {
-    data = data.filter((d) => {
-      const key = `${d.x}-${d.y}`
-      return !this.spawnPlanetMap.has(key)
-    })
+  handleWorker = async (chunkPosition: Position) => {
     const checkVal = BigInt('0x2d2f32534e97d979c3f2b616170489791c3f6706d539c62f89fd52bdb46c1c')
     const worker = workerStore.getState().worker
     if (worker) {
-      const res = await worker.HashTwo(data)
+      const res = await worker.HashChunk(CHUNK_WIDTH_SIZE, CHUNK_HEIGHT_SIZE, chunkPosition.x, chunkPosition.y)
       for (let i = 0; i < res.length; i++) {
         const hVal = res[i].val
         const tileX = res[i].x
         const tileY = res[i].y
         //console.log(tileX, tileY, hVal)
         const check = BigInt(hVal) < checkVal
-        const spawnKey = `${tileX}-${tileY}`
-        const notSpawn = !this.spawnPlanetMap.has(spawnKey)
-        if (check && notSpawn) {
+        if (check) {
           //console.log('spawn!', tileX, tileY)
-          this.spawnPlanetMap.set(spawnKey, true)
           const sprite = new Planet(this, 0, 0, 'dogeSheet')
           const pos = snapPosToGrid(
             {
@@ -146,6 +140,7 @@ class GameScene extends Phaser.Scene {
           break
       }
       const p = new Planet(this, x * TILE_SIZE, y * TILE_SIZE, spriteKey)
+      p.setSize(TILE_SIZE ** 4, TILE_SIZE ** 4)
       p.play(idleKey)
     })
   }
@@ -191,9 +186,8 @@ class GameScene extends Phaser.Scene {
     this.events.on(Phaser.GameObjects.Events.DESTROY, this.onDestroy)
 
     this.rt = this.add.renderTexture(0, 0, GAME_WIDTH, GAME_HEIGHT)
-    this.cursorExplorer = new CursorExplorer(this, 0, 0, 'explorerSheet', 3, this.handleWorker)
+    this.cursorExplorer = new CursorExplorer(this, { x: 0, y: 0 }, 'explorerSheet', this.handleWorker)
     this.cursorExplorer.run()
-    this.cursorExplorer.setDebug(false)
     this.cursorExplorer.play(IDLE_ANIM.Explorer_Idle)
 
     this.chunkLoader = new ChunkLoader(this, { tileSize: TILE_SIZE }, this.rt)
@@ -228,19 +222,12 @@ class GameScene extends Phaser.Scene {
     this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D, false)
     this.keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z, false)
     this.keyX = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X, false)
+    this.keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F, false)
+    this.keyG = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G, false)
     this.navigation = this.add.rectangle(this.followPoint.y, this.followPoint.x, 1, 1, 0x00ff00)
     const keyG = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G, false)
     keyG.on('down', () => {
-      this.cursorExplorer.move()
-    })
-    const keyH = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H, false)
-    keyH.on('down', () => {
-      this.cursorExplorer.updateExplorerSize()
-    })
-
-    const keyJ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.J, false)
-    keyJ.on('down', () => {
-      this.cursorExplorer.toggleisStop()
+      this.cursorExplorer.run()
     })
 
     this.navigation.setDepth(10)
@@ -309,6 +296,12 @@ class GameScene extends Phaser.Scene {
     }
     if (this.keyD.isDown) {
       this.followPoint.x += this.cameraSpeed / cam.zoom
+    }
+    if (this.keyF.isDown) {
+      this.cameras.main.startFollow(this.navigation)
+    }
+    if (this.keyG.isDown) {
+      this.cameras.main.startFollow(this.cursorExplorer)
     }
     if (this.keyZ.isDown) {
       const camera = this.cameras.main
