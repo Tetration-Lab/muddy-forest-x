@@ -55,7 +55,7 @@ export const Game = () => {
           },
           gotoIntroPage: () => {
             console.log('createCheckFractionSystem done')
-            // navigate(`/intro${window.location.search}`)
+            navigate(`/intro${window.location.search}`)
           },
         })
         return

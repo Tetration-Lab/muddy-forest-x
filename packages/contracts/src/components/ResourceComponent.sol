@@ -30,10 +30,10 @@ contract ResourceComponent is Component {
     keys[1] = "cap";
     values[1] = LibTypes.SchemaValue.UINT64;
 
-    keys[2] = "regen";
+    keys[2] = "rpb";
     values[2] = LibTypes.SchemaValue.UINT64;
 
-    keys[3] = "latestRegenBlock";
+    keys[3] = "lrb";
     values[3] = LibTypes.SchemaValue.UINT32;
 
     keys[4] = "bases";

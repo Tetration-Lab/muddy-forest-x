@@ -9,7 +9,7 @@ export function createSpawnCapitalSystem(network: NetworkLayer, callback: Create
     components: { Type, Position, Faction },
   } = network
 
-  const query = [HasValue(Type, { value: EntityType.CAPITAL }), Has(Position), Has(Faction)]
+  const query = [HasValue(Type, { value: EntityType.FACTION }), Has(Position), Has(Faction)]
   console.log('createSpawnCapitalSystem:start')
   runQuery(query).forEach((entity) => {
     const position = getComponentValue(Position, entity)

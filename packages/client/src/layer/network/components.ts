@@ -137,7 +137,7 @@ export const setupComponents = (world: World) => {
       {
         value: Type.Number,
         cap: Type.Number,
-        rbp: Type.Number,
+        rpb: Type.Number,
         lrb: Type.Number,
         bases: Type.Number,
       },
