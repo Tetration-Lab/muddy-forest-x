@@ -10,6 +10,7 @@ export type Store = {
   setPhaserLayer: (phaserLayer: PhaserLayer) => void
   setFocusUI: (isFocusUI: boolean) => void
 }
+
 const initialState = {
   networkLayer: null,
   phaserLayer: null,

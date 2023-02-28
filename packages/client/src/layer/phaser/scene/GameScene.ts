@@ -18,6 +18,7 @@ import { gameStore, SendResourceData } from '../../../store/game'
 import { createSpawnCapitalSystem } from '../../../system/createSpawnCapitalSystem'
 import { NetworkLayer } from '../../network/types'
 import { IDLE_ANIM, SPRITE } from '../constant/resouce'
+import { HashTwoRespItem } from '../../../miner/hasher.worker'
 
 const ZOOM_OUT_LIMIT = 0.01
 const ZOOM_IN_LIMIT = 2
@@ -67,47 +68,43 @@ class GameScene extends Phaser.Scene {
     }
   }
 
-  handleWorker = async (chunkPosition: Position) => {
+  handleWorker = async (res: HashTwoRespItem[]) => {
     const checkVal = BigInt('0x2d2f32534e97d979c3f2b616170489791c3f6706d539c62f89fd52bdb46c1c')
-    const worker = workerStore.getState().worker
-    if (worker) {
-      const res = await worker.HashChunk(CHUNK_WIDTH_SIZE, CHUNK_HEIGHT_SIZE, chunkPosition.x, chunkPosition.y)
-      for (let i = 0; i < res.length; i++) {
-        const hVal = res[i].val
-        const tileX = res[i].x
-        const tileY = res[i].y
-        //console.log(tileX, tileY, hVal)
-        const check = BigInt(hVal) < checkVal
-        if (check) {
-          //console.log('spawn!', tileX, tileY)
-          const sprite = new Planet(this, 0, 0, 'dogeSheet')
-          const pos = snapPosToGrid(
-            {
-              x: tileX * TILE_SIZE,
-              y: tileY * TILE_SIZE,
+    for (let i = 0; i < res.length; i++) {
+      const hVal = res[i].val
+      const tileX = res[i].x
+      const tileY = res[i].y
+      //console.log(tileX, tileY, hVal)
+      const check = BigInt(hVal) < checkVal
+      if (check) {
+        //console.log('spawn!', tileX, tileY)
+        const sprite = new Planet(this, 0, 0, 'dogeSheet')
+        const pos = snapPosToGrid(
+          {
+            x: tileX * TILE_SIZE,
+            y: tileY * TILE_SIZE,
+          },
+          TILE_SIZE,
+          sprite.displayWidth,
+        )
+        sprite.setPositionWithDebug(pos.x, pos.y, 0x00ff00)
+        sprite.setDepth(100)
+        sprite.play('doge')
+        const imageUri = this.textures.getBase64('dogeSheet', 0)
+        sprite.registerOnClick((pointer: Phaser.Input.Pointer) => {
+          const payload: SendResourceData = {
+            name: 'doge',
+            imageSrc: imageUri,
+            mouseScreenX: pointer.position.x,
+            mouseScreenY: pointer.position.y,
+          }
+          gameStore.setState({
+            sendResourceModal: {
+              open: true,
+              data: payload,
             },
-            TILE_SIZE,
-            sprite.displayWidth,
-          )
-          sprite.setPositionWithDebug(pos.x, pos.y, 0x00ff00)
-          sprite.setDepth(100)
-          sprite.play('doge')
-          const imageUri = this.textures.getBase64('dogeSheet', 0)
-          sprite.registerOnClick((pointer: Phaser.Input.Pointer) => {
-            const payload: SendResourceData = {
-              name: 'doge',
-              imageSrc: imageUri,
-              mouseScreenX: pointer.position.x,
-              mouseScreenY: pointer.position.y,
-            }
-            gameStore.setState({
-              sendResourceModal: {
-                open: true,
-                data: payload,
-              },
-            })
           })
-        }
+        })
       }
       //this.cursorExplorer.run()
     }
