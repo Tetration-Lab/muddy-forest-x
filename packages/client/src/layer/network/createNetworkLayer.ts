@@ -3,7 +3,7 @@ import { createWorld } from '@latticexyz/recs'
 import { createActionSystem, setupMUDNetwork, SetupContractConfig } from '@latticexyz/std-client'
 import { SystemTypes } from 'contracts/types/SystemTypes'
 import { SystemAbis } from 'contracts/types/SystemAbis.mjs'
-import { GodID } from '@latticexyz/network'
+import { formatEntityID, GodID } from '@latticexyz/network'
 import { setupComponents } from './components'
 import { Wallet } from 'ethers'
 
@@ -23,6 +23,7 @@ export async function createNetworkLayer(config: SetupContractConfig) {
     typeof _components,
     SystemTypes
   >(config, world, _components, SystemAbis)
+  const playerIndex = world.registerEntity({ id: formatEntityID(network.connectedAddress.get()) })
 
   // --- ACTION SYSTEM --------------------------------------------------------------
   const actions = createActionSystem(world, txReduced$)
@@ -79,6 +80,7 @@ export async function createNetworkLayer(config: SetupContractConfig) {
       setupFaction,
     },
     singletonIndex,
+    playerIndex,
   }
 
   return context
