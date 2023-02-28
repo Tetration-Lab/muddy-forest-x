@@ -303,15 +303,12 @@ class GameScene extends Phaser.Scene {
     if (this.keyG.isDown) {
       this.cameras.main.startFollow(this.cursorExplorer)
     }
-    if (this.keyZ.isDown) {
-      const camera = this.cameras.main
-      if (this.cameras.main.zoom <= ZOOM_OUT_LIMIT) return
-      camera.setZoom(this.cameras.main.zoom - 0.1)
+    const camera = this.cameras.main
+    if (this.keyZ.isDown && camera.zoom > ZOOM_OUT_LIMIT) {
+      cam.zoom /= 1.02
     }
-    if (this.keyX.isDown) {
-      const camera = this.cameras.main
-      if (this.cameras.main.zoom >= ZOOM_IN_LIMIT) return
-      camera.setZoom(this.cameras.main.zoom + 0.1)
+    if (this.keyX.isDown && camera.zoom < ZOOM_IN_LIMIT) {
+      cam.zoom *= 1.02
     }
   }
 
