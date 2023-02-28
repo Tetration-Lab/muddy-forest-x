@@ -7,7 +7,6 @@ enum EType {
   PLAYER,
   HQSHIP,
   SPACESHIP,
-  CAPITAL,
   BLUEPRINT,
   RESEARCH
 }
