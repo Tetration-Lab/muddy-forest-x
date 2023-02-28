@@ -7,6 +7,8 @@ import { PhaserLayer } from '../layer/phaser/phaserLayer'
 import { UILayer } from '../layer/ui/UILayer'
 import { appStore } from '../store/app'
 import { createLoadingStateSystem } from '../system/createLoadingStateSystem'
+import { createCheckFractionSystem } from '../system/createCheckFractionSystem'
+import { useNavigate } from 'react-router-dom'
 
 interface LoadingGameProps {
   msg?: string
@@ -30,6 +32,7 @@ interface GameLoadingState {
   percentage: number
 }
 export const Game = () => {
+  const navigate = useNavigate()
   const store = useStore(appStore, (state) => state)
   const [loaded, setLoaded] = useState(false)
   const [loadingMsg, setLoadingMsg] = useState<GameLoadingState>({
@@ -44,6 +47,17 @@ export const Game = () => {
       if (stage === SyncState.LIVE) {
         console.log('SYNC DONE')
         setLoaded(true)
+        createCheckFractionSystem({
+          network: networkLayer,
+          gotoGame: () => {
+            // do nothing ?
+            console.log('continue game')
+          },
+          gotoIntroPage: () => {
+            console.log('createCheckFractionSystem done')
+            // navigate(`/intro${window.location.search}`)
+          },
+        })
         return
       }
       setLoadingMsg({

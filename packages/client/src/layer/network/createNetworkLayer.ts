@@ -5,7 +5,7 @@ import { SystemTypes } from 'contracts/types/SystemTypes'
 import { SystemAbis } from 'contracts/types/SystemAbis.mjs'
 import { formatEntityID, GodID } from '@latticexyz/network'
 import { setupComponents } from './components'
-import { Wallet } from 'ethers'
+import { ethers, Wallet } from 'ethers'
 
 export async function createNetworkLayer(config: SetupContractConfig) {
   console.log(config, 'config')
@@ -56,12 +56,26 @@ export async function createNetworkLayer(config: SetupContractConfig) {
       id: 12,
     })
   }
+  const setupName = async (name: string) => {
+    await systems['system.SetupName'].executeTyped({
+      name,
+    })
+  }
+
+  const spawn = async (factionId: number, HQShipId: ethers.BigNumber) => {
+    console.log(systems)
+    await systems['system.Spawn'].executeTyped({
+      factionId: factionId,
+      HQShipId: HQShipId.toBigInt(),
+    })
+  }
 
   const debug = async () => {}
   // FOR DEV
   const w = window as any
   w.setupFaction = setupFaction
   w.debug = debug
+  w.spawn = spawn
 
   // --- CONTEXT --------------------------------------------------------------------
   const context = {
@@ -78,6 +92,7 @@ export async function createNetworkLayer(config: SetupContractConfig) {
     actions,
     api: {
       setupFaction,
+      spawn,
     },
     singletonIndex,
     playerIndex,

@@ -1,20 +1,23 @@
 import { Box, Button, CircularProgress, Fade, keyframes, Stack, TextField, Typography, useTheme } from '@mui/material'
 import { Container, SxProps } from '@mui/system'
+import { ethers } from 'ethers'
 import { useFormik } from 'formik'
 import { isEmpty } from 'lodash'
 import { useEffect, useState } from 'react'
 import { FaCheckCircle, FaChevronRight } from 'react-icons/fa'
 import * as yup from 'yup'
+import { useStore } from 'zustand'
 import { CommonTextField } from '../component/common/CommonTextField'
 import { MainButton } from '../component/common/MainButton'
 import { NavBar } from '../component/common/NavBar'
 import { texts } from '../const/texts'
+import { appStore } from '../store/app'
 import { wait } from '../utils/utils'
 
 enum Tribe {
-  PROTOSS = 'protoss',
-  TERRANS = 'terrans',
-  ZERG = 'zerg',
+  APE_APE = 'APE_APE',
+  ALIEN_APE = 'ALIEN_APE',
+  AI_APE = 'AI_APE',
 }
 
 const TOTAL_STEPS = 7
@@ -86,11 +89,23 @@ const NextButton = ({ sx, onClick, disabled = false }: { sx?: SxProps; onClick?:
   )
 }
 
+interface SumitPayload {
+  displayName: string
+}
+
+export const TripeMapperID = {
+  [Tribe.APE_APE]: 10,
+  [Tribe.ALIEN_APE]: 11,
+  [Tribe.AI_APE]: 12,
+}
+
 export const Intro = () => {
   const theme = useTheme()
   const [currentStep, setCurrentStep] = useState(0)
   const [selectedTribe, setSelectedTribe] = useState<Tribe | undefined>()
   const [loading, setLoading] = useState(false)
+  const address = localStorage.getItem('burnerWallet')
+  const store = useStore(appStore, (state) => state)
 
   const formik = useFormik({
     initialValues: { displayName: '' },
@@ -99,13 +114,17 @@ export const Intro = () => {
         displayName: yup.string().required('Please enter your display name'),
       })
       .required(),
-    onSubmit: async (values) => {
-      console.log('values', values)
+    onSubmit: async (values: SumitPayload) => {
+      const fractionID = TripeMapperID[selectedTribe!]
+      console.log('values', values, fractionID)
       // NOTE: mock loading
       setLoading(true)
-      await wait(1500)
+      await wait(150)
+      const hqID = ethers.BigNumber.from(ethers.utils.randomBytes(32))
+      console.log(hqID.toBigInt(), fractionID)
+      if (store.networkLayer) store.networkLayer.api.spawn(fractionID, hqID)
       setLoading(false)
-      goToNextStep()
+      alert('done')
     },
   })
 
@@ -115,7 +134,8 @@ export const Intro = () => {
 
   useEffect(() => {
     if (currentStep === 2) {
-      setTimeout(goToNextStep, 3000)
+      // mock for intializing
+      setTimeout(goToNextStep, 100)
     }
   }, [currentStep])
 
@@ -209,26 +229,26 @@ export const Intro = () => {
                   <Fade in={currentStep === 3}>
                     <Stack spacing={12}>
                       <Typography color="textPrimary">Choose one of your supported fraction:</Typography>
-                      <Stack direction="row" spacing={24} width="100%" justifyContent="center">
+                      <div className="grid grid-cols-1 sm:grid-cols-3">
                         <TribeButton
-                          name="The Protoss"
-                          imgUrl="/assets/tribes/protoss.png"
-                          isSelected={selectedTribe === Tribe.PROTOSS}
-                          onClick={() => setSelectedTribe(Tribe.PROTOSS)}
+                          name="The APE APE"
+                          imgUrl="/assets/images/ape_ape_icon.png"
+                          isSelected={selectedTribe === Tribe.APE_APE}
+                          onClick={() => setSelectedTribe(Tribe.APE_APE)}
                         />
                         <TribeButton
-                          name="The Terrans"
-                          imgUrl="/assets/tribes/terrans.png"
-                          isSelected={selectedTribe === Tribe.TERRANS}
-                          onClick={() => setSelectedTribe(Tribe.TERRANS)}
+                          name="The ALIEN APE"
+                          imgUrl="/assets/images/alien_ape_icon.png"
+                          isSelected={selectedTribe === Tribe.ALIEN_APE}
+                          onClick={() => setSelectedTribe(Tribe.ALIEN_APE)}
                         />
                         <TribeButton
-                          name="The Zerg"
-                          imgUrl="/assets/tribes/zerg.png"
-                          isSelected={selectedTribe === Tribe.ZERG}
-                          onClick={() => setSelectedTribe(Tribe.ZERG)}
+                          name="The AI APE"
+                          imgUrl="/assets/images/ai_ape_icon.png"
+                          isSelected={selectedTribe === Tribe.AI_APE}
+                          onClick={() => setSelectedTribe(Tribe.AI_APE)}
                         />
-                      </Stack>
+                      </div>
                       <NextButton disabled={!selectedTribe} onClick={() => goToNextStep()} />
                     </Stack>
                   </Fade>
@@ -284,7 +304,7 @@ export const Intro = () => {
                               }}
                               variant="outlined"
                               focused={false}
-                              value="0x0000000000000 (Player address)"
+                              value={`${address} (Player address)`}
                               inputProps={{
                                 sx: {
                                   height: 40,
@@ -353,7 +373,9 @@ export const Intro = () => {
                           </Typography>
                           <Button
                             fullWidth
-                            onClick={goToNextStep}
+                            onClick={() => {
+                              goToNextStep()
+                            }}
                             sx={{
                               height: 48,
                               mt: 3,
