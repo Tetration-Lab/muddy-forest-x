@@ -5,6 +5,7 @@ import { useFormik } from 'formik'
 import { isEmpty } from 'lodash'
 import { useEffect, useState } from 'react'
 import { FaCheckCircle, FaChevronRight } from 'react-icons/fa'
+import { useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
 import { useStore } from 'zustand'
 import { CommonTextField } from '../component/common/CommonTextField'
@@ -106,6 +107,7 @@ export const Intro = () => {
   const [loading, setLoading] = useState(false)
   const address = localStorage.getItem('burnerWallet')
   const store = useStore(appStore, (state) => state)
+  const navigate = useNavigate()
 
   const formik = useFormik({
     initialValues: { displayName: '' },
@@ -122,9 +124,14 @@ export const Intro = () => {
       await wait(150)
       const hqID = ethers.BigNumber.from(ethers.utils.randomBytes(32))
       console.log(hqID.toBigInt(), fractionID)
-      if (store.networkLayer) store.networkLayer.api.spawn(fractionID, hqID)
-      setLoading(false)
-      alert('done')
+
+      // await store.networkLayer.api.setupName(values.displayName)
+      try {
+        await store.networkLayer.api.spawn(fractionID, hqID)
+      } finally {
+        navigate(`/${window.location.search}`)
+        setLoading(false)
+      }
     },
   })
 

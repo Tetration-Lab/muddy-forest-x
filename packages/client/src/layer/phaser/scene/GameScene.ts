@@ -8,7 +8,7 @@ import { GAME_HEIGHT, GAME_WIDTH } from '../config/game'
 import { GAME_SCENE } from '../constant/scene'
 import { Tile } from '../utils/Tile'
 import { appStore } from '../../../store/app'
-import { Position, snapPosToGrid, snapValToGrid } from '../../../utils/snapToGrid'
+import { Position, snapPosToGrid, snapToGrid, snapValToGrid } from '../../../utils/snapToGrid'
 import { Hasher } from 'circuits'
 import { workerStore } from '../../../store/worker'
 import { initConfigAnim } from '../anim'
@@ -19,6 +19,8 @@ import { createSpawnCapitalSystem } from '../../../system/createSpawnCapitalSyst
 import { NetworkLayer } from '../../network/types'
 import { IDLE_ANIM, SPRITE } from '../constant/resouce'
 import { HashTwoRespItem } from '../../../miner/hasher.worker'
+
+import { createSpawnHQSystem } from '../../../system/createSpawnHQSystem'
 
 const ZOOM_OUT_LIMIT = 0.01
 const ZOOM_IN_LIMIT = 2
@@ -136,9 +138,17 @@ class GameScene extends Phaser.Scene {
           idleKey = IDLE_ANIM.Capital_3
           break
       }
-      const p = new Planet(this, x * TILE_SIZE, y * TILE_SIZE, spriteKey)
+      const p = new Planet(this, x, y, spriteKey)
       p.setDisplaySize(4 * TILE_SIZE ** 2, 4 * TILE_SIZE ** 2)
       p.play(idleKey)
+    })
+    createSpawnHQSystem(networkLayer, (x: number, y: number, entityID: number) => {
+      const pos = snapToGrid(x, y, 16)
+      console.log('createSpawnHQSystem:pos', pos, networkLayer.playerIndex, entityID)
+      this.followPoint.x = +pos.x
+      this.followPoint.y = +pos.y
+      this.navigation.setPosition(this.followPoint.x, this.followPoint.y)
+      this.add.rectangle(pos.x, pos.y, 16, 16, 0xffff)
     })
   }
 
@@ -176,8 +186,6 @@ class GameScene extends Phaser.Scene {
     )
     sprite2.setDepth(100)
     sprite2.play('p1Idle')
-
-    this.followPoint = new Phaser.Math.Vector2(0, 0)
 
     this.events.on('sendWorker', this.handleWorker)
     this.events.on(Phaser.GameObjects.Events.DESTROY, this.onDestroy)
@@ -221,7 +229,6 @@ class GameScene extends Phaser.Scene {
     this.keyX = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X, false)
     this.keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F, false)
     this.keyG = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G, false)
-    this.navigation = this.add.rectangle(this.followPoint.y, this.followPoint.x, 1, 1, 0x00ff00)
     const keyG = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G, false)
     keyG.on('down', () => {
       this.cursorExplorer.run()
@@ -237,6 +244,8 @@ class GameScene extends Phaser.Scene {
     this.ready = true
   }
   create() {
+    this.followPoint = new Phaser.Math.Vector2(0, 0)
+    this.navigation = this.add.rectangle(this.followPoint.y, this.followPoint.x, 1, 1, 0x00ff00)
     this.onCreate()
   }
 

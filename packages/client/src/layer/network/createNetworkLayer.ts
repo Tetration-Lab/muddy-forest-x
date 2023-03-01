@@ -1,5 +1,5 @@
 import { createPerlin } from '@latticexyz/noise'
-import { createWorld } from '@latticexyz/recs'
+import { createWorld, EntityIndex, EntityIndex } from '@latticexyz/recs'
 import { createActionSystem, setupMUDNetwork, SetupContractConfig } from '@latticexyz/std-client'
 import { SystemTypes } from 'contracts/types/SystemTypes'
 import { SystemAbis } from 'contracts/types/SystemAbis.mjs'
@@ -57,7 +57,8 @@ export async function createNetworkLayer(config: SetupContractConfig) {
     })
   }
   const setupName = async (name: string) => {
-    await systems['system.SetupName'].executeTyped({
+    await systems['system.Name'].executeTyped({
+      entityId: playerIndex,
       name,
     })
   }
@@ -93,6 +94,7 @@ export async function createNetworkLayer(config: SetupContractConfig) {
     api: {
       setupFaction,
       spawn,
+      setupName,
     },
     singletonIndex,
     playerIndex,

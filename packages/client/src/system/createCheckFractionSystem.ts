@@ -12,8 +12,9 @@ export function createCheckFractionSystem({ network, gotoGame, gotoIntroPage }: 
     components: { Faction },
   } = network
 
-  const isExisit = getComponentValue(Faction, network.playerIndex)
-  if (isExisit) {
+  const fraction = getComponentValue(Faction, network.playerIndex)
+  console.log('fraction', fraction, fraction != null)
+  if (fraction) {
     gotoGame()
   } else {
     gotoIntroPage()
