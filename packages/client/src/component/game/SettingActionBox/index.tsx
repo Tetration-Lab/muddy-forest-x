@@ -1,8 +1,9 @@
 import { IconButton, NativeSelect, Stack, Typography, useTheme } from '@mui/material'
 import { useState } from 'react'
-import { FaExclamationCircle, FaMinus, FaPlus } from 'react-icons/fa'
+import { FaExclamationCircle, FaMinus, FaPause, FaPlay, FaPlus } from 'react-icons/fa'
 import { ToolButton } from '../../ToolButton'
 import { minerStore } from '../../../store/miner'
+import { MainButton } from '../../common/MainButton'
 
 export const SettingActionBox = () => {
   const theme = useTheme()
@@ -31,6 +32,56 @@ export const SettingActionBox = () => {
         <Typography px={2} sx={{ fontFamily: 'VT323', fontSize: 24 }}>
           Setting
         </Typography>
+      </Stack>
+      <Stack
+        sx={{
+          backgroundColor: theme.palette.grayScale.black,
+          borderRadius: '4px',
+        }}
+        p={1}
+        spacing={1}
+      >
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Typography>Hashing</Typography>
+          {miner.isExploring ? (
+            <>
+              <Typography
+                fontSize={12}
+                p="4px"
+                sx={{ backgroundColor: theme.palette.success.main, borderRadius: '4px' }}
+              >
+                Active
+              </Typography>
+            </>
+          ) : (
+            <>
+              <Typography
+                fontSize={12}
+                p="4px"
+                sx={{
+                  backgroundColor: theme.palette.grayScale.white,
+                  color: theme.palette.grayScale.almostGray,
+                  borderRadius: '4px',
+                }}
+              >
+                Pause
+              </Typography>
+            </>
+          )}
+        </Stack>
+        <MainButton disableElevation sx={{ gap: 1 }} onClick={() => miner.toggle()}>
+          {miner.isExploring ? (
+            <>
+              <FaPause size={12} />
+              <Typography fontSize={12}>Pause</Typography>
+            </>
+          ) : (
+            <>
+              <FaPlay size={12} />
+              <Typography fontSize={12}>Resume</Typography>
+            </>
+          )}
+        </MainButton>
       </Stack>
       <Stack
         sx={{
@@ -89,7 +140,7 @@ export const SettingActionBox = () => {
           p={1}
         >
           <FaExclamationCircle size={28} color={theme.palette.error.main} />
-          <Typography fontSize={12}>Using more cores may effect your devices performances</Typography>
+          <Typography fontSize={12}>Using more miners may effect your devices performances</Typography>
         </Stack>
       </Stack>
       <Stack

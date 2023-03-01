@@ -37,6 +37,9 @@ export const theme = createTheme({
     error: {
       main: '#D6432F',
     },
+    success: {
+      main: '#4BB543',
+    },
   },
   typography: {
     fontFamily: ['Fira Mono', 'Roboto', 'sans-serif'].join(','),

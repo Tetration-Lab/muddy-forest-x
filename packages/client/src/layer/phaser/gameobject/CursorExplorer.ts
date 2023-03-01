@@ -8,14 +8,9 @@ import { Position } from '../../../utils/snapToGrid'
 import { wait } from '../../../utils/utils'
 import { CHUNK_HEIGHT_SIZE, CHUNK_WIDTH_SIZE, TILE_SIZE } from '../config/chunk'
 
-export enum ExplorerStatus {
-  Run,
-  Wait,
-}
-
 export class CursorExplorer extends Phaser.GameObjects.Sprite {
   currentChunk: Position
-  status = ExplorerStatus.Wait
+  isExploring = false
   exploreCallback: (res: HashTwoRespItem[]) => Promise<void>
   miners: HashWorker[] = []
   isMining = false
@@ -45,8 +40,8 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
   }
 
   async setMiner(miner: number) {
-    const prevStatus = this.status
-    this.status = ExplorerStatus.Wait
+    const prevStatus = this.isExploring
+    this.isExploring = false
     while (this.isMining) {
       await wait(50)
     }
@@ -55,17 +50,24 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
     for (let i = 0; i < miner; i++) {
       this.miners.push(workerStore.getState().createWorker())
     }
-    if (prevStatus === ExplorerStatus.Run) {
+    if (prevStatus) {
+      this.run()
+    }
+  }
+
+  toggle() {
+    this.isExploring = !this.isExploring
+    if (this.isExploring) {
       this.run()
     }
   }
 
   wait() {
-    this.status = ExplorerStatus.Wait
+    this.isExploring = false
   }
 
   async mine() {
-    if (this.status === ExplorerStatus.Run) {
+    if (this.isExploring) {
       this.isMining = true
       const pos: Position[] = []
       while (pos.length != this.miners.length) {
@@ -90,12 +92,12 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
   }
 
   run() {
-    this.status = ExplorerStatus.Run
+    this.isExploring = true
     this.mine()
   }
 
   move() {
-    if (this.status === ExplorerStatus.Wait) {
+    if (!this.isExploring) {
       return
     }
     this.currentChunk = this.miningPattern.nextChunk(this.currentChunk)
