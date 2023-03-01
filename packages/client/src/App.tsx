@@ -1,11 +1,10 @@
 import { SyncState } from '@latticexyz/network'
 import { ThemeProvider } from '@mui/material'
 import { useCallback, useEffect, useState } from 'react'
-import { BrowserRouter, useNavigate } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import { useStore } from 'zustand'
 import { createNetworkLayer } from './layer/network/createNetworkLayer'
 import { createLoadingStateSystem } from './system/createLoadingStateSystem'
-import { createCheckFractionSystem } from './system/createCheckFractionSystem'
 import { AppRoutes } from './router'
 import { appStore } from './store/app'
 import { workerStore } from './store/worker'
@@ -36,7 +35,6 @@ interface GameLoadingState {
 }
 
 function App() {
-  const wStore = useStore(workerStore, (state) => state)
   const store = useStore(appStore, (state) => state)
   const [loaded, setLoaded] = useState(false)
 
@@ -45,10 +43,10 @@ function App() {
     percentage: -1,
   })
   const onInitialSync = useCallback(async () => {
-    const worker = new ComlinkWorker<typeof import('./miner/hasher.worker')>(
-      new URL('./miner/hasher.worker.ts', import.meta.url),
-    )
-    wStore.setWorker(worker)
+    workerStore.setState({
+      createWorker: () =>
+        new ComlinkWorker<typeof import('./miner/hasher.worker')>(new URL('./miner/hasher.worker.ts', import.meta.url)),
+    })
     const networkLayer = await createNetworkLayer(config)
     networkLayer.startSync()
     store.setNetworkLayer(networkLayer)

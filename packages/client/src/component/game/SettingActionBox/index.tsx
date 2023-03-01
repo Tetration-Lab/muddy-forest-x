@@ -1,29 +1,17 @@
-import {
-  Box,
-  Button,
-  Icon,
-  IconButton,
-  MenuItem,
-  NativeSelect,
-  Select,
-  Stack,
-  Typography,
-  useTheme,
-} from '@mui/material'
+import { IconButton, NativeSelect, Stack, Typography, useTheme } from '@mui/material'
 import { useState } from 'react'
 import { FaExclamationCircle, FaMinus, FaPlus } from 'react-icons/fa'
 import { ToolButton } from '../../ToolButton'
-import { useCounter } from 'usehooks-ts'
 import { minerStore } from '../../../store/miner'
 
 export const SettingActionBox = () => {
   const theme = useTheme()
-  const miner = useCounter(minerStore.getState().miner.miner)
+  const miner = minerStore.getState().miner
 
   const [isSettingMiner, setSettingMiner] = useState(false)
-  const setMinerCall = async (miner: number) => {
+  const setMinerCall = async (m: number) => {
     setSettingMiner(true)
-    await minerStore.getState().miner.setMiner(miner)
+    await miner.setMiner(m)
     setSettingMiner(false)
   }
 
@@ -64,10 +52,9 @@ export const SettingActionBox = () => {
                 borderRadius: '6px 0px 0px 6px',
               }}
               onClick={() => {
-                miner.decrement()
-                setMinerCall(miner.count)
+                setMinerCall(miner.miners.length - 1)
               }}
-              disabled={miner.count <= 1 || isSettingMiner}
+              disabled={miner.miners.length <= 1 || isSettingMiner}
             >
               <FaMinus size={12} />
             </IconButton>
@@ -76,7 +63,7 @@ export const SettingActionBox = () => {
               py="2px"
               px={1}
             >
-              {miner.count}
+              {miner.miners.length}
             </Typography>
             <IconButton
               sx={{
@@ -85,10 +72,9 @@ export const SettingActionBox = () => {
                 borderStyle: 'solid',
                 borderRadius: '0px 6px 6px 0px',
               }}
-              disabled={miner.count >= 16 || isSettingMiner}
+              disabled={miner.miners.length >= 16 || isSettingMiner}
               onClick={() => {
-                miner.increment()
-                setMinerCall(miner.count)
+                setMinerCall(miner.miners.length + 1)
               }}
             >
               <FaPlus size={12} />

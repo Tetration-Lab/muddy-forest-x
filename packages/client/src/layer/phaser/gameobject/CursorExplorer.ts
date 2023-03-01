@@ -1,8 +1,9 @@
+import { releaseProxy } from 'comlink'
 import _ from 'lodash'
 import { HashTwoRespItem } from '../../../miner/hasher.worker'
 import { MiningPattern, SpiralPattern } from '../../../miner/MiningPatterns'
 import { minerStore } from '../../../store/miner'
-import { workerStore } from '../../../store/worker'
+import { HashWorker, workerStore } from '../../../store/worker'
 import { Position } from '../../../utils/snapToGrid'
 import { wait } from '../../../utils/utils'
 import { CHUNK_HEIGHT_SIZE, CHUNK_WIDTH_SIZE, TILE_SIZE } from '../config/chunk'
@@ -11,8 +12,8 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
   currentChunk: Position
   status: string
   exploreCallback: (res: HashTwoRespItem[]) => Promise<void>
-  miner = 10
-  isMining = []
+  miners: HashWorker[] = []
+  isMining = false
   miningPattern: MiningPattern
   spawnPlanetMap = new Map<string, boolean>()
   constructor(
@@ -35,13 +36,18 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
     this.exploreCallback = exploreCallback
     this.miningPattern = new SpiralPattern(this.currentChunk)
     minerStore.setState({ miner: this })
+    this.miners = [workerStore.getState().createWorker()]
   }
 
   async setMiner(miner: number) {
     this.status = 'wait'
-    while (this.isMining.every((e) => !e)) {
-      console.log(this.isMining)
-      await wait(100)
+    while (this.isMining) {
+      await wait(50)
+    }
+    this.miners.forEach((e) => e[releaseProxy]())
+    this.miners = []
+    for (let i = 0; i < miner; i++) {
+      this.miners.push(workerStore.getState().createWorker())
     }
     this.run()
   }
@@ -50,35 +56,34 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
     this.status = 'wait'
   }
 
-  async mine(i: number) {
-    const position = this.currentChunk
-    const key = `${this.currentChunk.x}-${this.currentChunk.y}`
-
-    this.move()
-
+  async mine() {
     if (this.status === 'run') {
-      this.isMining[i] = true
-      if (!this.spawnPlanetMap.has(key)) {
-        const res = await workerStore
-          .getState()
-          .worker.HashChunk(CHUNK_WIDTH_SIZE, CHUNK_HEIGHT_SIZE, position.x, position.y)
-        await this.exploreCallback(res)
-        this.spawnPlanetMap.set(key, true)
-        this.mine(i)
-      } else {
-        this.mine(i)
+      this.isMining = true
+      const pos: Position[] = []
+      while (pos.length != this.miners.length) {
+        const position = this.currentChunk
+        const key = `${this.currentChunk.x}-${this.currentChunk.y}`
+
+        this.move()
+
+        if (!this.spawnPlanetMap.has(key)) {
+          pos.push(position)
+          this.spawnPlanetMap.set(key, true)
+        }
       }
+      const res = await Promise.all(
+        pos.map((p, i) => this.miners[i].HashChunk(CHUNK_WIDTH_SIZE, CHUNK_HEIGHT_SIZE, p.x, p.y)),
+      )
+      await this.exploreCallback(_.flatten(res))
+      this.mine()
     } else {
-      this.isMining[i] = false
+      this.isMining = false
     }
   }
 
   run() {
     this.status = 'run'
-    this.isMining = Array(this.miner)
-    for (let i = 0; i < this.miner; i++) {
-      this.mine(i)
-    }
+    this.mine()
   }
 
   move() {
