@@ -228,7 +228,22 @@ class GameScene extends Phaser.Scene {
     this.input.on('pointerup', (p) => {
       if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
         const position = snapToGrid(p.worldX, p.worldY, 16)
-        this.selfShip.setPosition(position.x, position.y)
+        this.tweens.add({
+          targets: [this.selfShip],
+          alpha: 1,
+          x: {
+            from: this.selfShip.x,
+            to: position.x,
+          },
+          y: {
+            from: this.selfShip.y,
+            to: position.y,
+          },
+          ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'
+          duration: 1000,
+          repeat: 0, // -1: infinity
+          yoyo: false,
+        })
         this.gameUIState = GAME_UI_STATE.NONE
       }
     })
