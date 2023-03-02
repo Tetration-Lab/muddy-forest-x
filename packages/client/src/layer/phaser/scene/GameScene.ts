@@ -18,9 +18,9 @@ import { createSpawnCapitalSystem } from '../../../system/createSpawnCapitalSyst
 import { NetworkLayer } from '../../network/types'
 import { IDLE_ANIM, IMAGE, SPRITE } from '../constant/resource'
 import { HashTwoRespItem } from '../../../miner/hasher.worker'
-
 import { createSpawnHQShipSystem } from '../../../system/createSpawnHQShipSystem'
 import { PLANET_RARITY } from '../../../const/planet'
+import localforage from 'localforage'
 
 const ZOOM_OUT_LIMIT = 0.01
 const ZOOM_IN_LIMIT = 2
