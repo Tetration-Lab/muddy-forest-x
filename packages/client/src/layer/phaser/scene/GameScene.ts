@@ -8,9 +8,8 @@ import { GAME_HEIGHT, GAME_WIDTH } from '../config/game'
 import { GAME_SCENE } from '../constant/scene'
 import { Tile } from '../utils/Tile'
 import { appStore } from '../../../store/app'
-import { Position, snapPosToGrid, snapToGrid, snapValToGrid } from '../../../utils/snapToGrid'
+import { snapPosToGrid, snapToGrid } from '../../../utils/snapToGrid'
 import { Hasher } from 'circuits'
-import { workerStore } from '../../../store/worker'
 import { initConfigAnim } from '../anim'
 import { CursorExplorer } from '../gameobject/CursorExplorer'
 import { Planet } from '../gameobject/Planet'
@@ -21,6 +20,7 @@ import { IDLE_ANIM, IMAGE, SPRITE } from '../constant/resource'
 import { HashTwoRespItem } from '../../../miner/hasher.worker'
 
 import { createSpawnHQShipSystem } from '../../../system/createSpawnHQShipSystem'
+import { PLANET_RARITY } from '../../../const/planet'
 
 const ZOOM_OUT_LIMIT = 0.01
 const ZOOM_IN_LIMIT = 2
@@ -73,13 +73,12 @@ class GameScene extends Phaser.Scene {
   }
 
   handleWorker = async (res: HashTwoRespItem[]) => {
-    const checkVal = BigInt('0x2d2f32534e97d979c3f2b616170489791c3f6706d539c62f89fd52bdb46c1c')
     for (let i = 0; i < res.length; i++) {
       const hVal = res[i].val
       const tileX = res[i].x
       const tileY = res[i].y
       //console.log(tileX, tileY, hVal)
-      const check = BigInt(hVal) < checkVal
+      const check = BigInt(hVal) < PLANET_RARITY
       if (check) {
         //console.log('spawn!', tileX, tileY)
         const sprite = new Planet(this, 0, 0, 'dogeSheet')
