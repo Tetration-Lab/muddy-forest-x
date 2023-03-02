@@ -129,7 +129,7 @@ export const Intro = () => {
       try {
         await store.networkLayer.api.spawn(fractionID, hqID)
       } finally {
-        await wait(1000)
+        await wait(5000)
         navigate(`/${window.location.search}`)
         setLoading(false)
       }

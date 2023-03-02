@@ -7,6 +7,7 @@ export const SPRITE = {
 
 export const IMAGE = {
   AI_SHIP: 'AI_SHIP',
+  SELECTED_CURSOR: 'SELECTED_CURSOR',
 }
 
 export const IDLE_ANIM = {

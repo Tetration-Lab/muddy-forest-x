@@ -60,8 +60,9 @@ class GameScene extends Phaser.Scene {
   perlin: Perlin | null = null
   hasher: Hasher
   cursorExplorer!: CursorExplorer
-  cusorMove!: Phaser.GameObjects.Rectangle
+  cursorMove!: Phaser.GameObjects.Image
   gameUIState: GAME_UI_STATE = GAME_UI_STATE.NONE
+  selfShip!: HQShip
   constructor() {
     super(GAME_SCENE)
     if (import.meta.env.DEV) {
@@ -163,8 +164,12 @@ class GameScene extends Phaser.Scene {
         this.followPoint.y = +pos.y
         this.navigation.setPosition(this.followPoint.x, this.followPoint.y)
         ship.registerOnClick((pointer: Phaser.Input.Pointer) => {
-          this.gameUIState = GAME_UI_STATE.SELECTED_HQ_SHIP
+          setTimeout(() => {
+            this.gameUIState = GAME_UI_STATE.SELECTED_HQ_SHIP
+          }, 100)
         })
+        ship.setDepth(1000)
+        this.selfShip = ship
       }
     })
   }
@@ -172,8 +177,11 @@ class GameScene extends Phaser.Scene {
   async onCreate() {
     initConfigAnim(this)
     this.input.setPollAlways()
-    this.cusorMove = this.add.rectangle(0, 0, 16, 16, 0x00ff00, 0.1)
-    this.cusorMove.setOrigin(0)
+    this.cursorMove = this.add.image(0, 0, IMAGE.SELECTED_CURSOR)
+    this.cursorMove.setDisplaySize(16, 16)
+    // this.add.rectangle(0, 0, 16, 16, 0xff0000, 0.8)
+    this.cursorMove.setDepth(1000)
+    this.cursorMove.setOrigin(0)
 
     const { networkLayer } = appStore.getState()
     if (networkLayer) {
@@ -190,19 +198,39 @@ class GameScene extends Phaser.Scene {
 
     this.chunkLoader = new ChunkLoader(this, { tileSize: TILE_SIZE }, this.rt)
     this.chunkLoader.setUpdateCbToChunks((t: Tile) => {
-      t.alpha = 0.1
+      t.alpha = 0.5
+      console.log('call')
+      t.registerOnClick((pointer: Phaser.Input.Pointer) => {
+        console.log('click')
+        switch (this.gameUIState) {
+          case GAME_UI_STATE.NONE:
+            return
+          case GAME_UI_STATE.SELECTED_HQ_SHIP:
+            // eslint-disable-next-line no-case-declarations
+            const position = snapToGrid(pointer.worldX, pointer.worldY, 16)
+            console.log(position)
+            this.selfShip.setPosition(position.x, position.y)
+            // this.gameUIState = GAME_UI_STATE.NONE
+            break
+        }
+      })
     })
     this.chunkLoader.initChunks(this.followPoint.x, this.followPoint.y)
 
     const cam = this.cameras.main
     cam.zoom = 0.5
     this.input.on('pointermove', (p) => {
-      if (this.gameUIState !== GAME_UI_STATE.NONE) {
-        return
-      }
       if (!p.isDown) return
       this.followPoint.x -= (p.x - p.prevPosition.x) / cam.zoom
       this.followPoint.y -= (p.y - p.prevPosition.y) / cam.zoom
+    })
+
+    this.input.on('pointerup', (p) => {
+      if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
+        const position = snapToGrid(p.worldX, p.worldY, 16)
+        this.selfShip.setPosition(position.x, position.y)
+        this.gameUIState = GAME_UI_STATE.NONE
+      }
     })
 
     this.input.on('wheel', function (pointer, gameObjects, deltaX, deltaY, deltaZ) {
@@ -234,9 +262,9 @@ class GameScene extends Phaser.Scene {
     this.navigation.setDepth(10)
     this.cameras.main.startFollow(this.navigation)
 
-    this.input.on('pointerdown', (pointer: any) => {
-      console.log(Math.floor(+pointer.worldX / 16), Math.floor(+pointer.worldY / 16))
-    })
+    // this.input.on('pointerup', (pointer: any) => {
+    //   console.log(Math.floor(+pointer.worldX / 16), Math.floor(+pointer.worldY / 16))
+    // })
 
     this.ready = true
   }
@@ -246,10 +274,24 @@ class GameScene extends Phaser.Scene {
     this.onCreate()
   }
 
+  updateCursor() {
+    const pointer = this.input.activePointer
+    const gridPos = snapToGrid(pointer.worldX, pointer.worldY, 16)
+    this.cursorMove.setPosition(gridPos.x, gridPos.y)
+  }
+
   update(time: number, delta: number): void {
     if (!this.ready) {
       return
     }
+
+    if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
+      this.cursorMove.setVisible(true)
+    } else {
+      this.cursorMove.setVisible(false)
+    }
+
+    this.updateCursor()
     //this.cursorExplorer.move()
     //const cursorPos = snapToGrid(
     //this.cursorExplorer.currentTilePosition.x,

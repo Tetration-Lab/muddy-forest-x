@@ -10,6 +10,7 @@ export class Tile extends Phaser.GameObjects.Container {
     this.sprite = sprite
     this.add(sprite)
     this.setVisible(false)
+    this.sprite.setInteractive()
   }
 
   tilePosition() {
@@ -19,6 +20,13 @@ export class Tile extends Phaser.GameObjects.Container {
     }
   }
 
+  registerOnClick(callback: (pointer?: Phaser.Input.Pointer) => void): this {
+    this.sprite.on('pointerup', () => {
+      alert('ok')
+      callback()
+    })
+    return this
+  }
   centerPosition() {
     return {
       x: this.x + TILE_SIZE / 2,
