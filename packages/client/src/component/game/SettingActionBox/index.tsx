@@ -5,6 +5,7 @@ import { ToolButton } from '../../ToolButton'
 import { minerStore } from '../../../store/miner'
 import { MainButton } from '../../common/MainButton'
 import { MiningPatternType } from '../../../miner/MiningPatterns'
+import { MAX_MINER_INSTANCE } from '../../../const/miner'
 
 export const SettingActionBox = () => {
   const theme = useTheme()
@@ -124,7 +125,7 @@ export const SettingActionBox = () => {
                 borderStyle: 'solid',
                 borderRadius: '0px 6px 6px 0px',
               }}
-              disabled={miner.miners.length >= 16 || isSettingMiner}
+              disabled={miner.miners.length >= MAX_MINER_INSTANCE || isSettingMiner}
               onClick={() => {
                 setMinerCall(miner.miners.length + 1)
               }}
