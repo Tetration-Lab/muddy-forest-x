@@ -17,10 +17,10 @@ import { Planet } from '../gameobject/Planet'
 import { gameStore, SendResourceData } from '../../../store/game'
 import { createSpawnCapitalSystem } from '../../../system/createSpawnCapitalSystem'
 import { NetworkLayer } from '../../network/types'
-import { IDLE_ANIM, SPRITE } from '../constant/resouce'
+import { IDLE_ANIM, IMAGE, SPRITE } from '../constant/resource'
 import { HashTwoRespItem } from '../../../miner/hasher.worker'
 
-import { createSpawnHQSystem } from '../../../system/createSpawnHQSystem'
+import { createSpawnHQShipSystem } from '../../../system/createSpawnHQShipSystem'
 
 const ZOOM_OUT_LIMIT = 0.01
 const ZOOM_IN_LIMIT = 2
@@ -142,13 +142,16 @@ class GameScene extends Phaser.Scene {
       p.setDisplaySize(4 * TILE_SIZE ** 2, 4 * TILE_SIZE ** 2)
       p.play(idleKey)
     })
-    createSpawnHQSystem(networkLayer, (x: number, y: number, entityID: number) => {
+    createSpawnHQShipSystem(networkLayer, (x: number, y: number, entityID: number, owner: string) => {
       const pos = snapToGrid(x, y, 16)
-      console.log('createSpawnHQSystem:pos', pos, networkLayer.playerIndex, entityID)
-      this.followPoint.x = +pos.x
-      this.followPoint.y = +pos.y
-      this.navigation.setPosition(this.followPoint.x, this.followPoint.y)
-      this.add.rectangle(pos.x, pos.y, 16, 16, 0xffff)
+      console.log('createSpawnHQShipSystem:pos', pos, networkLayer.playerIndex, entityID)
+      if (owner === networkLayer.connectedAddress) {
+        this.followPoint.x = +pos.x
+        this.followPoint.y = +pos.y
+        this.navigation.setPosition(this.followPoint.x, this.followPoint.y)
+      }
+      // this.add.rectangle(pos.x, pos.y, 16, 16, 0xffff)
+      this.add.image(pos.x, pos.y, IMAGE.AI_SHIP).setDepth(100)
     })
   }
 
@@ -159,9 +162,6 @@ class GameScene extends Phaser.Scene {
     if (networkLayer) {
       this.onSetUpSystem(networkLayer)
     }
-    //this.redRect = this.add.rectangle(0, 0, TILE_SIZE / 2, TILE_SIZE / 2, 0xff0000)
-    //this.redRect.setDepth(100)
-    //this.redRect.setVisible(false)
 
     const p8 = new Planet(this, 0, 0, 'p8Sheet')
     p8.setPositionWithDebug(

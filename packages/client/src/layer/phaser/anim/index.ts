@@ -1,4 +1,4 @@
-import { IDLE_ANIM, SPRITE } from '../constant/resouce'
+import { IDLE_ANIM, SPRITE } from '../constant/resource'
 
 export const initConfigAnim = (scene: Phaser.Scene) => {
   const idle = {

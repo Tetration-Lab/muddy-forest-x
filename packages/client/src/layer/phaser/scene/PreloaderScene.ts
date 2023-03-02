@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { SPRITE } from '../constant/resouce'
+import { IMAGE, SPRITE } from '../constant/resource'
 import { MAIN_SCENE, PRELOADER_SCENE } from '../constant/scene'
 class PreloaderScene extends Phaser.Scene {
   constructor() {
@@ -7,6 +7,7 @@ class PreloaderScene extends Phaser.Scene {
   }
 
   preload() {
+    this.load.image(IMAGE.AI_SHIP, 'assets/sprite/ai_ship.png')
     this.load.spritesheet('dogeSheet', 'assets/sprite/P4_48px_v2.png', { frameWidth: 48, frameHeight: 48 })
     this.load.spritesheet('p1Sheet', 'assets/sprite/P1_24px_v4.png', { frameWidth: 24, frameHeight: 24 })
     this.load.spritesheet('p2Sheet', 'assets/sprite/P2_48px_v3.png', { frameWidth: 48, frameHeight: 48 })

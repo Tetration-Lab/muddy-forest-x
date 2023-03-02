@@ -23,6 +23,7 @@ export async function createNetworkLayer(config: SetupContractConfig) {
     typeof _components,
     SystemTypes
   >(config, world, _components, SystemAbis)
+  const connectedAddress = network.connectedAddress.get()
   const playerIndex = world.registerEntity({ id: formatEntityID(network.connectedAddress.get()) })
 
   // --- ACTION SYSTEM --------------------------------------------------------------
@@ -98,6 +99,7 @@ export async function createNetworkLayer(config: SetupContractConfig) {
     },
     singletonIndex,
     playerIndex,
+    connectedAddress,
   }
 
   return context
