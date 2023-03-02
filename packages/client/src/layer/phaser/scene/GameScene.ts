@@ -24,6 +24,8 @@ import { createSpawnHQShipSystem } from '../../../system/createSpawnHQShipSystem
 
 const ZOOM_OUT_LIMIT = 0.01
 const ZOOM_IN_LIMIT = 2
+
+const debug = import.meta.env.DEV
 class GameScene extends Phaser.Scene {
   bg!: Phaser.GameObjects.TileSprite
   logo!: Phaser.Types.Physics.Arcade.ImageWithDynamicBody
@@ -89,7 +91,12 @@ class GameScene extends Phaser.Scene {
           TILE_SIZE,
           sprite.displayWidth,
         )
-        sprite.setPositionWithDebug(pos.x, pos.y, 0x00ff00)
+        if (debug) {
+          sprite.setPositionWithDebug(pos.x, pos.y, 0x00ff00)
+        } else {
+          sprite.setPosition(pos.x, pos.y)
+        }
+
         sprite.setDepth(100)
         sprite.play('doge')
         const imageUri = this.textures.getBase64('dogeSheet', 0)
@@ -120,8 +127,6 @@ class GameScene extends Phaser.Scene {
 
   onSetUpSystem(networkLayer: NetworkLayer) {
     createSpawnCapitalSystem(networkLayer, (x: number, y: number, entityID: number, fractionID: number) => {
-      //
-      console.log(entityID, fractionID, 'fractionID')
       let spriteKey = SPRITE.Capital_1
       let idleKey = IDLE_ANIM.Capital_1
       switch (fractionID) {
@@ -162,30 +167,6 @@ class GameScene extends Phaser.Scene {
     if (networkLayer) {
       this.onSetUpSystem(networkLayer)
     }
-
-    const p8 = new Planet(this, 0, 0, 'p8Sheet')
-    p8.setPositionWithDebug(
-      snapValToGrid(800, TILE_SIZE, p8.displayWidth),
-      snapValToGrid(600, TILE_SIZE, p8.displayWidth),
-    )
-    p8.setDepth(100)
-    p8.play('p8Idle')
-
-    const sprite = new Planet(this, 0, 0, 'dogeSheet')
-    sprite.setPositionWithDebug(
-      snapValToGrid(800, TILE_SIZE, sprite.displayWidth),
-      snapValToGrid(451, TILE_SIZE, sprite.displayWidth),
-    )
-    sprite.setDepth(100)
-    sprite.play('doge')
-
-    const sprite2 = new Planet(this, 0, 0, 'p1Sheet')
-    sprite2.setPositionWithDebug(
-      snapValToGrid(800, TILE_SIZE, sprite2.displayWidth),
-      snapValToGrid(500, TILE_SIZE, sprite2.displayWidth),
-    )
-    sprite2.setDepth(100)
-    sprite2.play('p1Idle')
 
     this.events.on('sendWorker', this.handleWorker)
     this.events.on(Phaser.GameObjects.Events.DESTROY, this.onDestroy)
