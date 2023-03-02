@@ -31,7 +31,7 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
     this.setDepth(1000)
     this.currentChunk = {
       x: Math.floor(position.x / TILE_SIZE / CHUNK_WIDTH_SIZE),
-      y: Math.floor(position.x / TILE_SIZE / CHUNK_HEIGHT_SIZE),
+      y: Math.floor(position.y / TILE_SIZE / CHUNK_HEIGHT_SIZE),
     }
     this.exploreCallback = exploreCallback
     this.miningPattern = new SpiralPattern(this.currentChunk)

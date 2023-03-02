@@ -20,7 +20,6 @@ import { IDLE_ANIM, IMAGE, SPRITE } from '../constant/resource'
 import { HashTwoRespItem } from '../../../miner/hasher.worker'
 import { createSpawnHQShipSystem } from '../../../system/createSpawnHQShipSystem'
 import { PLANET_RARITY } from '../../../const/planet'
-import localforage from 'localforage'
 import { HQShip } from '../gameobject/HQShip'
 
 const ZOOM_OUT_LIMIT = 0.01
@@ -185,7 +184,7 @@ class GameScene extends Phaser.Scene {
     this.events.on(Phaser.GameObjects.Events.DESTROY, this.onDestroy)
 
     this.rt = this.add.renderTexture(0, 0, GAME_WIDTH, GAME_HEIGHT)
-    this.cursorExplorer = new CursorExplorer(this, { x: 0, y: 0 }, 'explorerSheet', this.handleWorker)
+    this.cursorExplorer = new CursorExplorer(this, this.followPoint, 'explorerSheet', this.handleWorker)
     this.cursorExplorer.run()
     this.cursorExplorer.play(IDLE_ANIM.Explorer_Idle)
 
