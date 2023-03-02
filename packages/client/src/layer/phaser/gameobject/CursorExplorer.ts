@@ -1,7 +1,14 @@
 import { releaseProxy } from 'comlink'
 import _ from 'lodash'
 import { HashTwoRespItem } from '../../../miner/hasher.worker'
-import { MiningPattern, MiningPatternType, SpiralPattern, SwissCheesePattern } from '../../../miner/MiningPatterns'
+import {
+  MiningPattern,
+  MiningPatternType,
+  SpiralPattern,
+  SwissCheesePattern,
+  TowardsCenterPattern,
+  TowardsCenterPatternV2,
+} from '../../../miner/MiningPatterns'
 import { minerStore } from '../../../store/miner'
 import { HashWorker, workerStore } from '../../../store/worker'
 import { Position } from '../../../utils/snapToGrid'
@@ -46,6 +53,12 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
         break
       case MiningPatternType.SwissCheese:
         this.miningPattern = new SwissCheesePattern(this.miningPattern.fromChunk)
+        break
+      case MiningPatternType.TowardsCenter:
+        this.miningPattern = new TowardsCenterPattern(this.miningPattern.fromChunk)
+        break
+      case MiningPatternType.TowardsCenterV2:
+        this.miningPattern = new TowardsCenterPatternV2(this.miningPattern.fromChunk)
         break
     }
   }

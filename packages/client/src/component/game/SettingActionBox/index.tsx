@@ -166,11 +166,17 @@ export const SettingActionBox = () => {
             fontSize: 12,
           }}
           onChange={(c) => {
-            miner.setMiningPattern(MiningPatternType[MiningPatternType[+c.target.value]])
+            miner.setMiningPattern(MiningPatternType[c.target.value])
           }}
         >
-          <option value={0}>Spiral</option>
-          <option value={1}>Swiss Cheese</option>
+          {[...Array(2).keys()].map((i) => {
+            const ty = MiningPatternType[i]
+            return (
+              <option value={ty} key={ty}>
+                {ty}
+              </option>
+            )
+          })}
         </NativeSelect>
       </Stack>
     </Stack>
