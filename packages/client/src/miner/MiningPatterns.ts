@@ -3,7 +3,7 @@ export interface Rectangle {
   y: number
 }
 
-export const enum MiningPatternType {
+export enum MiningPatternType {
   Spiral,
   SwissCheese,
 }
@@ -11,6 +11,7 @@ export const enum MiningPatternType {
 export interface MiningPattern {
   type: MiningPatternType
   fromChunk: Rectangle
+  setFromChunk: (loc: Rectangle) => void
   nextChunk: (prevLoc: Rectangle) => Rectangle
 }
 
@@ -20,6 +21,10 @@ export class SpiralPattern implements MiningPattern {
 
   constructor(center: Rectangle) {
     this.fromChunk = center
+  }
+
+  setFromChunk = (loc: Rectangle) => {
+    this.fromChunk = loc
   }
 
   nextChunk(chunk: Rectangle): Rectangle {
@@ -59,6 +64,10 @@ export class SwissCheesePattern implements MiningPattern {
 
   constructor(center: Rectangle) {
     this.fromChunk = center
+  }
+
+  setFromChunk = (loc: Rectangle) => {
+    this.fromChunk = loc
   }
 
   nextChunk(chunk: Rectangle): Rectangle {

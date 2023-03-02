@@ -4,6 +4,7 @@ import { FaExclamationCircle, FaMinus, FaPause, FaPlay, FaPlus } from 'react-ico
 import { ToolButton } from '../../ToolButton'
 import { minerStore } from '../../../store/miner'
 import { MainButton } from '../../common/MainButton'
+import { MiningPatternType } from '../../../miner/MiningPatterns'
 
 export const SettingActionBox = () => {
   const theme = useTheme()
@@ -162,6 +163,9 @@ export const SettingActionBox = () => {
             backgroundColor: theme.palette.grayScale.almostDarkGray,
             px: 0.5,
             fontSize: 12,
+          }}
+          onChange={(c) => {
+            miner.setMiningPattern(MiningPatternType[MiningPatternType[+c.target.value]])
           }}
         >
           <option value={0}>Spiral</option>
