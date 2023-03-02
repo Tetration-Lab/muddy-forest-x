@@ -93,6 +93,13 @@ export const UILayer = () => {
           </div>
         </div>
       </div>
+      <div className="absolute top-1/2 right-0">
+        <ToolButton
+          title={'Teleport'}
+          iconSrc="./assets/svg/build-icon-2.svg"
+          onClick={handleToolsClick(GameActionBoxMode.Build)}
+        />
+      </div>
       {/*</ClickAwayListener>*/}
       {/* debug */}
       <div className="absolute top-50 left-0">

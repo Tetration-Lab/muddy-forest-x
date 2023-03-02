@@ -21,11 +21,17 @@ import { HashTwoRespItem } from '../../../miner/hasher.worker'
 import { createSpawnHQShipSystem } from '../../../system/createSpawnHQShipSystem'
 import { PLANET_RARITY } from '../../../const/planet'
 import localforage from 'localforage'
+import { HQShip } from '../gameobject/HQShip'
 
 const ZOOM_OUT_LIMIT = 0.01
 const ZOOM_IN_LIMIT = 2
 
-const debug = import.meta.env.DEV
+const debug = import.meta.env.DEV && false
+
+export enum GAME_UI_STATE {
+  NONE = 'NONE',
+  SELECTED_HQ_SHIP = 'SELECTED_HQ_SHIP',
+}
 class GameScene extends Phaser.Scene {
   bg!: Phaser.GameObjects.TileSprite
   logo!: Phaser.Types.Physics.Arcade.ImageWithDynamicBody
@@ -48,12 +54,15 @@ class GameScene extends Phaser.Scene {
   keyX!: Phaser.Input.Keyboard.Key
   keyF!: Phaser.Input.Keyboard.Key
   keyG!: Phaser.Input.Keyboard.Key
+  keyESC!: Phaser.Input.Keyboard.Key
   redRect!: Phaser.GameObjects.Rectangle
   rt!: Phaser.GameObjects.RenderTexture
   ready = false
   perlin: Perlin | null = null
   hasher: Hasher
   cursorExplorer!: CursorExplorer
+  cusorMove!: Phaser.GameObjects.Rectangle
+  gameUIState: GAME_UI_STATE = GAME_UI_STATE.NONE
   constructor() {
     super(GAME_SCENE)
     if (import.meta.env.DEV) {
@@ -148,19 +157,24 @@ class GameScene extends Phaser.Scene {
     })
     createSpawnHQShipSystem(networkLayer, (x: number, y: number, entityID: number, owner: string) => {
       const pos = snapToGrid(x, y, 16)
-      console.log('createSpawnHQShipSystem:pos', pos, networkLayer.playerIndex, entityID)
+      const ship = new HQShip(this, pos.x, pos.y, IMAGE.AI_SHIP, entityID, owner)
+      ship.setDepth(100)
       if (owner === networkLayer.connectedAddress) {
         this.followPoint.x = +pos.x
         this.followPoint.y = +pos.y
         this.navigation.setPosition(this.followPoint.x, this.followPoint.y)
+        ship.registerOnClick((pointer: Phaser.Input.Pointer) => {
+          this.gameUIState = GAME_UI_STATE.SELECTED_HQ_SHIP
+        })
       }
-      // this.add.rectangle(pos.x, pos.y, 16, 16, 0xffff)
-      this.add.image(pos.x, pos.y, IMAGE.AI_SHIP).setDepth(100)
     })
   }
 
   async onCreate() {
     initConfigAnim(this)
+    this.input.setPollAlways()
+    this.cusorMove = this.add.rectangle(0, 0, 16, 16, 0x00ff00, 0.1)
+    this.cusorMove.setOrigin(0)
 
     const { networkLayer } = appStore.getState()
     if (networkLayer) {
@@ -184,6 +198,9 @@ class GameScene extends Phaser.Scene {
     const cam = this.cameras.main
     cam.zoom = 0.5
     this.input.on('pointermove', (p) => {
+      if (this.gameUIState !== GAME_UI_STATE.NONE) {
+        return
+      }
       if (!p.isDown) return
       this.followPoint.x -= (p.x - p.prevPosition.x) / cam.zoom
       this.followPoint.y -= (p.y - p.prevPosition.y) / cam.zoom
@@ -209,6 +226,7 @@ class GameScene extends Phaser.Scene {
     this.keyX = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X, false)
     this.keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F, false)
     this.keyG = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G, false)
+    this.keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC, false)
     const keyG = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G, false)
     keyG.on('down', () => {
       this.cursorExplorer.run()
@@ -271,6 +289,9 @@ class GameScene extends Phaser.Scene {
     }
 
     const cam = this.cameras.main
+    if (this.keyESC.isDown) {
+      this.gameUIState = GAME_UI_STATE.NONE
+    }
     if (this.keyW.isDown) {
       this.followPoint.y -= this.cameraSpeed / cam.zoom
     }

@@ -1,6 +1,7 @@
 import { getComponentValue, Has, HasValue, runQuery } from '@latticexyz/recs'
 import { EntityType } from '../const/types'
 import { NetworkLayer } from '../layer/network/types'
+import { TILE_SIZE } from '../layer/phaser/config/chunk'
 import { hexToInt } from '../utils/utils'
 
 export type Callback = (x: number, y: number, eid: number, owner: string) => void
@@ -19,7 +20,7 @@ export function createSpawnHQShipSystem(network: NetworkLayer, callback: Callbac
     console.log('createSpawnHQShipSystem:position', hexToInt(position.x), hexToInt(position.y), 'eid', entity)
     console.log('createSpawnHQShipSystem:faction', faction)
     const ownerStr = owner.value as unknown as string
-    callback(hexToInt(position.x), hexToInt(position.y), entity, ownerStr)
+    callback(hexToInt(position.x) * TILE_SIZE, hexToInt(position.y) * TILE_SIZE, entity, ownerStr)
   })
   console.log('createSpawnHQShipSystem:end')
 }
