@@ -12,7 +12,7 @@
     "dev": "mud deploy-contracts --dev --watch --openUrl http://localhost:3000?dev=true",
     "deploy": "mud deploy-contracts",
     "lint": "yarn prettier && yarn solhint",
-    "yolo": "npx mud deploy-contracts --rpc https://follower.testnet-chain.linfra.xyz --deployerPrivateKey",
+    "yolo": "npx mud deploy-contracts --gasPrice 2000000000 --rpc https://follower.testnet-chain.linfra.xyz --deployerPrivateKey",
     "----- INTERNAL -----": "---------------------------",
     "prettier": "prettier --write 'src/**/*.sol'",
     "solhint": "solhint --config ./.solhint.json 'src/**/*.sol' --fix"
