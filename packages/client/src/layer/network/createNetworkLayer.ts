@@ -7,6 +7,7 @@ import { createFaucetService, formatEntityID, GodID } from '@latticexyz/network'
 import { setupComponents } from './components'
 import { ethers, utils, Wallet } from 'ethers'
 import { faucetUrl, initialGasPrice } from '../../config'
+import { CAPITAL_ID } from '../phaser/constant/resource'
 
 export async function createNetworkLayer(config: SetupContractConfig) {
   console.log(config, 'config')
@@ -54,7 +55,7 @@ export async function createNetworkLayer(config: SetupContractConfig) {
         y: -250,
       },
       name: 'Ape Ape',
-      id: 10,
+      id: CAPITAL_ID.APE_APE,
     })
     await systems['system.SetupFaction'].executeTyped({
       capitalPosition: {
@@ -62,7 +63,7 @@ export async function createNetworkLayer(config: SetupContractConfig) {
         y: 500,
       },
       name: 'AI Ape',
-      id: 11,
+      id: CAPITAL_ID.APE_AI,
     })
     await systems['system.SetupFaction'].executeTyped({
       capitalPosition: {
@@ -70,7 +71,7 @@ export async function createNetworkLayer(config: SetupContractConfig) {
         y: 500,
       },
       name: 'Alien Ape',
-      id: 12,
+      id: CAPITAL_ID.APE_ALIEN,
     })
   }
 

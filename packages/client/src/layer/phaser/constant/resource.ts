@@ -3,6 +3,9 @@ export const SPRITE = {
   Capital_2: 'Capital_2',
   Capital_3: 'Capital_3',
   Capital_4: 'Capital_4',
+  APE_APE_CAPITAL: 'APE_APE_CAPITAL',
+  APE_ALINE_CAPITAL: 'APE_ALINE_CAPITAL',
+  APE_AI_CAPITAL: 'APE_AI_CAPITAL',
 }
 
 export const IMAGE = {
@@ -16,4 +19,13 @@ export const IDLE_ANIM = {
   Capital_3: 'Capital_3_idle',
   Capital_4: 'Capital_4_idle',
   Explorer_Idle: 'explorer_idle',
+  APE_APE_CAPITAL: 'APE_APE_CAPITAL_idle',
+  APE_ALINE_CAPITAL: 'APE_ALINE_CAPITAL_idle',
+  APE_AI_CAPITAL: 'APE_AI_CAPITAL_idle',
+}
+
+export const CAPITAL_ID = {
+  APE_APE: 10,
+  APE_ALINE: 11,
+  APE_AI: 12,
 }

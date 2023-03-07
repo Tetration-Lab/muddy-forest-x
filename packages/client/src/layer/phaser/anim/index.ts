@@ -26,9 +26,9 @@ export const initConfigAnim = (scene: Phaser.Scene) => {
     repeat: -1,
   }
   createAnimIdle(IDLE_ANIM.Explorer_Idle, 'explorerSheet', 0, 15, scene)
-  createAnimIdle(IDLE_ANIM.Capital_1, SPRITE.Capital_1, 0, 74, scene)
-  createAnimIdle(IDLE_ANIM.Capital_2, SPRITE.Capital_2, 0, 74, scene)
-  createAnimIdle(IDLE_ANIM.Capital_3, SPRITE.Capital_3, 0, 74, scene)
+  createAnimIdle(IDLE_ANIM.APE_AI_CAPITAL, SPRITE.APE_AI_CAPITAL, 0, 74, scene)
+  createAnimIdle(IDLE_ANIM.APE_APE_CAPITAL, SPRITE.APE_APE_CAPITAL, 0, 74, scene)
+  createAnimIdle(IDLE_ANIM.APE_ALINE_CAPITAL, SPRITE.APE_ALINE_CAPITAL, 0, 74, scene)
   createAnimIdle(IDLE_ANIM.Capital_4, SPRITE.Capital_4, 0, 74, scene)
   scene.anims.create(idle)
   scene.anims.create(p1Idle)

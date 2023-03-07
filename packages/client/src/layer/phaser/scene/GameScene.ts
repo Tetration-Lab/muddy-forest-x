@@ -16,7 +16,7 @@ import { Planet } from '../gameobject/Planet'
 import { gameStore, SendResourceData } from '../../../store/game'
 import { createSpawnCapitalSystem } from '../../../system/createSpawnCapitalSystem'
 import { NetworkLayer } from '../../network/types'
-import { IDLE_ANIM, IMAGE, SPRITE } from '../constant/resource'
+import { CAPITAL_ID, IDLE_ANIM, IMAGE, SPRITE } from '../constant/resource'
 import { HashTwoRespItem } from '../../../miner/hasher.worker'
 import { createSpawnHQShipSystem } from '../../../system/createSpawnHQShipSystem'
 import { PLANET_RARITY } from '../../../const/planet'
@@ -138,17 +138,17 @@ class GameScene extends Phaser.Scene {
       let spriteKey = SPRITE.Capital_1
       let idleKey = IDLE_ANIM.Capital_1
       switch (fractionID) {
-        case 10:
-          spriteKey = SPRITE.Capital_1
-          idleKey = IDLE_ANIM.Capital_1
+        case CAPITAL_ID.APE_APE:
+          spriteKey = SPRITE.APE_APE_CAPITAL
+          idleKey = IDLE_ANIM.APE_APE_CAPITAL
           break
-        case 11:
-          spriteKey = SPRITE.Capital_2
-          idleKey = IDLE_ANIM.Capital_2
+        case CAPITAL_ID.APE_ALINE:
+          spriteKey = SPRITE.APE_ALINE_CAPITAL
+          idleKey = IDLE_ANIM.APE_ALINE_CAPITAL
           break
-        case 12:
-          spriteKey = SPRITE.Capital_3
-          idleKey = IDLE_ANIM.Capital_3
+        case CAPITAL_ID.APE_AI:
+          spriteKey = SPRITE.APE_AI_CAPITAL
+          idleKey = IDLE_ANIM.APE_AI_CAPITAL
           break
       }
       const p = new Planet(this, x, y, spriteKey)
@@ -198,7 +198,8 @@ class GameScene extends Phaser.Scene {
 
     this.chunkLoader = new ChunkLoader(this, { tileSize: TILE_SIZE }, this.rt)
     this.chunkLoader.setUpdateCbToChunks((t: Tile) => {
-      t.alpha = 0.5
+      //TODO: need to fix tile and chunk
+      t.alpha = 0
       console.log('call')
       t.registerOnClick((pointer: Phaser.Input.Pointer) => {
         console.log('click')

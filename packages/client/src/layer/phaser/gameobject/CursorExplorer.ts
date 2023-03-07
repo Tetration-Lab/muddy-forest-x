@@ -34,7 +34,6 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
     this.setOrigin(0)
     this.setDisplaySize(TILE_SIZE * CHUNK_WIDTH_SIZE, TILE_SIZE * CHUNK_HEIGHT_SIZE)
     this.setPosition(position.x, position.y)
-    this.scene.add.rectangle(position.x, position.y, TILE_SIZE, TILE_SIZE, 0xff0000).setOrigin(0)
     this.setDepth(1000)
     this.currentChunk = {
       x: Math.floor(position.x / TILE_SIZE / CHUNK_WIDTH_SIZE),
