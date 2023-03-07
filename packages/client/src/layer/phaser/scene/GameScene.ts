@@ -210,7 +210,6 @@ class GameScene extends Phaser.Scene {
             const position = snapToGrid(pointer.worldX, pointer.worldY, 16)
             console.log(position)
             this.selfShip.setPosition(position.x, position.y)
-            // this.gameUIState = GAME_UI_STATE.NONE
             break
         }
       })

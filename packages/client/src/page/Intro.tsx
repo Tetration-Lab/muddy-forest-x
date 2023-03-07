@@ -1,3 +1,4 @@
+import { useComponentValueStream } from '@latticexyz/std-client'
 import { Box, Button, CircularProgress, Fade, keyframes, Stack, TextField, Typography, useTheme } from '@mui/material'
 import { Container, SxProps } from '@mui/system'
 import { ethers } from 'ethers'
@@ -108,6 +109,16 @@ export const Intro = () => {
   const address = localStorage.getItem('burnerWallet')
   const store = useStore(appStore, (state) => state)
   const navigate = useNavigate()
+  const networkLayer = store.networkLayer
+  const { Faction } = networkLayer.components
+  const playerIndex = networkLayer.playerIndex
+  const faction = useComponentValueStream(Faction, playerIndex)
+  useEffect(() => {
+    if (faction?.value) {
+      setLoading(false)
+      navigate(`/${window.location.search}`)
+    }
+  }, [faction])
 
   const formik = useFormik({
     initialValues: { displayName: '' },
@@ -121,18 +132,13 @@ export const Intro = () => {
       console.log('values', values, fractionID)
       // NOTE: mock loading
       setLoading(true)
-      await wait(150)
       const hqID = ethers.BigNumber.from(ethers.utils.randomBytes(32))
       console.log(hqID.toBigInt(), fractionID)
-
-      // await store.networkLayer.api.setupName(values.displayName)
       try {
         await store.networkLayer.api.spawn(fractionID, hqID)
-      } finally {
-        await wait(5000)
-        navigate(`/${window.location.search}`)
-        setLoading(false)
-      }
+      } catch (err) {
+        console.error(err)
+      } 
     },
   })
 
