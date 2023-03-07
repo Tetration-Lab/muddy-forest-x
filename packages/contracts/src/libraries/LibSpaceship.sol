@@ -23,9 +23,10 @@ library Spaceship {
   ) public {
     {
       uint32 mult = Level.getHQShipEnergyLevelMultiplier(1);
+      uint256 energyId = getResourceEntity(entity, BASE_ENERGY);
       LevelComponent(getAddressById(components, LID)).set(entity, LevelComponent.Level(1, 0, 0));
       ResourceComponent(getAddressById(components, RID)).set(
-        entity,
+        energyId,
         ResourceComponent.Resource(
           (BASE_ENERGY_CAP * mult) / 100,
           (BASE_ENERGY_CAP * mult) / 100,
@@ -48,9 +49,10 @@ library Spaceship {
     uint256 owner
   ) public {
     {
+      uint256 energyId = getResourceEntity(entity, BASE_ENERGY);
       LevelComponent(getAddressById(components, LID)).set(entity, LevelComponent.Level(bp.level, 0, 0));
       ResourceComponent(getAddressById(components, RID)).set(
-        entity,
+        energyId,
         ResourceComponent.Resource(
           (bp.resources[0].cap) / 100,
           (bp.resources[0].cap) / 100,
