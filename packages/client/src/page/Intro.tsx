@@ -1,7 +1,6 @@
 import { useComponentValueStream } from '@latticexyz/std-client'
 import { Box, Button, CircularProgress, Fade, keyframes, Stack, TextField, Typography, useTheme } from '@mui/material'
 import { Container, SxProps } from '@mui/system'
-import { ethers } from 'ethers'
 import { useFormik } from 'formik'
 import { isEmpty } from 'lodash'
 import { useEffect, useState } from 'react'
@@ -14,7 +13,6 @@ import { MainButton } from '../component/common/MainButton'
 import { NavBar } from '../component/common/NavBar'
 import { texts } from '../const/texts'
 import { appStore } from '../store/app'
-import { wait } from '../utils/utils'
 
 enum Tribe {
   APE_APE = 'APE_APE',
@@ -128,17 +126,13 @@ export const Intro = () => {
       })
       .required(),
     onSubmit: async (values: SumitPayload) => {
-      const fractionID = TripeMapperID[selectedTribe!]
-      console.log('values', values, fractionID)
-      // NOTE: mock loading
+      const factionId = TripeMapperID[selectedTribe!]
       setLoading(true)
-      const hqID = ethers.BigNumber.from(ethers.utils.randomBytes(32))
-      console.log(hqID.toBigInt(), fractionID)
       try {
-        await store.networkLayer.api.spawn(fractionID, hqID)
+        await store.networkLayer.api.spawn(factionId, values.displayName)
       } catch (err) {
         console.error(err)
-      } 
+      }
     },
   })
 

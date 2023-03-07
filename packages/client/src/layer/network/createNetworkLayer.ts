@@ -73,18 +73,19 @@ export async function createNetworkLayer(config: SetupContractConfig) {
       id: 12,
     })
   }
-  const setupName = async (name: string) => {
+
+  const setupName = async (entity: string, name: string) => {
     await systems['system.Name'].executeTyped({
-      entity: network.connectedAddress.get(),
+      entity: entity,
       name,
     })
   }
 
-  const spawn = async (factionId: number, HQShipId: ethers.BigNumber) => {
-    console.log(systems)
+  const spawn = async (factionId: number, name: string) => {
+    await setupName(network.connectedAddress.get(), name)
     await systems['system.Spawn'].executeTyped({
       factionId: factionId,
-      HQShipId: HQShipId.toBigInt(),
+      HQShipId: ethers.BigNumber.from(ethers.utils.randomBytes(32)),
     })
   }
 
