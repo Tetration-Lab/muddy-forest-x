@@ -22,6 +22,7 @@ import { createSpawnHQShipSystem } from '../../../system/createSpawnHQShipSystem
 import { PLANET_RARITY } from '../../../const/planet'
 import { HQShip } from '../gameobject/HQShip'
 import { formatEntityID } from '@latticexyz/network'
+import { dataStore, initPlanet, initSpaceship } from '../../../store/data'
 
 const ZOOM_OUT_LIMIT = 0.01
 const ZOOM_IN_LIMIT = 2
@@ -111,6 +112,7 @@ class GameScene extends Phaser.Scene {
         sprite.registerOnClick((pointer: Phaser.Input.Pointer) => {
           openSendResourceModal(id, pointer.position.clone())
         })
+        initPlanet(id, [tileX, tileY])
         addPlanet(id, sprite)
       }
     }
@@ -150,6 +152,9 @@ class GameScene extends Phaser.Scene {
         const pos = snapToGrid(x, y, 16)
         const ship = new HQShip(this, pos.x, pos.y, IMAGE.AI_SHIP, entityID, owner)
         ship.setDepth(100)
+        const id = formatEntityID(entityID)
+        console.log(id)
+        initSpaceship(id)
         if (owner === networkLayer.connectedAddress) {
           this.followPoint.x = +pos.x
           this.followPoint.y = +pos.y
@@ -159,6 +164,7 @@ class GameScene extends Phaser.Scene {
           this.navigation.setPosition(this.followPoint.x, this.followPoint.y)
           ship.registerOnClick((pointer: Phaser.Input.Pointer) => {
             setTimeout(() => {
+              console.log(dataStore.getState().spaceship[id.toString()])
               this.gameUIState = GAME_UI_STATE.SELECTED_HQ_SHIP
             }, 100)
           })

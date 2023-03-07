@@ -9,11 +9,13 @@ import { TypeTag } from '../GameActionBox/TypeTag'
 import Draggable from 'react-draggable'
 import { generatePlanetName } from '../../../utils/random'
 import { useMemo, useEffect } from 'react'
+import { dataStore } from '../../../store/data'
 
 export const SendResourceModal = ({ id, position }: { id: string; position: Phaser.Math.Vector2 }) => {
   const theme = useTheme()
   const name = useMemo(() => generatePlanetName(BigInt(id)), [id])
-  const planet = useStore(gameStore, (state) => state.planets.get(id))
+  const planetSprite = useStore(gameStore, (state) => state.planets.get(id))
+  const planet = useStore(dataStore, (state) => state.planets.get(id))
 
   return (
     <Draggable
@@ -54,7 +56,7 @@ export const SendResourceModal = ({ id, position }: { id: string; position: Phas
               alignItems: 'center',
             }}
           >
-            <GameItem imageUrl={planet.texture.manager.getBase64(planet.texture.key)} />
+            <GameItem imageUrl={planetSprite.texture.manager.getBase64(planetSprite.texture.key)} />
             <Stack mt="12px" px={2} alignItems="flex-start" flex={1}>
               <Typography sx={{ fontSize: 16, fontWeight: 700, wordBreak: 'break-all' }}>{name}</Typography>
               <TypeTag type="RESOURCE" />
@@ -71,7 +73,7 @@ export const SendResourceModal = ({ id, position }: { id: string; position: Phas
                 flex={1}
               >
                 <Box component="img" src="/assets/svg/planet-prop-energy.svg" />
-                <Typography>{`100 / 200`}</Typography>
+                <Typography>{`100/200`}</Typography>
               </Stack>
               <Stack
                 direction="row"
@@ -81,7 +83,7 @@ export const SendResourceModal = ({ id, position }: { id: string; position: Phas
                 flex={1}
               >
                 <Box component="img" src="/assets/svg/planet-prop-location.svg" />
-                <Typography>{`15,255`}</Typography>
+                <Typography>{`${planet.position[0]}, ${planet.position[1]}`}</Typography>
                 <SaveButton onClick={() => console.log('save!')} />
               </Stack>
             </Stack>
