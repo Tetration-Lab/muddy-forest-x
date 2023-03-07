@@ -13,7 +13,7 @@ import { Hasher } from 'circuits'
 import { initConfigAnim } from '../anim'
 import { CursorExplorer } from '../gameobject/CursorExplorer'
 import { Planet } from '../gameobject/Planet'
-import { gameStore, SendResourceData } from '../../../store/game'
+import { gameStore, openSendResourceModal, SendResourceData } from '../../../store/game'
 import { createSpawnCapitalSystem } from '../../../system/createSpawnCapitalSystem'
 import { NetworkLayer } from '../../network/types'
 import { CAPITAL_ID, IDLE_ANIM, IMAGE, SPRITE } from '../constant/resource'
@@ -21,6 +21,7 @@ import { HashTwoRespItem } from '../../../miner/hasher.worker'
 import { createSpawnHQShipSystem } from '../../../system/createSpawnHQShipSystem'
 import { PLANET_RARITY } from '../../../const/planet'
 import { HQShip } from '../gameobject/HQShip'
+import { formatEntityID } from '@latticexyz/network'
 
 const ZOOM_OUT_LIMIT = 0.01
 const ZOOM_IN_LIMIT = 2
@@ -109,21 +110,9 @@ class GameScene extends Phaser.Scene {
         sprite.play('doge')
         const imageUri = this.textures.getBase64('dogeSheet', 0)
         sprite.registerOnClick((pointer: Phaser.Input.Pointer) => {
-          const payload: SendResourceData = {
-            name: 'doge',
-            imageSrc: imageUri,
-            mouseScreenX: pointer.position.x,
-            mouseScreenY: pointer.position.y,
-          }
-          gameStore.setState({
-            sendResourceModal: {
-              open: true,
-              data: payload,
-            },
-          })
+          openSendResourceModal(formatEntityID(hVal), pointer.position.clone())
         })
       }
-      //this.cursorExplorer.run()
     }
   }
 
@@ -198,11 +187,8 @@ class GameScene extends Phaser.Scene {
 
     this.chunkLoader = new ChunkLoader(this, { tileSize: TILE_SIZE }, this.rt)
     this.chunkLoader.setUpdateCbToChunks((t: Tile) => {
-      //TODO: need to fix tile and chunk
       t.alpha = 0
-      console.log('call')
       t.registerOnClick((pointer: Phaser.Input.Pointer) => {
-        console.log('click')
         switch (this.gameUIState) {
           case GAME_UI_STATE.NONE:
             return

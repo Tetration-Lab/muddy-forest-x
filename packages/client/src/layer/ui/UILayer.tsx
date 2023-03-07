@@ -1,5 +1,5 @@
 import { Box, Popper } from '@mui/material'
-import React, { useRef, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import { useStore } from 'zustand'
 import { ChatBox } from '../../component/Chatbox'
 import { GameActionBox, GameActionBoxMode } from '../../component/game/GameActionBox'
@@ -7,7 +7,7 @@ import { SendResourceModal } from '../../component/game/Modals/SendResourceModal
 import { SettingActionBox } from '../../component/game/SettingActionBox'
 import { ToolButton } from '../../component/ToolButton'
 import { appStore } from '../../store/app'
-import { gameStore as GameStore } from '../../store/game'
+import { closeSendResourceModal, gameStore, gameStore as GameStore } from '../../store/game'
 
 export const UILayer = () => {
   const store = useStore(appStore, (state) => state)
@@ -140,10 +140,25 @@ export const UILayer = () => {
       </div>
       {/*</ClickAwayListener>*/}
       {/* Modals */}
-      <SendResourceModal
-        open={gameStore.sendResourceModal.open}
-        onClose={() => gameStore.setSendResource({ open: false })}
-      />
+      <SendResourceModals />
     </div>
+  )
+}
+
+const SendResourceModals = () => {
+  return (
+    <>
+      {[...gameStore.getState().sendResourceModal.entries()].map((k) => (
+        <SendResourceModal
+          open={true}
+          onClose={() => {
+            closeSendResourceModal(k[0])
+          }}
+          id={k[0]}
+          position={k[1]}
+          key={k[0]}
+        />
+      ))}
+    </>
   )
 }

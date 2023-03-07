@@ -6,31 +6,31 @@ export interface SendResourceData {
   mouseScreenX: number
   mouseScreenY: number
 }
-export interface SendResourceModal {
-  open: boolean
-  data?: SendResourceData
-}
 
 export type Store = {
-  sendResourceModal: SendResourceModal
-  setSendResource: (sendResourceModal: SendResourceModal) => void
+  sendResourceModal: Map<string, Phaser.Math.Vector2>
 }
 
 const initialState = {
-  sendResourceModal: {
-    open: false,
-    data: {
-      name: '',
-      imageSrc: '',
-      mouseScreenX: 0,
-      mouseScreenY: 0,
-    },
-  },
+  sendResourceModal: new Map<string, Phaser.Math.Vector2>(),
 }
 
 export const gameStore = createStore<Store>((set) => ({
   ...initialState,
-  setSendResource: (sendResourceModal: SendResourceModal) => {
-    set({ sendResourceModal })
-  },
 }))
+
+export const closeSendResourceModal = (id: string) => {
+  gameStore.setState((state) => {
+    const sendResourceModal = new Map(state.sendResourceModal)
+    sendResourceModal.delete(id)
+    return { sendResourceModal }
+  })
+}
+
+export const openSendResourceModal = (id: string, position: Phaser.Math.Vector2) => {
+  gameStore.setState((state) => {
+    const sendResourceModal = new Map(state.sendResourceModal)
+    sendResourceModal.set(id, position)
+    return { sendResourceModal }
+  })
+}
