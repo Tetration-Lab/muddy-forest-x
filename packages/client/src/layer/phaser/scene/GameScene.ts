@@ -222,8 +222,10 @@ class GameScene extends Phaser.Scene {
         const entityID = this.selfShip.entityID
         const networkLayer = appStore.getState().networkLayer
         if (networkLayer) {
-          console.log(entityID, position.x, position.y)
-          await networkLayer.api.move(entityID, position.x, position.y)
+          const tileX = Math.floor(position.x / TILE_SIZE)
+          const tileY = Math.floor(position.y / TILE_SIZE)
+          console.log(entityID,  tileX, tileY)
+          await networkLayer.api.move(entityID, tileX, tileY)
         }
         // this.tweens.add({
         //   targets: [this.selfShip],
