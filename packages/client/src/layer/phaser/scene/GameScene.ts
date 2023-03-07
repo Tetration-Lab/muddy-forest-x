@@ -144,23 +144,29 @@ class GameScene extends Phaser.Scene {
       p.setDisplaySize(4 * TILE_SIZE ** 2, 4 * TILE_SIZE ** 2)
       p.play(idleKey)
     })
-    createSpawnHQShipSystem(networkLayer, (x: number, y: number, entityID: number, owner: string) => {
-      const pos = snapToGrid(x, y, 16)
-      const ship = new HQShip(this, pos.x, pos.y, IMAGE.AI_SHIP, entityID, owner)
-      ship.setDepth(100)
-      if (owner === networkLayer.connectedAddress) {
-        this.followPoint.x = +pos.x
-        this.followPoint.y = +pos.y
-        this.navigation.setPosition(this.followPoint.x, this.followPoint.y)
-        ship.registerOnClick((pointer: Phaser.Input.Pointer) => {
-          setTimeout(() => {
-            this.gameUIState = GAME_UI_STATE.SELECTED_HQ_SHIP
-          }, 100)
-        })
-        ship.setDepth(1000)
-        this.selfShip = ship
-      }
-    })
+    createSpawnHQShipSystem(
+      networkLayer,
+      (x: number, y: number, entityIndex: number, entityID: string, owner: string) => {
+        const pos = snapToGrid(x, y, 16)
+        const ship = new HQShip(this, pos.x, pos.y, IMAGE.AI_SHIP, entityID, owner)
+        ship.setDepth(100)
+        if (owner === networkLayer.connectedAddress) {
+          this.followPoint.x = +pos.x
+          this.followPoint.y = +pos.y
+          const s = this.add.sprite(this.followPoint.x + 100, this.followPoint.y, SPRITE.TELEPORT).setDepth(1000)
+          s.play(IDLE_ANIM.TELEPORT)
+          this.add.rectangle(this.followPoint.x, this.followPoint.y, 16, 16, 0x00ff00, 0.5).setDepth(1000)
+          this.navigation.setPosition(this.followPoint.x, this.followPoint.y)
+          ship.registerOnClick((pointer: Phaser.Input.Pointer) => {
+            setTimeout(() => {
+              this.gameUIState = GAME_UI_STATE.SELECTED_HQ_SHIP
+            }, 100)
+          })
+          ship.setDepth(1000)
+          this.selfShip = ship
+        }
+      },
+    )
   }
 
   async onCreate() {
@@ -210,25 +216,31 @@ class GameScene extends Phaser.Scene {
       this.followPoint.y -= (p.y - p.prevPosition.y) / cam.zoom
     })
 
-    this.input.on('pointerup', (p) => {
+    this.input.on('pointerup', async (p) => {
       if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
         const position = snapToGrid(p.worldX, p.worldY, 16)
-        this.tweens.add({
-          targets: [this.selfShip],
-          alpha: 1,
-          x: {
-            from: this.selfShip.x,
-            to: position.x,
-          },
-          y: {
-            from: this.selfShip.y,
-            to: position.y,
-          },
-          ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'
-          duration: 1000,
-          repeat: 0, // -1: infinity
-          yoyo: false,
-        })
+        const entityID = this.selfShip.entityID
+        const networkLayer = appStore.getState().networkLayer
+        if (networkLayer) {
+          console.log(entityID, position.x, position.y)
+          await networkLayer.api.move(entityID, position.x, position.y)
+        }
+        // this.tweens.add({
+        //   targets: [this.selfShip],
+        //   alpha: 1,
+        //   x: {
+        //     from: this.selfShip.x,
+        //     to: position.x,
+        //   },
+        //   y: {
+        //     from: this.selfShip.y,
+        //     to: position.y,
+        //   },
+        //   ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'
+        //   duration: 1000,
+        //   repeat: 0, // -1: infinity
+        //   yoyo: false,
+        // })
         this.gameUIState = GAME_UI_STATE.NONE
       }
     })

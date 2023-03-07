@@ -25,6 +25,7 @@ class PreloaderScene extends Phaser.Scene {
     this.load.spritesheet(SPRITE.APE_APE_CAPITAL, 'assets/sprite/H2_320px.png', { frameWidth: 320, frameHeight: 320 })
     this.load.spritesheet(SPRITE.APE_AI_CAPITAL, 'assets/sprite/H3_320px.png', { frameWidth: 320, frameHeight: 320 })
     this.load.spritesheet(SPRITE.Capital_4, 'assets/sprite/H4_320px.png', { frameWidth: 320, frameHeight: 320 })
+    this.load.spritesheet(SPRITE.TELEPORT, 'assets/sprite/teleportsheet.png', { frameWidth: 280, frameHeight: 280 })
   }
 
   create() {

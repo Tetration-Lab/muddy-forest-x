@@ -1,8 +1,8 @@
 export class HQShip extends Phaser.GameObjects.Sprite {
   rect: Phaser.GameObjects.Rectangle
-  entityID: number
+  entityID: string
   owner: string
-  constructor(scene: Phaser.Scene, x: number, y: number, texture: string, entityID: number, owner: string) {
+  constructor(scene: Phaser.Scene, x: number, y: number, texture: string, entityID: string, owner: string) {
     super(scene, x, y, texture)
     this.rect = this.scene.add.rectangle(this.x, this.y, this.displayWidth, this.displayHeight, 0x0000ff)
     this.rect.setVisible(false)

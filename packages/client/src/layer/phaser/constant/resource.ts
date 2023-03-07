@@ -6,6 +6,7 @@ export const SPRITE = {
   APE_APE_CAPITAL: 'APE_APE_CAPITAL',
   APE_ALINE_CAPITAL: 'APE_ALINE_CAPITAL',
   APE_AI_CAPITAL: 'APE_AI_CAPITAL',
+  TELEPORT: 'TELEPORT',
 }
 
 export const IMAGE = {
@@ -18,6 +19,7 @@ export const IDLE_ANIM = {
   Capital_2: 'Capital_2_idle',
   Capital_3: 'Capital_3_idle',
   Capital_4: 'Capital_4_idle',
+  TELEPORT: 'TELEPORT_idle',
   Explorer_Idle: 'explorer_idle',
   APE_APE_CAPITAL: 'APE_APE_CAPITAL_idle',
   APE_ALINE_CAPITAL: 'APE_ALINE_CAPITAL_idle',

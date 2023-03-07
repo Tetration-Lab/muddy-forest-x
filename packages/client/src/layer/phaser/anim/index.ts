@@ -30,6 +30,7 @@ export const initConfigAnim = (scene: Phaser.Scene) => {
   createAnimIdle(IDLE_ANIM.APE_APE_CAPITAL, SPRITE.APE_APE_CAPITAL, 0, 74, scene)
   createAnimIdle(IDLE_ANIM.APE_ALINE_CAPITAL, SPRITE.APE_ALINE_CAPITAL, 0, 74, scene)
   createAnimIdle(IDLE_ANIM.Capital_4, SPRITE.Capital_4, 0, 74, scene)
+  createAnimIdle(IDLE_ANIM.TELEPORT, SPRITE.TELEPORT, 0, 60, scene)
   scene.anims.create(idle)
   scene.anims.create(p1Idle)
   scene.anims.create(p2Idle)

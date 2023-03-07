@@ -82,6 +82,16 @@ export async function createNetworkLayer(config: SetupContractConfig) {
     })
   }
 
+  const move = async (entity: string, x: number, y: number) => {
+    await systems['system.Move'].executeTyped({
+      entity: entity,
+      position: {
+        x,
+        y,
+      },
+    })
+  }
+
   const spawn = async (factionId: number, name: string) => {
     await setupName(network.connectedAddress.get(), name)
     await systems['system.Spawn'].executeTyped({
@@ -96,6 +106,7 @@ export async function createNetworkLayer(config: SetupContractConfig) {
   w.setupFaction = setupFaction
   w.debug = debug
   w.spawn = spawn
+  w.move = move
 
   // --- CONTEXT --------------------------------------------------------------------
   const context = {
@@ -114,6 +125,7 @@ export async function createNetworkLayer(config: SetupContractConfig) {
       setupFaction,
       spawn,
       setupName,
+      move,
     },
     singletonIndex,
     playerIndex,
