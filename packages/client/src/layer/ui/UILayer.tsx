@@ -149,15 +149,7 @@ const SendResourceModals = () => {
   return (
     <>
       {[...gameStore.getState().sendResourceModal.entries()].map((k) => (
-        <SendResourceModal
-          open={true}
-          onClose={() => {
-            closeSendResourceModal(k[0])
-          }}
-          id={k[0]}
-          position={k[1]}
-          key={k[0]}
-        />
+        <SendResourceModal id={k[0]} position={k[1]} key={k[0]} />
       ))}
     </>
   )

@@ -1,26 +1,17 @@
-import { Popover, Typography, useTheme } from '@mui/material'
+import { Typography, useTheme } from '@mui/material'
 import { Box, Stack } from '@mui/system'
-import { useStore } from 'zustand'
-import { gameStore as GameStore } from '../../../store/game'
+import { closeSendResourceModal } from '../../../store/game'
 import { CloseModalButton } from '../common/CloseModalButton'
 import { GameItem } from '../common/GameItem'
 import { SaveButton } from '../common/SaveButton'
 import { TypeTag } from '../GameActionBox/TypeTag'
 import Draggable from 'react-draggable'
+import { generatePlanetName } from '../../../utils/random'
+import { useMemo } from 'react'
 
-export const SendResourceModal = ({
-  open,
-  onClose,
-  id,
-  position,
-}: {
-  open: boolean
-  onClose: () => void
-  id: string
-  position: Phaser.Math.Vector2
-}) => {
+export const SendResourceModal = ({ id, position }: { id: string; position: Phaser.Math.Vector2 }) => {
   const theme = useTheme()
-  const gameStore = useStore(GameStore, (state) => state)
+  const name = useMemo(() => generatePlanetName(BigInt(id)), [id])
 
   return (
     <Draggable
@@ -31,22 +22,6 @@ export const SendResourceModal = ({
       }}
     >
       <Box
-        //transitionDuration={0}
-        //anchorReference="anchorPosition"
-        //anchorPosition={{
-        //top: position.y,
-        //left: position.x,
-        //}}
-        //anchorOrigin={{
-        //vertical: 'top',
-        //horizontal: 'left',
-        //}}
-        //transformOrigin={{
-        //vertical: 'top',
-        //horizontal: 'left',
-        //}}
-        //open={open}
-        //onClose={() => {}}
         position="absolute"
         sx={{
           color: theme.palette.grayScale.white,
@@ -79,12 +54,10 @@ export const SendResourceModal = ({
           >
             <GameItem imageUrl={''} />
             <Stack mt="12px" px={2} alignItems="flex-start" flex={1}>
-              <Typography sx={{ fontSize: 16, fontWeight: 700, wordBreak: 'break-all' }}>
-                {id.substring(0, 16)}
-              </Typography>
+              <Typography sx={{ fontSize: 16, fontWeight: 700, wordBreak: 'break-all' }}>{name}</Typography>
               <TypeTag type="RESOURCE" />
             </Stack>
-            <CloseModalButton onClick={onClose} />
+            <CloseModalButton onClick={() => closeSendResourceModal(id)} />
           </Stack>
           <Stack>
             <Stack direction="row" gap={1}>

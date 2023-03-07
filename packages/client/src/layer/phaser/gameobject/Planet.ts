@@ -1,5 +1,6 @@
 export class Planet extends Phaser.GameObjects.Sprite {
   rect: Phaser.GameObjects.Rectangle
+
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
     super(scene, x, y, texture)
     this.rect = this.scene.add.rectangle(this.x, this.y, this.displayWidth, this.displayHeight, 0x0000ff)

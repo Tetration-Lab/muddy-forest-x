@@ -13,7 +13,7 @@ import { Hasher } from 'circuits'
 import { initConfigAnim } from '../anim'
 import { CursorExplorer } from '../gameobject/CursorExplorer'
 import { Planet } from '../gameobject/Planet'
-import { gameStore, openSendResourceModal, SendResourceData } from '../../../store/game'
+import { addPlanet, gameStore, openSendResourceModal } from '../../../store/game'
 import { createSpawnCapitalSystem } from '../../../system/createSpawnCapitalSystem'
 import { NetworkLayer } from '../../network/types'
 import { CAPITAL_ID, IDLE_ANIM, IMAGE, SPRITE } from '../constant/resource'
@@ -64,6 +64,7 @@ class GameScene extends Phaser.Scene {
   cursorMove!: Phaser.GameObjects.Image
   gameUIState: GAME_UI_STATE = GAME_UI_STATE.NONE
   selfShip!: HQShip
+
   constructor() {
     super(GAME_SCENE)
     if (import.meta.env.DEV) {
@@ -108,10 +109,11 @@ class GameScene extends Phaser.Scene {
 
         sprite.setDepth(100)
         sprite.play('doge')
-        const imageUri = this.textures.getBase64('dogeSheet', 0)
+        const id = formatEntityID(hVal)
         sprite.registerOnClick((pointer: Phaser.Input.Pointer) => {
-          openSendResourceModal(formatEntityID(hVal), pointer.position.clone())
+          openSendResourceModal(id, pointer.position.clone())
         })
+        addPlanet(id, sprite)
       }
     }
   }
