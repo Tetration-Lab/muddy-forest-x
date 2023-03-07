@@ -170,9 +170,10 @@ export const UILayer = () => {
 }
 
 const SendResourceModals = () => {
+  const modals = useStore(gameStore, (state) => [...state.sendResourceModal.entries()])
   return (
     <>
-      {[...gameStore.getState().sendResourceModal.entries()].map((k) => (
+      {modals.map((k) => (
         <SendResourceModal id={k[0]} position={k[1]} key={k[0]} />
       ))}
     </>
