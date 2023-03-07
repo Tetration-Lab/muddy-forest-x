@@ -8,7 +8,7 @@ import { SendResourceModal } from '../../component/game/Modals/SendResourceModal
 import { SettingActionBox } from '../../component/game/SettingActionBox'
 import { ToolButton } from '../../component/ToolButton'
 import { appStore } from '../../store/app'
-import { gameStore as GameStore } from '../../store/game'
+import { closeSendResourceModal, gameStore } from '../../store/game'
 import { CAPITAL_ID } from '../phaser/constant/resource'
 
 export const colorMapper = {
@@ -18,7 +18,6 @@ export const colorMapper = {
 }
 export const UILayer = () => {
   const store = useStore(appStore, (state) => state)
-  const gameStore = useStore(GameStore, (state) => state)
   const toolsContainerRef = useRef()
   const settingContainerRef = useRef()
 
@@ -29,9 +28,16 @@ export const UILayer = () => {
   const [currentMode, setCurrentMode] = useState<GameActionBoxMode | undefined>()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const networkLayer = store.networkLayer
-  const playerName = useComponentValueStream(networkLayer.components.Name, networkLayer.playerIndex)
+  const playerNameComponent = useComponentValueStream(networkLayer.components.Name, networkLayer.playerIndex)
   const factionID = useComponentValueStream(networkLayer.components.Faction, networkLayer.playerIndex)
-  const playerColor = colorMapper[factionID?.value]
+  const [playerColor, setPlayerColor] = useState('white')
+  const [playerName, setPlayerName] = useState<null | string>(null)
+  useEffect(() => {
+    if (playerNameComponent) {
+      setPlayerName(playerNameComponent?.value)
+      setPlayerColor(colorMapper[factionID?.value])
+    }
+  }, [playerNameComponent, factionID])
 
   const handleSettingClick = () => {
     setSettingAnchorEl(settingContainerRef.current)
@@ -87,10 +93,10 @@ export const UILayer = () => {
     >
       <div className="absolute bottom-0 z-10">
         <div className="p-4">
-          {playerName && playerName.value && (
+          {playerName && (
             <ChatBox
               playerColor={playerColor}
-              playerName={playerName.value}
+              playerName={playerName}
               focusInputCallback={onInputFocus}
               focusOutInputCallback={onInputFocusOut}
             />
