@@ -32,7 +32,7 @@ contract SendSystem is System {
     Type.assertNotDestroyedTuple(components, args.entity, args.targetEntity);
 
     require(
-      OwnerComponent(getAddressById(components, OID)).getValue(args.entity) != addressToEntity(msg.sender),
+      OwnerComponent(getAddressById(components, OID)).getValue(args.entity) == addressToEntity(msg.sender),
       "Not owner"
     );
 

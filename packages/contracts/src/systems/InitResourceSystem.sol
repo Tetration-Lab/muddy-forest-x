@@ -25,7 +25,7 @@ contract InitResourceSystem is System {
     Args memory args = abi.decode(arguments, (Args));
 
     require(
-      OwnerComponent(getAddressById(components, OID)).getValue(args.entity) != addressToEntity(msg.sender),
+      OwnerComponent(getAddressById(components, OID)).getValue(args.entity) == addressToEntity(msg.sender),
       "Not owner"
     );
     require(Resource.isInAdvancedResource(args.resourceId), "Not in advanced resource id");

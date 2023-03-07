@@ -33,7 +33,7 @@ contract AttackSystem is System {
     Type.assertInit(components, args.entity);
 
     require(
-      OwnerComponent(getAddressById(components, OID)).getValue(args.entity) != addressToEntity(msg.sender),
+      OwnerComponent(getAddressById(components, OID)).getValue(args.entity) == addressToEntity(msg.sender),
       "Not owner"
     );
 

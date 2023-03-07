@@ -29,7 +29,7 @@ contract MoveSystem is System {
     PositionComponent positionComp = PositionComponent(getAddressById(components, PID));
 
     require(
-      OwnerComponent(getAddressById(components, OID)).getValue(args.entity) != addressToEntity(msg.sender),
+      OwnerComponent(getAddressById(components, OID)).getValue(args.entity) == addressToEntity(msg.sender),
       "Not owner"
     );
     require(positionComp.has(args.entity), "This entity cannot move");

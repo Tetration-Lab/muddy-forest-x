@@ -20,7 +20,7 @@ contract NameSystem is System {
 
     require(
       args.entity == addressToEntity(msg.sender) ||
-        OwnerComponent(getAddressById(components, OID)).getValue(args.entity) != addressToEntity(msg.sender),
+        OwnerComponent(getAddressById(components, OID)).getValue(args.entity) == addressToEntity(msg.sender),
       "Not owner"
     );
     NameComponent(getAddressById(components, NID)).set(args.entity, args.name);

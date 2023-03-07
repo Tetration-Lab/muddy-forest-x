@@ -32,7 +32,7 @@ contract UpgradeShipSystem is System {
       require(ty == uint32(EType.SPACESHIP) || ty == uint32(EType.HQSHIP), "Not ship");
     }
     require(
-      OwnerComponent(getAddressById(components, OID)).getValue(args.shipEntityId) != addressToEntity(msg.sender),
+      OwnerComponent(getAddressById(components, OID)).getValue(args.shipEntityId) == addressToEntity(msg.sender),
       "Not ship owner"
     );
 
