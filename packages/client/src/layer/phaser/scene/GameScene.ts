@@ -131,7 +131,7 @@ class GameScene extends Phaser.Scene {
           spriteKey = SPRITE.APE_APE_CAPITAL
           idleKey = IDLE_ANIM.APE_APE_CAPITAL
           break
-        case CAPITAL_ID.APE_ALINE:
+        case CAPITAL_ID.APE_ALIEN:
           spriteKey = SPRITE.APE_ALINE_CAPITAL
           idleKey = IDLE_ANIM.APE_ALINE_CAPITAL
           break
