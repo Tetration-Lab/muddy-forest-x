@@ -21,7 +21,6 @@ export const ChatBox: React.FC<ChatBoxProps> = ({
   const { connected, on, emit, off } = useChatMessage(chatEndpoint, playerName, chatRoomID)
   const [messageList, setMessageList] = useState<ChatMessage[]>([])
   const onMessage = (_msg: string, data: any) => {
-    console.log(data)
     const ts = new Date().getTime().toString()
     setMessageList((prev) => [
       ...prev,
@@ -63,7 +62,6 @@ export const ChatBox: React.FC<ChatBoxProps> = ({
 
   const onSubmit = () => {
     if (!inputChat.current || !inputChat.current.value) return
-    console.log('onSubmit', inputChat.current.value)
     emit('message:room', {
       playerColor,
       roomID: chatRoomID,

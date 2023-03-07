@@ -43,7 +43,7 @@ export default function useSocketIO(url, username: string, roomID = '') {
   }, [])
 
   const emit = (event: string, ...args: unknown[]) => {
-    console.log(event, args, socket.current)
+    // console.log(event, args, socket.current)
     if (socket.current) socket.current.emit(event, ...args)
   }
 
