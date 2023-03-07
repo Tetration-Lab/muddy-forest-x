@@ -4,14 +4,21 @@ import './index.css'
 export interface ChatBoxProps {
   focusInputCallback?: () => void
   focusOutInputCallback?: () => void
+  playerName: string
+  playerColor?: string
 }
-export const ChatBox: React.FC<ChatBoxProps> = ({ focusInputCallback, focusOutInputCallback }) => {
+export const ChatBox: React.FC<ChatBoxProps> = ({
+  focusInputCallback,
+  focusOutInputCallback,
+  playerName,
+  playerColor = 'white',
+}) => {
   const chatEndpoint = 'https://chat.tetrationlab.com/'
   const chatRoomID = 'lobby'
 
   const scrollRef = useRef<HTMLDivElement>()
   const inputChat = useRef<HTMLInputElement>()
-  const { connected, on, emit, off } = useChatMessage(chatEndpoint, 'test', chatRoomID)
+  const { connected, on, emit, off } = useChatMessage(chatEndpoint, playerName, chatRoomID)
   const [messageList, setMessageList] = useState<ChatMessage[]>([])
   const onMessage = (_msg: string, data: any) => {
     console.log(data)
@@ -58,7 +65,7 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ focusInputCallback, focusOutIn
     if (!inputChat.current || !inputChat.current.value) return
     console.log('onSubmit', inputChat.current.value)
     emit('message:room', {
-      playerColor: 'black',
+      playerColor,
       roomID: chatRoomID,
       message: inputChat.current.value,
     })
@@ -75,7 +82,14 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ focusInputCallback, focusOutIn
         <div className="space-y-1 text-white">
           {messageList.map((e) => (
             <div key={e.id}>
-              <span className="mr-2">{e.username}:</span>
+              <span
+                className="mr-2"
+                style={{
+                  color: e.playerColor,
+                }}
+              >
+                {e.username}:
+              </span>
               <span className="break-words">{e.message}</span>
             </div>
           ))}

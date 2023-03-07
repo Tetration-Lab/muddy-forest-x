@@ -88,10 +88,8 @@ class GameScene extends Phaser.Scene {
       const hVal = res[i].val
       const tileX = res[i].x
       const tileY = res[i].y
-      //console.log(tileX, tileY, hVal)
       const check = BigInt(hVal) < PLANET_RARITY
       if (check) {
-        //console.log('spawn!', tileX, tileY)
         const sprite = new Planet(this, 0, 0, 'dogeSheet')
         const pos = snapPosToGrid(
           {
@@ -170,7 +168,6 @@ class GameScene extends Phaser.Scene {
     this.input.setPollAlways()
     this.cursorMove = this.add.image(0, 0, IMAGE.SELECTED_CURSOR)
     this.cursorMove.setDisplaySize(16, 16)
-    // this.add.rectangle(0, 0, 16, 16, 0xff0000, 0.8)
     this.cursorMove.setDepth(1000)
     this.cursorMove.setOrigin(0)
 
@@ -264,11 +261,6 @@ class GameScene extends Phaser.Scene {
 
     this.navigation.setDepth(10)
     this.cameras.main.startFollow(this.navigation)
-
-    // this.input.on('pointerup', (pointer: any) => {
-    //   console.log(Math.floor(+pointer.worldX / 16), Math.floor(+pointer.worldY / 16))
-    // })
-
     this.ready = true
   }
   create() {
@@ -295,16 +287,6 @@ class GameScene extends Phaser.Scene {
     }
 
     this.updateCursor()
-    //this.cursorExplorer.move()
-    //const cursorPos = snapToGrid(
-    //this.cursorExplorer.currentTilePosition.x,
-    //this.cursorExplorer.currentTilePosition.y,
-    //16,
-    //)
-    //this.events.emit('sendWorker', [cursorPos])
-    //this.cursorExplorer.wait()
-    //const cursor = this.input.activePointer
-    //const gridPos = snapToGrid(cursor.x, cursor.y, 16)
     this.chunkLoader.updateChunks(this.followPoint.x, this.followPoint.y)
     this.updateDebug()
 

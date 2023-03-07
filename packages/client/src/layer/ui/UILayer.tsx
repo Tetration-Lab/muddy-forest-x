@@ -1,5 +1,6 @@
+import { useComponentValueStream } from '@latticexyz/std-client'
 import { Box, Popper } from '@mui/material'
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useStore } from 'zustand'
 import { ChatBox } from '../../component/Chatbox'
 import { GameActionBox, GameActionBoxMode } from '../../component/game/GameActionBox'
@@ -7,8 +8,14 @@ import { SendResourceModal } from '../../component/game/Modals/SendResourceModal
 import { SettingActionBox } from '../../component/game/SettingActionBox'
 import { ToolButton } from '../../component/ToolButton'
 import { appStore } from '../../store/app'
-import { closeSendResourceModal, gameStore, gameStore as GameStore } from '../../store/game'
+import { gameStore as GameStore } from '../../store/game'
+import { CAPITAL_ID } from '../phaser/constant/resource'
 
+export const colorMapper = {
+  [CAPITAL_ID.APE_AI]: '#F091C8',
+  [CAPITAL_ID.APE_APE]: '#99CBB8',
+  [CAPITAL_ID.APE_ALINE]: '#BEF6AF',
+}
 export const UILayer = () => {
   const store = useStore(appStore, (state) => state)
   const gameStore = useStore(GameStore, (state) => state)
@@ -21,6 +28,10 @@ export const UILayer = () => {
   const [openGameActionBox, setOpenGameActionBox] = React.useState(false)
   const [currentMode, setCurrentMode] = useState<GameActionBoxMode | undefined>()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const networkLayer = store.networkLayer
+  const playerName = useComponentValueStream(networkLayer.components.Name, networkLayer.playerIndex)
+  const factionID = useComponentValueStream(networkLayer.components.Faction, networkLayer.playerIndex)
+  const playerColor = colorMapper[factionID?.value]
 
   const handleSettingClick = () => {
     setSettingAnchorEl(settingContainerRef.current)
@@ -76,7 +87,14 @@ export const UILayer = () => {
     >
       <div className="absolute bottom-0 z-10">
         <div className="p-4">
-          <ChatBox focusInputCallback={onInputFocus} focusOutInputCallback={onInputFocusOut} />
+          {playerName && playerName.value && (
+            <ChatBox
+              playerColor={playerColor}
+              playerName={playerName.value}
+              focusInputCallback={onInputFocus}
+              focusOutInputCallback={onInputFocusOut}
+            />
+          )}
         </div>
       </div>
       {/*<ClickAwayListener onClickAway={handleSettingClose}>*/}
