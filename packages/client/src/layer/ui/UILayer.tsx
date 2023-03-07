@@ -14,7 +14,7 @@ import { CAPITAL_ID } from '../phaser/constant/resource'
 export const colorMapper = {
   [CAPITAL_ID.APE_AI]: '#F091C8',
   [CAPITAL_ID.APE_APE]: '#99CBB8',
-  [CAPITAL_ID.APE_ALINE]: '#BEF6AF',
+  [CAPITAL_ID.APE_ALIEN]: '#BEF6AF',
 }
 export const UILayer = () => {
   const store = useStore(appStore, (state) => state)
