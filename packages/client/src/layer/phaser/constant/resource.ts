@@ -26,6 +26,6 @@ export const IDLE_ANIM = {
 
 export const CAPITAL_ID = {
   APE_APE: 10,
-  APE_ALINE: 11,
+  APE_ALIEN: 11,
   APE_AI: 12,
 }
