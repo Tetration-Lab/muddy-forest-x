@@ -1,17 +1,19 @@
 import { Typography, useTheme } from '@mui/material'
 import { Box, Stack } from '@mui/system'
-import { closeSendResourceModal } from '../../../store/game'
+import { closeSendResourceModal, gameStore } from '../../../store/game'
 import { CloseModalButton } from '../common/CloseModalButton'
+import { useStore } from 'zustand'
 import { GameItem } from '../common/GameItem'
 import { SaveButton } from '../common/SaveButton'
 import { TypeTag } from '../GameActionBox/TypeTag'
 import Draggable from 'react-draggable'
 import { generatePlanetName } from '../../../utils/random'
-import { useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 
 export const SendResourceModal = ({ id, position }: { id: string; position: Phaser.Math.Vector2 }) => {
   const theme = useTheme()
   const name = useMemo(() => generatePlanetName(BigInt(id)), [id])
+  const planet = useStore(gameStore, (state) => state.planets.get(id))
 
   return (
     <Draggable
@@ -52,7 +54,7 @@ export const SendResourceModal = ({ id, position }: { id: string; position: Phas
               alignItems: 'center',
             }}
           >
-            <GameItem imageUrl={''} />
+            <GameItem imageUrl={planet.texture.manager.getBase64(planet.texture.key)} />
             <Stack mt="12px" px={2} alignItems="flex-start" flex={1}>
               <Typography sx={{ fontSize: 16, fontWeight: 700, wordBreak: 'break-all' }}>{name}</Typography>
               <TypeTag type="RESOURCE" />
