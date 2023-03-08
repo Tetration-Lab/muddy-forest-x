@@ -1,4 +1,4 @@
-import { getComponentValue, Has, HasValue, runQuery } from '@latticexyz/recs'
+import { EntityIndex, getComponentValue, Has, HasValue, runQuery } from '@latticexyz/recs'
 import { EntityType } from '../const/types'
 import { NetworkLayer } from '../layer/network/types'
 import { TILE_SIZE } from '../layer/phaser/config/chunk'

@@ -19,6 +19,7 @@ import { NetworkLayer } from '../../network/types'
 import { CAPITAL_ID, IDLE_ANIM, IMAGE, SPRITE } from '../constant/resource'
 import { HashTwoRespItem } from '../../../miner/hasher.worker'
 import { createSpawnHQShipSystem } from '../../../system/createSpawnHQShipSystem'
+import { createTeleportSystem } from '../../../system/createTeleportSystem'
 import { PLANET_RARITY } from '../../../const/planet'
 import { HQShip } from '../gameobject/HQShip'
 import { formatEntityID } from '@latticexyz/network'
@@ -173,6 +174,20 @@ class GameScene extends Phaser.Scene {
         }
       },
     )
+    createTeleportSystem(networkLayer, (entityID: string, x: number, y: number) => {
+      const id = formatEntityID(entityID)
+      const ship = this.HQshipMap.get(id.toString())
+      if (ship) {
+        const newPos = snapPosToGrid(
+          {
+            x: x * TILE_SIZE,
+            y: y * TILE_SIZE,
+          },
+          TILE_SIZE,
+        )
+        ship.teleport(newPos.x, newPos.y)
+      }
+    })
   }
 
   async onCreate() {
@@ -203,12 +218,6 @@ class GameScene extends Phaser.Scene {
         switch (this.gameUIState) {
           case GAME_UI_STATE.NONE:
             return
-          case GAME_UI_STATE.SELECTED_HQ_SHIP:
-            // eslint-disable-next-line no-case-declarations
-            const position = snapToGrid(pointer.worldX, pointer.worldY, 16)
-            console.log(position)
-            this.selfShip.setPosition(position.x, position.y)
-            break
         }
       })
     })
@@ -241,25 +250,12 @@ class GameScene extends Phaser.Scene {
             },
             TILE_SIZE,
           )
-          ship.teleport(newPos.x, newPos.y)
-          // await networkLayer.api.move(entityID, tileX, tileY)
+          try {
+            await networkLayer.api.move(entityID, tileX, tileY)
+          } finally {
+            this.gameUIState = GAME_UI_STATE.NONE
+          }
         }
-        // this.tweens.add({
-        //   targets: [this.selfShip],
-        //   alpha: 1,
-        //   x: {
-        //     from: this.selfShip.x,
-        //     to: position.x,
-        //   },
-        //   y: {
-        //     from: this.selfShip.y,
-        //     to: position.y,
-        //   },
-        //   ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'
-        //   duration: 1000,
-        //   repeat: 0, // -1: infinity
-        //   yoyo: false,
-        // })
         this.gameUIState = GAME_UI_STATE.NONE
       }
     })
