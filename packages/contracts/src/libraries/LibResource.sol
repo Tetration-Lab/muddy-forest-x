@@ -45,7 +45,7 @@ library Resource {
     uint256 id = getResourceEntity(entity, BASE_ENERGY);
     r.regen(id);
     ResourceComponent.Resource memory resource = r.getValue(id);
-    require(energy > resource.value, "Not enough energy");
+    require(resource.value >= energy, "Not enough energy");
     resource.value -= energy;
     r.set(id, resource);
   }
@@ -88,7 +88,7 @@ library Resource {
     r.regen(targetId);
     ResourceComponent.Resource memory senderR = r.getValue(senderId);
     ResourceComponent.Resource memory targetR = r.getValue(targetId);
-    require(amount > senderR.value, "Not enough resource amount");
+    require(senderR.value >= amount, "Not enough resource amount");
     senderR.value -= amount;
     targetR.value = Math64.min(targetR.cap, targetR.value + amount);
     r.set(senderId, senderR);
@@ -101,7 +101,7 @@ library Resource {
     require(r.has(id), "Resource do not exsist on sender");
     r.regen(id);
     ResourceComponent.Resource memory resource = r.getValue(id);
-    require(amount > resource.value, "Not enough resource amount");
+    require(resource.value >= amount, "Not enough resource amount");
     resource.value -= amount;
     r.set(id, resource);
   }
