@@ -65,6 +65,7 @@ class GameScene extends Phaser.Scene {
   cursorMove!: Phaser.GameObjects.Image
   gameUIState: GAME_UI_STATE = GAME_UI_STATE.NONE
   selfShip!: HQShip
+  HQshipMap: Map<string, HQShip> = new Map()
 
   constructor() {
     super(GAME_SCENE)
@@ -153,16 +154,17 @@ class GameScene extends Phaser.Scene {
         const ship = new HQShip(this, pos.x, pos.y, IMAGE.AI_SHIP, entityID, owner)
         ship.setDepth(100)
         const id = formatEntityID(entityID)
+
+        this.HQshipMap.set(id.toString(), ship)
         initSpaceship(id)
         if (owner === networkLayer.connectedAddress) {
           this.followPoint.x = +pos.x
           this.followPoint.y = +pos.y
-          const s = this.add.sprite(this.followPoint.x + 100, this.followPoint.y, SPRITE.TELEPORT).setDepth(1000)
-          s.play(IDLE_ANIM.TELEPORT)
           this.add.rectangle(this.followPoint.x, this.followPoint.y, 16, 16, 0x00ff00, 0.5).setDepth(1000)
           this.navigation.setPosition(this.followPoint.x, this.followPoint.y)
           ship.registerOnClick((pointer: Phaser.Input.Pointer) => {
             setTimeout(() => {
+              console.log(dataStore.getState().spaceship.get(id.toString()), dataStore.getState().spaceship)
               this.gameUIState = GAME_UI_STATE.SELECTED_HQ_SHIP
             }, 100)
           })
@@ -229,7 +231,18 @@ class GameScene extends Phaser.Scene {
           const tileX = Math.floor(position.x / TILE_SIZE)
           const tileY = Math.floor(position.y / TILE_SIZE)
           console.log(entityID, tileX, tileY)
-          await networkLayer.api.move(entityID, tileX, tileY)
+          const id = formatEntityID(entityID)
+          const ship = this.HQshipMap.get(id.toString())
+          console.log(ship, id)
+          const newPos = snapPosToGrid(
+            {
+              x: tileX * TILE_SIZE,
+              y: tileY * TILE_SIZE,
+            },
+            TILE_SIZE,
+          )
+          ship.teleport(newPos.x, newPos.y)
+          // await networkLayer.api.move(entityID, tileX, tileY)
         }
         // this.tweens.add({
         //   targets: [this.selfShip],
