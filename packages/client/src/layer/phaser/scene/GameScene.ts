@@ -242,14 +242,6 @@ class GameScene extends Phaser.Scene {
           console.log(entityID, tileX, tileY)
           const id = formatEntityID(entityID)
           const ship = this.HQshipMap.get(id.toString())
-          console.log(ship, id)
-          const newPos = snapPosToGrid(
-            {
-              x: tileX * TILE_SIZE,
-              y: tileY * TILE_SIZE,
-            },
-            TILE_SIZE,
-          )
           try {
             await networkLayer.api.move(entityID, tileX, tileY)
           } finally {
