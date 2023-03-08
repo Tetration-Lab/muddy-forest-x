@@ -6,6 +6,8 @@ import {
   defineStringComponent,
 } from '@latticexyz/std-client'
 
+export type Components = ReturnType<typeof setupComponents>
+
 export const setupComponents = (world: World) => {
   return {
     Type: defineNumberComponent(world, {

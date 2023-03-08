@@ -153,7 +153,6 @@ class GameScene extends Phaser.Scene {
         const ship = new HQShip(this, pos.x, pos.y, IMAGE.AI_SHIP, entityID, owner)
         ship.setDepth(100)
         const id = formatEntityID(entityID)
-        console.log(id)
         initSpaceship(id)
         if (owner === networkLayer.connectedAddress) {
           this.followPoint.x = +pos.x
@@ -164,7 +163,6 @@ class GameScene extends Phaser.Scene {
           this.navigation.setPosition(this.followPoint.x, this.followPoint.y)
           ship.registerOnClick((pointer: Phaser.Input.Pointer) => {
             setTimeout(() => {
-              console.log(dataStore.getState().spaceship[id.toString()])
               this.gameUIState = GAME_UI_STATE.SELECTED_HQ_SHIP
             }, 100)
           })
@@ -230,7 +228,7 @@ class GameScene extends Phaser.Scene {
         if (networkLayer) {
           const tileX = Math.floor(position.x / TILE_SIZE)
           const tileY = Math.floor(position.y / TILE_SIZE)
-          console.log(entityID,  tileX, tileY)
+          console.log(entityID, tileX, tileY)
           await networkLayer.api.move(entityID, tileX, tileY)
         }
         // this.tweens.add({
