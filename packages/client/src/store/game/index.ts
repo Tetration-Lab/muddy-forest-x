@@ -26,7 +26,7 @@ export const addPlanet = (id: string, planet: Planet) => {
   })
 }
 
-export const addSpaceship = (id: string, spaceship: Phaser.GameObjects.Sprite) => {
+export const addSpaceship = (id: string, spaceship: HQShip) => {
   gameStore.setState((state) => {
     const spaceships = new Map(state.spaceships)
     spaceships.set(id, spaceship)
