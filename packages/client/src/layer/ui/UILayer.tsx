@@ -6,6 +6,7 @@ import { ChatBox } from '../../component/Chatbox'
 import { GameActionBox, GameActionBoxMode } from '../../component/game/GameActionBox'
 import { SendResourceModal } from '../../component/game/Modals/SendResourceModal'
 import { TeleportModal } from '../../component/game/Modals/TeleportModal'
+import { Profile } from '../../component/game/Profile'
 import { SettingActionBox } from '../../component/game/SettingActionBox'
 import { ToolButton } from '../../component/ToolButton'
 import { FACTION } from '../../const/faction'
@@ -119,6 +120,11 @@ export const UILayer = () => {
           iconSrc="./assets/svg/teleport-icon.svg"
           onClick={handleToolsClick(GameActionBoxMode.Build)}
         />
+      </div>
+      <div className="absolute top-50 left-0">
+        <div className="p-4">
+          <Profile />
+        </div>
       </div>
       {/*</ClickAwayListener>*/}
       {/* debug */}

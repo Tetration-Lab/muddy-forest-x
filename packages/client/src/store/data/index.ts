@@ -136,7 +136,7 @@ export const initSpaceship = (id: string) => {
     },
     resources: [],
     owner,
-    cooldown: Number(cooldown),
+    cooldown: Number(cooldown ?? 0),
   }
 
   dataStore.setState((state) => {

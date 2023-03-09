@@ -132,7 +132,7 @@ class GameScene extends Phaser.Scene {
         const pos = snapToGrid(x, y, 16)
         const ship = new HQShip(this, pos.x, pos.y, IMAGE.AI_SHIP, entityID, owner)
         ship.setDepth(100)
-        initSpaceship(id, owner === networkLayer.connectedAddress)
+        initSpaceship(id)
         addSpaceship(id, ship)
         if (owner === networkLayer.connectedAddress) {
           this.followPoint.x = +pos.x
