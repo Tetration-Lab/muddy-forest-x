@@ -151,7 +151,6 @@ class GameScene extends Phaser.Scene {
         if (owner === networkLayer.connectedAddress) {
           this.followPoint.x = +pos.x
           this.followPoint.y = +pos.y
-          this.add.rectangle(this.followPoint.x, this.followPoint.y, 16, 16, 0x00ff00, 0.5).setDepth(1000)
           this.navigation.setPosition(this.followPoint.x, this.followPoint.y)
           ship.registerOnClick((pointer: Phaser.Input.Pointer) => {
             setTimeout(() => {
@@ -230,7 +229,10 @@ class GameScene extends Phaser.Scene {
           const id = formatEntityID(entityID)
           const ship = gameStore.getState().spaceships.get(id)
           try {
+            ship.playTeleport()
             await networkLayer.api.move(entityID, tileX, tileY)
+          } catch (err) {
+            ship.stopPlayTeleport()
           } finally {
             this.gameUIState = GAME_UI_STATE.NONE
           }
