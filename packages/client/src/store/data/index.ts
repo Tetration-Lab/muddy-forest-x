@@ -21,12 +21,12 @@ export interface Spaceship extends BaseEntity {}
 
 export type Store = {
   planets: Map<string, Planet>
-  spaceship: Map<string, Spaceship>
+  spaceships: Map<string, Spaceship>
 }
 
 const initialState = {
   planets: new Map<string, Planet>(),
-  spaceship: new Map<string, Spaceship>(),
+  spaceships: new Map<string, Spaceship>(),
 }
 
 export const dataStore = createStore<Store>((set) => ({
@@ -60,7 +60,7 @@ export const initPlanet = (id: string, position: [number, number]) => {
   })
 }
 
-export const initSpaceship = (id: string) => {
+export const initSpaceship = (id: string, isHQShip: boolean = false) => {
   const { world, components } = appStore.getState().networkLayer
   const eid = formatEntityID(id)
   const ind = world.registerEntity({ id: eid })
@@ -71,14 +71,14 @@ export const initSpaceship = (id: string) => {
   const owner = getComponentValue(components.Owner, ind)?.value
 
   dataStore.setState((state) => {
-    const spaceship = new Map(state.spaceship)
-    spaceship.set(eid, {
+    const spaceships = new Map(state.spaceships)
+    spaceships.set(eid, {
       index: ind,
       name,
       energy,
       resources: [],
       owner,
     })
-    return { spaceship }
+    return { spaceships }
   })
 }

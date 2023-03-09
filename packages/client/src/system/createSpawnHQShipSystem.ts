@@ -1,4 +1,4 @@
-import { defineSystem, EntityIndex, getComponentValue, Has, HasValue, runQuery } from '@latticexyz/recs'
+import { defineSystem, EntityIndex, getComponentValue, Has, HasValue } from '@latticexyz/recs'
 import { EntityType } from '../const/types'
 import { NetworkLayer } from '../layer/network/types'
 import { TILE_SIZE } from '../layer/phaser/config/chunk'
@@ -23,8 +23,7 @@ export function createSpawnHQShipSystem(network: NetworkLayer, callback: Callbac
     const entityID = network.world.entities[entity] as string
     console.log('createSpawnHQShipSystem:position', hexToInt(position.x), hexToInt(position.y), 'eid', entity)
     console.log('createSpawnHQShipSystem:faction', faction)
-    const ownerStr = owner.value as unknown as string
-    callback(hexToInt(position.x) * TILE_SIZE, hexToInt(position.y) * TILE_SIZE, entity, entityID, ownerStr)
+    callback(hexToInt(position.x) * TILE_SIZE, hexToInt(position.y) * TILE_SIZE, entity, entityID, owner.value)
   })
   console.log('createSpawnHQShipSystem:end')
 }

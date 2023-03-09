@@ -13,7 +13,7 @@ import { Hasher } from 'circuits'
 import { initConfigAnim } from '../anim'
 import { CursorExplorer } from '../gameobject/CursorExplorer'
 import { Planet } from '../gameobject/Planet'
-import { addPlanet, gameStore, openSendResourceModal } from '../../../store/game'
+import { addPlanet, addSpaceship, gameStore, openSendResourceModal } from '../../../store/game'
 import { createSpawnCapitalSystem } from '../../../system/createSpawnCapitalSystem'
 import { NetworkLayer } from '../../network/types'
 import { CAPITAL_ID, IDLE_ANIM, IMAGE, SPRITE } from '../constant/resource'
@@ -66,7 +66,6 @@ class GameScene extends Phaser.Scene {
   cursorMove!: Phaser.GameObjects.Image
   gameUIState: GAME_UI_STATE = GAME_UI_STATE.NONE
   selfShip!: HQShip
-  HQshipMap: Map<string, HQShip> = new Map()
 
   constructor() {
     super(GAME_SCENE)
@@ -152,15 +151,11 @@ class GameScene extends Phaser.Scene {
       networkLayer,
       (x: number, y: number, entityIndex: number, entityID: string, owner: string) => {
         const id = formatEntityID(entityID)
-        if (this.HQshipMap.has(id)) {
-          return
-        }
         const pos = snapToGrid(x, y, 16)
         const ship = new HQShip(this, pos.x, pos.y, IMAGE.AI_SHIP, entityID, owner)
         ship.setDepth(100)
-
-        this.HQshipMap.set(id.toString(), ship)
-        initSpaceship(id)
+        initSpaceship(id, owner === networkLayer.connectedAddress)
+        addSpaceship(id, ship)
         if (owner === networkLayer.connectedAddress) {
           this.followPoint.x = +pos.x
           this.followPoint.y = +pos.y
@@ -168,7 +163,7 @@ class GameScene extends Phaser.Scene {
           this.navigation.setPosition(this.followPoint.x, this.followPoint.y)
           ship.registerOnClick((pointer: Phaser.Input.Pointer) => {
             setTimeout(() => {
-              console.log(dataStore.getState().spaceship.get(id.toString()), dataStore.getState().spaceship)
+              console.log(dataStore.getState().spaceships.get(id))
               this.gameUIState = GAME_UI_STATE.SELECTED_HQ_SHIP
             }, 100)
           })
@@ -179,7 +174,7 @@ class GameScene extends Phaser.Scene {
     )
     createTeleportSystem(networkLayer, (entityID: string, x: number, y: number) => {
       const id = formatEntityID(entityID)
-      const ship = this.HQshipMap.get(id.toString())
+      const ship = gameStore.getState().spaceships.get(id.toString())
       const dist = Phaser.Math.Distance.Between(x, y, ship.x, ship.y)
       if (ship && dist > 0) {
         ship.teleport(x, y)
@@ -238,7 +233,7 @@ class GameScene extends Phaser.Scene {
           const tileY = Math.floor(position.y / TILE_SIZE)
           console.log(entityID, tileX, tileY)
           const id = formatEntityID(entityID)
-          const ship = this.HQshipMap.get(id.toString())
+          const ship = gameStore.getState().spaceships.get(id)
           try {
             await networkLayer.api.move(entityID, tileX, tileY)
           } finally {
