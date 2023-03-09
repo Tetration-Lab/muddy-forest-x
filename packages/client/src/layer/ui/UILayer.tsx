@@ -5,6 +5,7 @@ import { useStore } from 'zustand'
 import { ChatBox } from '../../component/Chatbox'
 import { GameActionBox, GameActionBoxMode } from '../../component/game/GameActionBox'
 import { SendResourceModal } from '../../component/game/Modals/SendResourceModal'
+import { TeleportModal } from '../../component/game/Modals/TeleportModal'
 import { SettingActionBox } from '../../component/game/SettingActionBox'
 import { ToolButton } from '../../component/ToolButton'
 import { FACTION } from '../../const/faction'
@@ -121,6 +122,7 @@ export const UILayer = () => {
       </div>
       {/*</ClickAwayListener>*/}
       {/* debug */}
+      <TeleportModal />
       <div className="absolute top-1/2 left-0">
         <div id="debug-pane"></div>
       </div>

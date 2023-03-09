@@ -13,7 +13,7 @@ export default defineConfig({
     assetsInlineLimit: 0,
   },
   plugins: [
-    // FullReload(['src/**/*.*']),
+    FullReload(['src/**/*.*']),
     svgr(),
     react(),
     topLevelAwait(),

@@ -69,20 +69,6 @@ class GameScene extends Phaser.Scene {
 
   constructor() {
     super(GAME_SCENE)
-    if (import.meta.env.DEV) {
-      document.getElementById('debug-pane').innerHTML = ''
-      this.pane = new Pane({ container: document.getElementById('debug-pane') })
-      this.paramsDebug = {
-        position: '0, 0',
-        chunkCoordinate: '0, 0',
-        tileCoordinate: '0, 0',
-        cameraSize: '',
-      }
-      this.pane.addMonitor(this.paramsDebug, 'position')
-      this.pane.addMonitor(this.paramsDebug, 'chunkCoordinate')
-      this.pane.addMonitor(this.paramsDebug, 'tileCoordinate')
-      this.pane.addMonitor(this.paramsDebug, 'cameraSize')
-    }
   }
 
   handleWorker = async (res: HashTwoRespItem[]) => {
