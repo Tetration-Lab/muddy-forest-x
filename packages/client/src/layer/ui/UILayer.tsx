@@ -7,15 +7,10 @@ import { GameActionBox, GameActionBoxMode } from '../../component/game/GameActio
 import { SendResourceModal } from '../../component/game/Modals/SendResourceModal'
 import { SettingActionBox } from '../../component/game/SettingActionBox'
 import { ToolButton } from '../../component/ToolButton'
+import { FACTION } from '../../const/faction'
 import { appStore } from '../../store/app'
 import { closeSendResourceModal, gameStore } from '../../store/game'
-import { CAPITAL_ID } from '../phaser/constant/resource'
 
-export const colorMapper = {
-  [CAPITAL_ID.APE_AI]: '#F091C8',
-  [CAPITAL_ID.APE_APE]: '#5076C3',
-  [CAPITAL_ID.APE_ALIEN]: '#BEF6AF',
-}
 export const UILayer = () => {
   const store = useStore(appStore, (state) => state)
   const toolsContainerRef = useRef()
@@ -35,7 +30,7 @@ export const UILayer = () => {
   useEffect(() => {
     if (playerNameComponent) {
       setPlayerName(playerNameComponent?.value)
-      setPlayerColor(colorMapper[factionID?.value])
+      setPlayerColor(FACTION[factionID?.value].color)
     }
   }, [playerNameComponent, factionID])
 
@@ -126,7 +121,7 @@ export const UILayer = () => {
       </div>
       {/*</ClickAwayListener>*/}
       {/* debug */}
-      <div className="absolute top-50 left-0">
+      <div className="absolute top-1/2 left-0">
         <div id="debug-pane"></div>
       </div>
       {/* tool button */}

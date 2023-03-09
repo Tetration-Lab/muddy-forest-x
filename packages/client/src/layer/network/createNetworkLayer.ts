@@ -7,7 +7,7 @@ import { createFaucetService, formatEntityID, GodID } from '@latticexyz/network'
 import { setupComponents } from './components'
 import { ethers, utils, Wallet } from 'ethers'
 import { faucetUrl, initialGasPrice } from '../../config'
-import { CAPITAL_ID } from '../phaser/constant/resource'
+import { FACTION } from '../../const/faction'
 
 export async function createNetworkLayer(config: SetupContractConfig) {
   console.log(config, 'config')
@@ -49,29 +49,12 @@ export async function createNetworkLayer(config: SetupContractConfig) {
   // --- API ------------------------------------------------------------------------
 
   const setupFaction = async () => {
-    await systems['system.SetupFaction'].executeTyped({
-      capitalPosition: {
-        x: 0,
-        y: -250,
-      },
-      name: 'Ape Ape',
-      id: CAPITAL_ID.APE_APE,
-    })
-    await systems['system.SetupFaction'].executeTyped({
-      capitalPosition: {
-        x: -500,
-        y: 500,
-      },
-      name: 'AI Ape',
-      id: CAPITAL_ID.APE_AI,
-    })
-    await systems['system.SetupFaction'].executeTyped({
-      capitalPosition: {
-        x: 500,
-        y: 500,
-      },
-      name: 'Alien Ape',
-      id: CAPITAL_ID.APE_ALIEN,
+    Object.entries(FACTION).forEach(async (e) => {
+      await systems['system.SetupFaction'].executeTyped({
+        capitalPosition: e[1].capitalPosition,
+        name: e[1].name,
+        id: Number(e[0]),
+      })
     })
   }
 

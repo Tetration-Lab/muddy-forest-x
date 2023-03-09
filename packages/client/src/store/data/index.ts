@@ -24,6 +24,10 @@ export interface Spaceship extends BaseEntity {
   cooldown: number
 }
 
+export interface Player {
+  faction: number
+}
+
 export type Store = {
   planets: Map<string, Planet>
   spaceships: Map<string, Spaceship>

@@ -8,6 +8,9 @@ class PreloaderScene extends Phaser.Scene {
 
   preload() {
     this.load.image(IMAGE.AI_SHIP, 'assets/sprite/ai_ship.png')
+    this.load.image(IMAGE.ALIEN_SHIP, 'assets/sprite/alien_ship.png')
+    this.load.image(IMAGE.APE_SHIP, 'assets/sprite/apeape_ship.png')
+
     this.load.spritesheet(SPRITE.DOGE, 'assets/sprite/P4_48px_v2.png', { frameWidth: 48, frameHeight: 48 })
     this.load.spritesheet(SPRITE.P1_1, 'assets/sprite/P1_24px.png', { frameWidth: 24, frameHeight: 24 })
     this.load.spritesheet(SPRITE.P1_2, 'assets/sprite/P1_24px_v3.png', { frameWidth: 24, frameHeight: 24 })

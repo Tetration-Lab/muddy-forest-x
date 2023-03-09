@@ -41,11 +41,7 @@ export const SPRITE_PLANET = [
 
 export const IMAGE = {
   AI_SHIP: 'AI_SHIP',
+  ALIEN_SHIP: 'ALIEN_SHIP',
+  APE_SHIP: 'APE_SHIP',
   SELECTED_CURSOR: 'SELECTED_CURSOR',
-}
-
-export const CAPITAL_ID = {
-  APE_APE: 10,
-  APE_ALIEN: 11,
-  APE_AI: 12,
 }

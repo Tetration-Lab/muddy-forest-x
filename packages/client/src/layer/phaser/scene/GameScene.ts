@@ -16,7 +16,7 @@ import { Planet } from '../gameobject/Planet'
 import { addPlanet, addSpaceship, gameStore, openSendResourceModal } from '../../../store/game'
 import { createSpawnCapitalSystem } from '../../../system/createSpawnCapitalSystem'
 import { NetworkLayer } from '../../network/types'
-import { CAPITAL_ID, IMAGE, SPRITE, SPRITE_PLANET } from '../constant/resource'
+import { IMAGE, SPRITE, SPRITE_PLANET } from '../constant/resource'
 import { HashTwoRespItem } from '../../../miner/hasher.worker'
 import { createSpawnHQShipSystem } from '../../../system/createSpawnHQShipSystem'
 import { createTeleportSystem } from '../../../system/createTeleportSystem'
@@ -24,6 +24,7 @@ import { PLANET_RARITY } from '../../../const/planet'
 import { HQShip } from '../gameobject/HQShip'
 import { formatEntityID } from '@latticexyz/network'
 import { dataStore, initPlanet, initSpaceship } from '../../../store/data'
+import { FACTION } from '../../../const/faction'
 
 const ZOOM_OUT_LIMIT = 0.01
 const ZOOM_IN_LIMIT = 2
@@ -129,16 +130,8 @@ class GameScene extends Phaser.Scene {
   }
 
   onSetUpSystem(networkLayer: NetworkLayer) {
-    createSpawnCapitalSystem(networkLayer, (x: number, y: number, entityID: number, fractionID: number) => {
-      let spriteKey = SPRITE.Capital_1
-      switch (fractionID) {
-        case CAPITAL_ID.APE_APE:
-          spriteKey = SPRITE.APE_APE_CAPITAL
-        case CAPITAL_ID.APE_ALIEN:
-          spriteKey = SPRITE.APE_ALINE_CAPITAL
-        case CAPITAL_ID.APE_AI:
-          spriteKey = SPRITE.APE_AI_CAPITAL
-      }
+    createSpawnCapitalSystem(networkLayer, (x: number, y: number, entityID: number, factionId: number) => {
+      let spriteKey = FACTION[factionId].capital
       const p = new Planet(this, x, y, spriteKey)
       p.setDisplaySize(4 * TILE_SIZE ** 2, 4 * TILE_SIZE ** 2)
       p.play(spriteKey)
