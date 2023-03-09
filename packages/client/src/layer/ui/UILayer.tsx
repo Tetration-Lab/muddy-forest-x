@@ -13,7 +13,7 @@ import { CAPITAL_ID } from '../phaser/constant/resource'
 
 export const colorMapper = {
   [CAPITAL_ID.APE_AI]: '#F091C8',
-  [CAPITAL_ID.APE_APE]: '#99CBB8',
+  [CAPITAL_ID.APE_APE]: '#5076C3',
   [CAPITAL_ID.APE_ALIEN]: '#BEF6AF',
 }
 export const UILayer = () => {
@@ -120,7 +120,7 @@ export const UILayer = () => {
       <div className="absolute top-1/2 right-0">
         <ToolButton
           title={'Teleport'}
-          iconSrc="./assets/svg/build-icon-2.svg"
+          iconSrc="./assets/svg/teleport-icon.svg"
           onClick={handleToolsClick(GameActionBoxMode.Build)}
         />
       </div>

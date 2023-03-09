@@ -1,8 +1,9 @@
-import { SyncState } from '@latticexyz/network'
-import { defineComponentSystem, defineSystem, getComponentValue, Has, HasValue, runQuery, Type } from '@latticexyz/recs'
+import { defineSystem, getComponentValue, Has, HasValue } from '@latticexyz/recs'
 import { EntityType } from '../const/types'
 import { NetworkLayer } from '../layer/network/types'
+import { TILE_SIZE } from '../layer/phaser/config/chunk'
 import { Planet } from '../layer/phaser/gameobject/Planet'
+import { snapPosToGrid } from '../utils/snapToGrid'
 import { hexToInt } from '../utils/utils'
 
 export type CreateTeleportSystemCallback = (entityID: string, x: number, y: number) => void
@@ -19,7 +20,14 @@ export function createTeleportSystem(network: NetworkLayer, cb: CreateTeleportSy
     if (!position) return
     console.log('in game ==> Position system: ', position?.x, position?.y, 'eid', update.entity)
     const entityID = network.world.entities[update.entity] as string
-    cb(entityID, hexToInt(position.x), hexToInt(position.y))
+    const newPos = snapPosToGrid(
+      {
+        x: hexToInt(position.x) * TILE_SIZE,
+        y: hexToInt(position.y) * TILE_SIZE,
+      },
+      TILE_SIZE,
+    )
+    cb(entityID, newPos.x, newPos.y)
     console.log('createTeleportSystem:end')
   })
 }

@@ -151,10 +151,13 @@ class GameScene extends Phaser.Scene {
     createSpawnHQShipSystem(
       networkLayer,
       (x: number, y: number, entityIndex: number, entityID: string, owner: string) => {
+        const id = formatEntityID(entityID)
+        if (this.HQshipMap.has(id)) {
+          return
+        }
         const pos = snapToGrid(x, y, 16)
         const ship = new HQShip(this, pos.x, pos.y, IMAGE.AI_SHIP, entityID, owner)
         ship.setDepth(100)
-        const id = formatEntityID(entityID)
 
         this.HQshipMap.set(id.toString(), ship)
         initSpaceship(id)
@@ -177,15 +180,9 @@ class GameScene extends Phaser.Scene {
     createTeleportSystem(networkLayer, (entityID: string, x: number, y: number) => {
       const id = formatEntityID(entityID)
       const ship = this.HQshipMap.get(id.toString())
-      if (ship) {
-        const newPos = snapPosToGrid(
-          {
-            x: x * TILE_SIZE,
-            y: y * TILE_SIZE,
-          },
-          TILE_SIZE,
-        )
-        ship.teleport(newPos.x, newPos.y)
+      const dist = Phaser.Math.Distance.Between(x, y, ship.x, ship.y)
+      if (ship && dist > 0) {
+        ship.teleport(x, y)
       }
     })
   }

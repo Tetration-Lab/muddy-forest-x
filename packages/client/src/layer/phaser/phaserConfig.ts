@@ -17,7 +17,7 @@ const phaserConfig = {
     default: 'arcade',
     arcade: {},
   },
-  // backgroundColor: '#202326',
+  backgroundColor: '#141431',
   pixelArt: true,
   roundPixels: true,
   plugins: {},
