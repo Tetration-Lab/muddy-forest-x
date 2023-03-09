@@ -4,26 +4,29 @@ import { Stack } from '@mui/system'
 import { useEffect } from 'react'
 import { useStore } from 'zustand'
 import { FACTION } from '../../../const/faction'
+import { useSpaceship } from '../../../hook/useSpaceship'
+import { appStore } from '../../../store/app'
 import { dataStore } from '../../../store/data'
 import { gameStore } from '../../../store/game'
 import { EnergyStatBox, StatBox } from './StatBox'
-import { CooldownStatusBadge, StatusBadge } from './StatusBadge'
+import { CooldownStatusBadge } from './StatusBadge'
 
 export const Profile = () => {
   const theme = useTheme()
-  const { ship, shipId, player } = useStore(dataStore, (state) => {
+  const { network } = useStore(appStore, (state) => state.networkLayer)
+  const { shipId, player } = useStore(dataStore, (state) => {
     const shipId = state.ownedSpaceships[0]
-    const ship = state.spaceships.get(shipId)
-    const player = state.players.get(formatEntityID(ship?.owner ?? '0x0'))
+    const player = state.players.get(formatEntityID(network.connectedAddress.get()))
     return {
       shipId,
-      ship,
       player,
     }
   })
+  const ship = useSpaceship(shipId ?? '0x0')
   const shipSprite = useStore(gameStore, (state) => state.spaceships.get(shipId))
 
   if (!ship || !shipSprite || !player) return <></>
+
   return (
     <Stack spacing={1}>
       <Box sx={{ color: theme.palette.grayScale.white }}>
@@ -79,6 +82,7 @@ export const Profile = () => {
               }}
             >
               <EnergyStatBox
+                key={ship.energy.value}
                 value={ship.energy.value}
                 cap={ship.energy.cap}
                 regen={ship.energy.rpb}
@@ -91,6 +95,7 @@ export const Profile = () => {
       </Box>
       <Stack direction="row" spacing={1}>
         <CooldownStatusBadge
+          key={ship.cooldown}
           imgSrc="/assets/svg/high-temp-icon.svg"
           finishTimestamp={ship.cooldown}
           hover={{
