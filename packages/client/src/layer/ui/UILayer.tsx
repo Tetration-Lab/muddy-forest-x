@@ -112,7 +112,7 @@ export const UILayer = () => {
           </div>
         </div>
       </div>
-      <div className="absolute top-1/2 right-0">
+      <div className="absolute top-1/2 right-0 mr-2">
         <ToolButton
           title={'Teleport'}
           iconSrc="./assets/svg/teleport-icon.svg"

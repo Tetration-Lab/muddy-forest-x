@@ -131,7 +131,7 @@ class GameScene extends Phaser.Scene {
 
   onSetUpSystem(networkLayer: NetworkLayer) {
     createSpawnCapitalSystem(networkLayer, (x: number, y: number, entityID: number, factionId: number) => {
-      let spriteKey = FACTION[factionId].capital
+      const spriteKey = FACTION[factionId].capital
       const p = new Planet(this, x, y, spriteKey)
       p.setDisplaySize(4 * TILE_SIZE ** 2, 4 * TILE_SIZE ** 2)
       p.play(spriteKey)
@@ -228,6 +228,11 @@ class GameScene extends Phaser.Scene {
           console.log(entityID, tileX, tileY)
           const id = formatEntityID(entityID)
           const ship = gameStore.getState().spaceships.get(id)
+          const dist = Phaser.Math.Distance.Between(position.x, position.y, ship.x, ship.y)
+          if (dist === 0) {
+            this.gameUIState = GAME_UI_STATE.NONE
+            return
+          }
           try {
             ship.playTeleport()
             await networkLayer.api.move(entityID, tileX, tileY)
