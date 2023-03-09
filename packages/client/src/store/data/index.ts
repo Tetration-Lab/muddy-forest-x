@@ -25,24 +25,48 @@ export interface Spaceship extends BaseEntity {
 }
 
 export interface Player {
+  index: EntityIndex
   faction: number
+  name?: string
 }
 
 export type Store = {
   planets: Map<string, Planet>
   spaceships: Map<string, Spaceship>
+  players: Map<string, Player>
   ownedSpaceships: string[]
 }
 
 const initialState = {
   planets: new Map<string, Planet>(),
   spaceships: new Map<string, Spaceship>(),
+  players: new Map<string, Player>(),
   ownedSpaceships: [],
 }
 
 export const dataStore = createStore<Store>((set) => ({
   ...initialState,
 }))
+
+export const initPlayer = (id: string) => {
+  if (dataStore.getState().players.has(id)) return
+
+  const { world, components } = appStore.getState().networkLayer
+  const eid = formatEntityID(id)
+  const ind = world.registerEntity({ id: eid })
+  const name = getComponentValue(components.Name, ind)?.value
+  const faction = getComponentValue(components.Faction, ind)?.value
+
+  dataStore.setState((state) => {
+    const players = new Map(state.players)
+    players.set(eid, {
+      index: ind,
+      name,
+      faction,
+    })
+    return { players }
+  })
+}
 
 export const initPlanet = (id: string, position: [number, number]) => {
   const { world, components } = appStore.getState().networkLayer
@@ -56,6 +80,10 @@ export const initPlanet = (id: string, position: [number, number]) => {
   const level = getComponentValue(components.Level, ind)?.level ?? planetLevel(eid)
   const multiplier = getEnergyLevelMultiplier(level)
 
+  if (owner) {
+    initPlayer(owner)
+  }
+
   const p = {
     index: ind,
     name,
@@ -63,8 +91,7 @@ export const initPlanet = (id: string, position: [number, number]) => {
       value: Number(energy?.value ?? ((BASE_ENERGY_CAP / 2) * multiplier) / 100),
       cap: Number(energy?.cap ?? (BASE_ENERGY_CAP * multiplier) / 100),
       rpb: Number(energy?.rpb ?? (BASE_ENERGY_REGEN * multiplier) / 100),
-      bases: energy?.bases,
-      lrb: energy?.lrb,
+      lrt: energy?.lrt ?? 0,
     },
     resources: [],
     position,
@@ -81,7 +108,7 @@ export const initPlanet = (id: string, position: [number, number]) => {
   return p
 }
 
-export const initSpaceship = (id: string, isHQShip: boolean = false) => {
+export const initSpaceship = (id: string) => {
   const { world, components } = appStore.getState().networkLayer
   const eid = formatEntityID(id)
   const ind = world.registerEntity({ id: eid })
@@ -94,6 +121,10 @@ export const initSpaceship = (id: string, isHQShip: boolean = false) => {
   const cooldownIndex = world.registerEntity({ id: cooldownId })
   const cooldown = getComponentValue(components.Cooldown, cooldownIndex)?.value
 
+  if (owner) {
+    initPlayer(owner)
+  }
+
   const s = {
     index: ind,
     name,
@@ -101,8 +132,7 @@ export const initSpaceship = (id: string, isHQShip: boolean = false) => {
       value: Number(energy?.value),
       cap: Number(energy?.cap),
       rpb: Number(energy?.rpb),
-      bases: energy?.bases,
-      lrb: energy?.lrb,
+      lrt: energy?.lrt ?? 0,
     },
     resources: [],
     owner,

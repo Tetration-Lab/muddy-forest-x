@@ -140,8 +140,7 @@ export const setupComponents = (world: World) => {
         value: Type.Number,
         cap: Type.Number,
         rpb: Type.Number,
-        lrb: Type.Number,
-        bases: Type.Number,
+        lrt: Type.Number,
       },
       {
         metadata: {
