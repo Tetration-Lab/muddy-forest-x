@@ -14,8 +14,7 @@ contract ResourceComponent is Component {
     uint64 value;
     uint64 cap;
     uint64 rpb; // regen per block
-    uint32 lrb; // latest regen block
-    uint32 bases;
+    uint64 lrt; // latest regen time
   }
 
   constructor(address world) Component(world, ID) {}
@@ -33,11 +32,8 @@ contract ResourceComponent is Component {
     keys[2] = "rpb";
     values[2] = LibTypes.SchemaValue.UINT64;
 
-    keys[3] = "lrb";
+    keys[3] = "lrt";
     values[3] = LibTypes.SchemaValue.UINT32;
-
-    keys[4] = "bases";
-    values[4] = LibTypes.SchemaValue.UINT32;
   }
 
   function set(uint256 entity, Resource memory value) public virtual {
@@ -49,7 +45,7 @@ contract ResourceComponent is Component {
     if (rawValue.length > 0) {
       return abi.decode(rawValue, (Resource));
     } else {
-      return Resource(0, 0, 0, 0, 0);
+      return Resource(0, 0, 0, 0);
     }
   }
 
@@ -60,8 +56,8 @@ contract ResourceComponent is Component {
   function regen(uint256 entity) public virtual {
     if (has(entity)) {
       Resource memory r = getValue(entity);
-      r.value = Math64.min(r.rpb * (uint32(block.number) - r.lrb), r.cap);
-      r.lrb = uint32(block.number);
+      r.value = Math64.min(r.rpb * (uint64(block.timestamp) - r.lrt), r.cap);
+      r.lrt = uint64(block.timestamp);
       set(entity, r);
     }
   }

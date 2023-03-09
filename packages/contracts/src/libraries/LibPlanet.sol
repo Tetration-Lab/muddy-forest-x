@@ -32,8 +32,7 @@ library Planet {
           ((BASE_ENERGY_CAP / 2) * mult) / 100,
           (BASE_ENERGY_CAP * mult) / 100,
           (BASE_ENERGY_REGEN * mult) / 100,
-          uint32(block.number),
-          0
+          uint64(block.timestamp)
         )
       );
     }

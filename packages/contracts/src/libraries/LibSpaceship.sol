@@ -31,8 +31,7 @@ library Spaceship {
           (BASE_ENERGY_CAP * mult) / 100,
           (BASE_ENERGY_CAP * mult) / 100,
           (BASE_ENERGY_REGEN * mult) / 100,
-          uint32(block.number),
-          0
+          uint64(block.timestamp)
         )
       );
     }
@@ -57,8 +56,7 @@ library Spaceship {
           (bp.resources[0].cap) / 100,
           (bp.resources[0].cap) / 100,
           (bp.resources[0].rpb) / 100,
-          uint32(block.number),
-          0
+          uint64(block.timestamp)
         )
       );
     }
