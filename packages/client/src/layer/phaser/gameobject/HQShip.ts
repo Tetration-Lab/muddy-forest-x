@@ -27,6 +27,16 @@ export class HQShip extends Phaser.GameObjects.Sprite {
     this.destroy()
   }
 
+  playTeleport() {
+    this.teleportEffect.setVisible(false)
+    this.teleportEffect.play(SPRITE.TELEPORT)
+  }
+
+  stopPlayTeleport() {
+    this.teleportEffect.setVisible(false)
+    this.teleportEffect.stop()
+  }
+
   teleport(x: number, y: number) {
     this.teleportEffect.setPosition(this.x, this.y)
     this.teleportEffect.setVisible(true)

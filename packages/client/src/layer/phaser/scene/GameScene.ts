@@ -230,7 +230,10 @@ class GameScene extends Phaser.Scene {
           const id = formatEntityID(entityID)
           const ship = gameStore.getState().spaceships.get(id)
           try {
+            ship.playTeleport()
             await networkLayer.api.move(entityID, tileX, tileY)
+          } catch (err) {
+            ship.stopPlayTeleport()
           } finally {
             this.gameUIState = GAME_UI_STATE.NONE
           }
