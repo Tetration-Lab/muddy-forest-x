@@ -151,6 +151,9 @@ class GameScene extends Phaser.Scene {
       networkLayer,
       (x: number, y: number, entityIndex: number, entityID: string, owner: string) => {
         const id = formatEntityID(entityID)
+        if (gameStore.getState().spaceships.has(id)) {
+          return
+        }
         const pos = snapToGrid(x, y, 16)
         const ship = new HQShip(this, pos.x, pos.y, IMAGE.AI_SHIP, entityID, owner)
         ship.setDepth(100)
