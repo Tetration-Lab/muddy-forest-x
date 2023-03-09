@@ -16,7 +16,7 @@ import { Planet } from '../gameobject/Planet'
 import { addPlanet, addSpaceship, gameStore, openSendResourceModal } from '../../../store/game'
 import { createSpawnCapitalSystem } from '../../../system/createSpawnCapitalSystem'
 import { NetworkLayer } from '../../network/types'
-import { CAPITAL_ID, IDLE_ANIM, IMAGE, SPRITE } from '../constant/resource'
+import { CAPITAL_ID, IMAGE, SPRITE } from '../constant/resource'
 import { HashTwoRespItem } from '../../../miner/hasher.worker'
 import { createSpawnHQShipSystem } from '../../../system/createSpawnHQShipSystem'
 import { createTeleportSystem } from '../../../system/createTeleportSystem'
@@ -92,7 +92,7 @@ class GameScene extends Phaser.Scene {
       const tileY = res[i].y
       const check = BigInt(hVal) < PLANET_RARITY
       if (check) {
-        const sprite = new Planet(this, 0, 0, 'dogeSheet')
+        const sprite = new Planet(this, 0, 0, SPRITE.DOGE)
         const pos = snapPosToGrid(
           {
             x: tileX * TILE_SIZE,
@@ -108,7 +108,7 @@ class GameScene extends Phaser.Scene {
         }
 
         sprite.setDepth(100)
-        sprite.play('doge')
+        sprite.play(SPRITE.DOGE)
         const id = formatEntityID(hVal)
         sprite.registerOnClick((pointer: Phaser.Input.Pointer) => {
           openSendResourceModal(id, pointer.position.clone())
@@ -128,24 +128,17 @@ class GameScene extends Phaser.Scene {
   onSetUpSystem(networkLayer: NetworkLayer) {
     createSpawnCapitalSystem(networkLayer, (x: number, y: number, entityID: number, fractionID: number) => {
       let spriteKey = SPRITE.Capital_1
-      let idleKey = IDLE_ANIM.Capital_1
       switch (fractionID) {
         case CAPITAL_ID.APE_APE:
           spriteKey = SPRITE.APE_APE_CAPITAL
-          idleKey = IDLE_ANIM.APE_APE_CAPITAL
-          break
         case CAPITAL_ID.APE_ALIEN:
           spriteKey = SPRITE.APE_ALINE_CAPITAL
-          idleKey = IDLE_ANIM.APE_ALINE_CAPITAL
-          break
         case CAPITAL_ID.APE_AI:
           spriteKey = SPRITE.APE_AI_CAPITAL
-          idleKey = IDLE_ANIM.APE_AI_CAPITAL
-          break
       }
       const p = new Planet(this, x, y, spriteKey)
       p.setDisplaySize(4 * TILE_SIZE ** 2, 4 * TILE_SIZE ** 2)
-      p.play(idleKey)
+      p.play(spriteKey)
     })
     createSpawnHQShipSystem(
       networkLayer,
@@ -202,9 +195,9 @@ class GameScene extends Phaser.Scene {
     this.events.on(Phaser.GameObjects.Events.DESTROY, this.onDestroy)
 
     this.rt = this.add.renderTexture(0, 0, GAME_WIDTH, GAME_HEIGHT)
-    this.cursorExplorer = new CursorExplorer(this, this.followPoint, 'explorerSheet', this.handleWorker)
+    this.cursorExplorer = new CursorExplorer(this, this.followPoint, SPRITE.EXPLORER, this.handleWorker)
     this.cursorExplorer.run()
-    this.cursorExplorer.play(IDLE_ANIM.Explorer_Idle)
+    this.cursorExplorer.play(SPRITE.EXPLORER)
 
     this.chunkLoader = new ChunkLoader(this, { tileSize: TILE_SIZE }, this.rt)
     this.chunkLoader.setUpdateCbToChunks((t: Tile) => {

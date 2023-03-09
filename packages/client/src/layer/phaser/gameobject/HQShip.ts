@@ -1,4 +1,4 @@
-import { IDLE_ANIM, SPRITE } from '../constant/resource'
+import { SPRITE } from '../constant/resource'
 
 export class HQShip extends Phaser.GameObjects.Sprite {
   rect: Phaser.GameObjects.Rectangle
@@ -30,12 +30,12 @@ export class HQShip extends Phaser.GameObjects.Sprite {
   teleport(x: number, y: number) {
     this.teleportEffect.setPosition(this.x, this.y)
     this.teleportEffect.setVisible(true)
-    this.teleportEffect.play(IDLE_ANIM.TELEPORT).on(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+    this.teleportEffect.play(SPRITE.TELEPORT).on(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
       this.teleportEffect.setVisible(false)
       this.setPosition(x, y)
       this.teleportEffect.setPosition(this.x, this.y)
       this.teleportEffect.setVisible(true)
-      this.teleportEffect.play(IDLE_ANIM.TELEPORT).on(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+      this.teleportEffect.play(SPRITE.TELEPORT).on(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
         this.teleportEffect.setVisible(false)
       })
     })

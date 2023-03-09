@@ -1,40 +1,25 @@
-import { IDLE_ANIM, SPRITE } from '../constant/resource'
+import { SPRITE } from '../constant/resource'
 
 export const initConfigAnim = (scene: Phaser.Scene) => {
-  const idle = {
-    key: 'doge',
-    frames: scene.anims.generateFrameNumbers('dogeSheet', { start: 0, end: 74 }),
-    frameRate: 12,
-    repeat: -1,
-  }
-  const p1Idle = {
-    key: 'p1Idle',
-    frames: scene.anims.generateFrameNumbers('p1Sheet', { start: 0, end: 74 }),
-    frameRate: 12,
-    repeat: -1,
-  }
-  const p2Idle = {
-    key: 'p2Idle',
-    frames: scene.anims.generateFrameNumbers('p2Sheet', { start: 0, end: 74 }),
-    frameRate: 12,
-    repeat: -1,
-  }
-  const p8Idle = {
-    key: 'p8Idle',
-    frames: scene.anims.generateFrameNumbers('p8Sheet', { start: 0, end: 110 }),
-    frameRate: 12,
-    repeat: -1,
-  }
-  createAnimIdle(IDLE_ANIM.Explorer_Idle, 'explorerSheet', 0, 15, scene)
-  createAnimIdle(IDLE_ANIM.APE_AI_CAPITAL, SPRITE.APE_AI_CAPITAL, 0, 74, scene)
-  createAnimIdle(IDLE_ANIM.APE_APE_CAPITAL, SPRITE.APE_APE_CAPITAL, 0, 74, scene)
-  createAnimIdle(IDLE_ANIM.APE_ALINE_CAPITAL, SPRITE.APE_ALINE_CAPITAL, 0, 74, scene)
-  createAnimIdle(IDLE_ANIM.Capital_4, SPRITE.Capital_4, 0, 74, scene)
-  createAnimIdle(IDLE_ANIM.TELEPORT, SPRITE.TELEPORT, 0, 60, scene, 0, 20)
-  scene.anims.create(idle)
-  scene.anims.create(p1Idle)
-  scene.anims.create(p2Idle)
-  scene.anims.create(p8Idle)
+  createAnimIdle(SPRITE.EXPLORER, SPRITE.EXPLORER, 0, 15, scene)
+  createAnimIdle(SPRITE.APE_AI_CAPITAL, SPRITE.APE_AI_CAPITAL, 0, 74, scene)
+  createAnimIdle(SPRITE.APE_APE_CAPITAL, SPRITE.APE_APE_CAPITAL, 0, 74, scene)
+  createAnimIdle(SPRITE.APE_ALINE_CAPITAL, SPRITE.APE_ALINE_CAPITAL, 0, 74, scene)
+  createAnimIdle(SPRITE.Capital_4, SPRITE.Capital_4, 0, 74, scene)
+  createAnimIdle(SPRITE.TELEPORT, SPRITE.TELEPORT, 0, 60, scene, 0, 20)
+  createAnimIdle(SPRITE.DOGE, SPRITE.DOGE, 0, 74, scene)
+  createAnimIdle(SPRITE.P1_1, SPRITE.P1_1, 0, 74, scene)
+  createAnimIdle(SPRITE.P1_2, SPRITE.P1_2, 0, 74, scene)
+  createAnimIdle(SPRITE.P1_3, SPRITE.P1_3, 0, 74, scene)
+  createAnimIdle(SPRITE.P2_1, SPRITE.P2_1, 0, 74, scene)
+  createAnimIdle(SPRITE.P2_2, SPRITE.P2_2, 0, 74, scene)
+  createAnimIdle(SPRITE.P2_3, SPRITE.P2_3, 0, 74, scene)
+  createAnimIdle(SPRITE.P3, SPRITE.P3, 0, 74, scene)
+  createAnimIdle(SPRITE.P5, SPRITE.P5, 0, 74, scene)
+  createAnimIdle(SPRITE.P7_1, SPRITE.P7_1, 0, 110, scene)
+  createAnimIdle(SPRITE.P7_2, SPRITE.P7_2, 0, 110, scene)
+  createAnimIdle(SPRITE.P8_1, SPRITE.P8_1, 0, 110, scene)
+  createAnimIdle(SPRITE.P8_2, SPRITE.P8_2, 0, 110, scene)
 }
 
 function createAnimIdle(
