@@ -11,13 +11,13 @@ export interface CooldownStatusBadgeProps {
 }
 
 export const CooldownStatusBadge = ({ finishTimestamp, imgSrc, hover }: CooldownStatusBadgeProps) => {
-  const [left, setLeft] = useState(Math.min(0, Math.floor(Date.now() / 1000)) - finishTimestamp)
+  const [left, setLeft] = useState(Math.max(0, finishTimestamp - Math.floor(Date.now() / 1000)))
   useEffect(() => {
-    const interval = setInterval(() => setLeft((e) => Math.min(0, e - 1)), 1000)
+    const interval = setInterval(() => setLeft((e) => Math.max(0, e - 1)), 1000)
     return () => clearInterval(interval)
   }, [])
 
-  if (left < 0) return <></>
+  if (left <= 0) return <></>
   return <StatusBadge imgSrc={imgSrc} status={`${left} s`} hover={hover} />
 }
 
