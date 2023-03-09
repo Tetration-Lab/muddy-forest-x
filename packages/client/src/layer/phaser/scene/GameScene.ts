@@ -16,7 +16,7 @@ import { Planet } from '../gameobject/Planet'
 import { addPlanet, addSpaceship, gameStore, openSendResourceModal } from '../../../store/game'
 import { createSpawnCapitalSystem } from '../../../system/createSpawnCapitalSystem'
 import { NetworkLayer } from '../../network/types'
-import { CAPITAL_ID, IMAGE, SPRITE } from '../constant/resource'
+import { CAPITAL_ID, IMAGE, SPRITE, SPRITE_PLANET } from '../constant/resource'
 import { HashTwoRespItem } from '../../../miner/hasher.worker'
 import { createSpawnHQShipSystem } from '../../../system/createSpawnHQShipSystem'
 import { createTeleportSystem } from '../../../system/createTeleportSystem'
@@ -92,7 +92,11 @@ class GameScene extends Phaser.Scene {
       const tileY = res[i].y
       const check = BigInt(hVal) < PLANET_RARITY
       if (check) {
-        const sprite = new Planet(this, 0, 0, SPRITE.DOGE)
+        const spriteKey = SPRITE_PLANET[Number(BigInt(hVal) % BigInt(SPRITE_PLANET.length))]
+        const sprite = new Planet(this, 0, 0, spriteKey)
+        const id = formatEntityID(hVal)
+        const p = initPlanet(id, [tileX, tileY])
+
         const pos = snapPosToGrid(
           {
             x: tileX * TILE_SIZE,
@@ -108,12 +112,12 @@ class GameScene extends Phaser.Scene {
         }
 
         sprite.setDepth(100)
-        sprite.play(SPRITE.DOGE)
-        const id = formatEntityID(hVal)
+        sprite.setScale(p.level / 2 + 1)
+        sprite.play(spriteKey)
         sprite.registerOnClick((pointer: Phaser.Input.Pointer) => {
           openSendResourceModal(id, pointer.position.clone())
         })
-        initPlanet(id, [tileX, tileY])
+
         addPlanet(id, sprite)
       }
     }

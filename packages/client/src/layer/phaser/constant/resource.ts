@@ -24,6 +24,21 @@ export const SPRITE = {
   TILE: 'tile',
 }
 
+export const SPRITE_PLANET = [
+  SPRITE.P1_1,
+  SPRITE.P1_2,
+  SPRITE.P1_3,
+  SPRITE.P2_1,
+  SPRITE.P2_2,
+  SPRITE.P2_3,
+  SPRITE.P3,
+  SPRITE.P5,
+  SPRITE.P7_1,
+  //SPRITE.P7_2,
+  SPRITE.P8_1,
+  //SPRITE.P8_2,
+]
+
 export const IMAGE = {
   AI_SHIP: 'AI_SHIP',
   SELECTED_CURSOR: 'SELECTED_CURSOR',
