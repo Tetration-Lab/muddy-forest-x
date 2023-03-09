@@ -65,7 +65,6 @@ class GameScene extends Phaser.Scene {
   cursorExplorer!: CursorExplorer
   cursorMove!: Phaser.GameObjects.Image
   gameUIState: GAME_UI_STATE = GAME_UI_STATE.NONE
-  selfShip!: HQShip
 
   constructor() {
     super(GAME_SCENE)
@@ -168,7 +167,10 @@ class GameScene extends Phaser.Scene {
             }, 100)
           })
           ship.setDepth(1000)
-          this.selfShip = ship
+          dataStore.setState((state) => {
+            state.ownedSpaceships.push(id)
+            return state
+          })
         }
       },
     )
@@ -226,7 +228,7 @@ class GameScene extends Phaser.Scene {
     this.input.on('pointerup', async (p) => {
       if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
         const position = snapToGrid(p.worldX, p.worldY, 16)
-        const entityID = this.selfShip.entityID
+        const entityID = dataStore.getState().ownedSpaceships[0]
         const networkLayer = appStore.getState().networkLayer
         if (networkLayer) {
           const tileX = Math.floor(position.x / TILE_SIZE)

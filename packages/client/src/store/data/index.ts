@@ -27,11 +27,13 @@ export interface Spaceship extends BaseEntity {
 export type Store = {
   planets: Map<string, Planet>
   spaceships: Map<string, Spaceship>
+  ownedSpaceships: string[]
 }
 
 const initialState = {
   planets: new Map<string, Planet>(),
   spaceships: new Map<string, Spaceship>(),
+  ownedSpaceships: [],
 }
 
 export const dataStore = createStore<Store>((set) => ({
