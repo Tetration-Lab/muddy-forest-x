@@ -20,8 +20,8 @@ contract ResourceComponent is Component {
   constructor(address world) Component(world, ID) {}
 
   function getSchema() public pure override returns (string[] memory keys, LibTypes.SchemaValue[] memory values) {
-    keys = new string[](5);
-    values = new LibTypes.SchemaValue[](5);
+    keys = new string[](4);
+    values = new LibTypes.SchemaValue[](4);
 
     keys[0] = "value";
     values[0] = LibTypes.SchemaValue.UINT64;
