@@ -50,25 +50,29 @@ export const initPlanet = (id: string, position: [number, number]) => {
   const level = getComponentValue(components.Level, ind)?.level ?? planetLevel(eid)
   const multiplier = getEnergyLevelMultiplier(level)
 
+  const p = {
+    index: ind,
+    name,
+    energy: {
+      value: Number(energy?.value ?? ((BASE_ENERGY_CAP / 2) * multiplier) / 100),
+      cap: Number(energy?.cap ?? (BASE_ENERGY_CAP * multiplier) / 100),
+      rpb: Number(energy?.rpb ?? (BASE_ENERGY_REGEN * multiplier) / 100),
+      bases: energy?.bases,
+      lrb: energy?.lrb,
+    },
+    resources: [],
+    position,
+    owner,
+    level,
+  }
+
   dataStore.setState((state) => {
     const planets = new Map(state.planets)
-    planets.set(eid, {
-      index: ind,
-      name,
-      energy: {
-        value: Number(energy?.value ?? ((BASE_ENERGY_CAP / 2) * multiplier) / 100),
-        cap: Number(energy?.cap ?? (BASE_ENERGY_CAP * multiplier) / 100),
-        rpb: Number(energy?.rpb ?? (BASE_ENERGY_REGEN * multiplier) / 100),
-        bases: energy?.bases,
-        lrb: energy?.lrb,
-      },
-      resources: [],
-      position,
-      owner,
-      level,
-    })
+    planets.set(eid, p)
     return { planets }
   })
+
+  return p
 }
 
 export const initSpaceship = (id: string, isHQShip: boolean = false) => {
@@ -84,22 +88,26 @@ export const initSpaceship = (id: string, isHQShip: boolean = false) => {
   const cooldownIndex = world.registerEntity({ id: cooldownId })
   const cooldown = getComponentValue(components.Cooldown, cooldownIndex)?.value
 
+  const s = {
+    index: ind,
+    name,
+    energy: {
+      value: Number(energy?.value),
+      cap: Number(energy?.cap),
+      rpb: Number(energy?.rpb),
+      bases: energy?.bases,
+      lrb: energy?.lrb,
+    },
+    resources: [],
+    owner,
+    cooldown: Number(cooldown),
+  }
+
   dataStore.setState((state) => {
     const spaceships = new Map(state.spaceships)
-    spaceships.set(eid, {
-      index: ind,
-      name,
-      energy: {
-        value: Number(energy?.value),
-        cap: Number(energy?.cap),
-        rpb: Number(energy?.rpb),
-        bases: energy?.bases,
-        lrb: energy?.lrb,
-      },
-      resources: [],
-      owner,
-      cooldown: Number(cooldown),
-    })
+    spaceships.set(eid, s)
     return { spaceships }
   })
+
+  return s
 }
