@@ -19,7 +19,10 @@ export const Profile = () => {
   const shipId = useStore(dataStore, (state) => state.ownedSpaceships[0])
   const ship = useSpaceship(shipId ?? '0x0')
   const player = usePlayer(formatEntityID(network.connectedAddress.get()))
-  const shipSprite = useStore(gameStore, (state) => state.spaceships.get(shipId))
+  const { shipSprite, focusLocation } = useStore(gameStore, (state) => ({
+    shipSprite: state.spaceships.get(shipId),
+    focusLocation: state.focusLocation,
+  }))
 
   if (!ship || !shipSprite || !player) return <></>
 
@@ -28,6 +31,7 @@ export const Profile = () => {
       <Box sx={{ color: theme.palette.grayScale.white }}>
         <Stack direction="row" spacing={1}>
           <Box
+            onClick={() => focusLocation(shipSprite.getCenter())}
             sx={{
               width: 84,
               height: 84,
@@ -37,6 +41,7 @@ export const Profile = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              cursor: 'pointer',
             }}
           >
             <Box

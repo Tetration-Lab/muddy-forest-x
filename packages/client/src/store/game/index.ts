@@ -7,6 +7,7 @@ export type Store = {
   planetModals: Map<string, Phaser.Math.Vector2>
   planets: Map<string, Planet>
   spaceships: Map<string, HQShip>
+  focusLocation: (v: Phaser.Math.Vector2) => void
 }
 
 const initialState = {
@@ -14,6 +15,7 @@ const initialState = {
   planetModals: new Map<string, Phaser.Math.Vector2>(),
   planets: new Map<string, Planet>(),
   spaceships: new Map<string, HQShip>(),
+  focusLocation: () => {},
 }
 
 export const gameStore = createStore<Store>((set) => ({

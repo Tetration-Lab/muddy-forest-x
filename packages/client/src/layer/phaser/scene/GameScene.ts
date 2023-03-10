@@ -26,6 +26,7 @@ import { formatEntityID } from '@latticexyz/network'
 import { dataStore, initPlanetPosition } from '../../../store/data'
 import { FACTION } from '../../../const/faction'
 import { openStdin } from 'process'
+import { getAddress } from 'ethers/lib/utils'
 
 const ZOOM_OUT_LIMIT = 0.01
 const ZOOM_IN_LIMIT = 2
@@ -205,6 +206,12 @@ class GameScene extends Phaser.Scene {
       this.followPoint.x -= (p.x - p.prevPosition.x) / cam.zoom
       this.followPoint.y -= (p.y - p.prevPosition.y) / cam.zoom
     })
+
+    gameStore.setState(() => ({
+      focusLocation: (v) => {
+        this.followPoint = v
+      },
+    }))
 
     // this.input.on('pointerup', async (p) => {
     //   if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
