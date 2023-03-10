@@ -1,5 +1,5 @@
 import { getComponentValue } from '@latticexyz/recs'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { appStore } from '../store/app'
 import { Spaceship } from '../store/data'
 import { filter } from 'rxjs'
@@ -10,10 +10,17 @@ import { useStore } from 'zustand'
 
 export const useSpaceship = (id: string) => {
   const { world, components } = useStore(appStore, (state) => state.networkLayer)
-  const eid = formatEntityID(id)
-  const ind = world.registerEntity({ id: eid })
-  const energyIndex = world.registerEntity({ id: formatEntityID(getEnergyEntityId(eid)) })
-  const cooldownIndex = world.registerEntity({ id: formatEntityID(getMoveCooldownEntityId(eid)) })
+  const { ind, energyIndex, cooldownIndex } = useMemo(() => {
+    const eid = formatEntityID(id)
+    const ind = world.registerEntity({ id: eid })
+    const energyIndex = world.registerEntity({ id: formatEntityID(getEnergyEntityId(eid)) })
+    const cooldownIndex = world.registerEntity({ id: formatEntityID(getMoveCooldownEntityId(eid)) })
+    return {
+      ind,
+      energyIndex,
+      cooldownIndex,
+    }
+  }, [id])
 
   const [ship, setShip] = useState<Spaceship>()
 

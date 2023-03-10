@@ -1,14 +1,17 @@
 import { formatEntityID } from '@latticexyz/network'
 import { getComponentValue } from '@latticexyz/recs'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useStore } from 'zustand'
 import { appStore } from '../store/app'
 import { Player } from '../store/data'
 
 export const usePlayer = (id: string) => {
   const { world, components } = useStore(appStore, (state) => state.networkLayer)
-  const eid = formatEntityID(id)
-  const ind = world.registerEntity({ id: eid })
+  const { ind } = useMemo(() => {
+    const eid = formatEntityID(id)
+    const ind = world.registerEntity({ id: eid })
+    return { ind }
+  }, [id])
 
   const [player, setPlayer] = useState<Player>()
 
