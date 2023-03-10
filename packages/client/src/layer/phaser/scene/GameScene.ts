@@ -13,17 +13,17 @@ import { Hasher } from 'circuits'
 import { initConfigAnim } from '../anim'
 import { CursorExplorer } from '../gameobject/CursorExplorer'
 import { Planet } from '../gameobject/Planet'
-import { addPlanet, addSpaceship, gameStore, openSendResourceModal, openTeleportModal } from '../../../store/game'
+import { addPlanet, addSpaceship, gameStore, openPlanetModal, openTeleportModal } from '../../../store/game'
 import { createSpawnCapitalSystem } from '../../../system/createSpawnCapitalSystem'
 import { NetworkLayer } from '../../network/types'
 import { IMAGE, SPRITE, SPRITE_PLANET } from '../constant/resource'
 import { HashTwoRespItem } from '../../../miner/hasher.worker'
 import { createSpawnHQShipSystem } from '../../../system/createSpawnHQShipSystem'
 import { createTeleportSystem } from '../../../system/createTeleportSystem'
-import { PLANET_RARITY } from '../../../const/planet'
+import { planetLevel, PLANET_RARITY } from '../../../const/planet'
 import { HQShip } from '../gameobject/HQShip'
 import { formatEntityID } from '@latticexyz/network'
-import { dataStore, initPlanet, initSpaceship } from '../../../store/data'
+import { dataStore, initPlanetPosition } from '../../../store/data'
 import { FACTION } from '../../../const/faction'
 import { openStdin } from 'process'
 
@@ -82,7 +82,7 @@ class GameScene extends Phaser.Scene {
         const spriteKey = SPRITE_PLANET[Number(BigInt(hVal) % BigInt(SPRITE_PLANET.length))]
         const sprite = new Planet(this, 0, 0, spriteKey)
         const id = formatEntityID(hVal)
-        const p = initPlanet(id, [tileX, tileY])
+        initPlanetPosition(id, [tileX, tileY])
 
         const pos = snapPosToGrid(
           {
@@ -99,10 +99,10 @@ class GameScene extends Phaser.Scene {
         }
 
         sprite.setDepth(100)
-        sprite.setScale(p.level / 2 + 1)
+        sprite.setScale(planetLevel(id) / 2 + 1)
         sprite.play(spriteKey)
         sprite.registerOnClick((pointer: Phaser.Input.Pointer) => {
-          openSendResourceModal(id, pointer.position.clone())
+          openPlanetModal(id, pointer.position.clone())
         })
 
         addPlanet(id, sprite)
@@ -133,7 +133,6 @@ class GameScene extends Phaser.Scene {
         const pos = snapToGrid(x, y, 16)
         const ship = new HQShip(this, pos.x, pos.y, IMAGE.AI_SHIP, entityID, owner)
         ship.setDepth(100)
-        initSpaceship(id)
         addSpaceship(id, ship)
         if (owner === networkLayer.connectedAddress) {
           this.followPoint.x = +pos.x

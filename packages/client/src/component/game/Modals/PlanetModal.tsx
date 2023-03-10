@@ -1,6 +1,6 @@
 import { Typography, useTheme } from '@mui/material'
 import { Box, Stack } from '@mui/system'
-import { closeSendResourceModal, gameStore } from '../../../store/game'
+import { closePlanetModal, gameStore } from '../../../store/game'
 import { CloseModalButton } from '../common/CloseModalButton'
 import { useStore } from 'zustand'
 import { GameItem } from '../common/GameItem'
@@ -8,14 +8,14 @@ import { SaveButton } from '../common/SaveButton'
 import { TypeTag } from '../GameActionBox/TypeTag'
 import Draggable from 'react-draggable'
 import { generatePlanetName } from '../../../utils/random'
-import { useMemo, useEffect } from 'react'
+import { useMemo } from 'react'
 import { dataStore } from '../../../store/data'
 
-export const SendResourceModal = ({ id, position }: { id: string; position: Phaser.Math.Vector2 }) => {
+export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Math.Vector2 }) => {
   const theme = useTheme()
   const name = useMemo(() => generatePlanetName(BigInt(id)), [id])
   const planetSprite = useStore(gameStore, (state) => state.planets.get(id))
-  const planet = useStore(dataStore, (state) => state.planets.get(id))
+  const planetLocations = useStore(dataStore, (state) => state.planetLocations.get(id))
 
   return (
     <Draggable
@@ -61,7 +61,7 @@ export const SendResourceModal = ({ id, position }: { id: string; position: Phas
               <Typography sx={{ fontSize: 16, fontWeight: 700, wordBreak: 'break-all' }}>{name}</Typography>
               <TypeTag type="RESOURCE" />
             </Stack>
-            <CloseModalButton onClick={() => closeSendResourceModal(id)} />
+            <CloseModalButton onClick={() => closePlanetModal(id)} />
           </Stack>
           <Stack>
             <Stack direction="row" gap={1}>
@@ -83,7 +83,7 @@ export const SendResourceModal = ({ id, position }: { id: string; position: Phas
                 flex={1}
               >
                 <Box component="img" src="/assets/svg/planet-prop-location.svg" />
-                <Typography>{`${planet.position[0]}, ${planet.position[1]}`}</Typography>
+                <Typography>{`${planetLocations[0]}, ${planetLocations[1]}`}</Typography>
                 <SaveButton onClick={() => console.log('save!')} />
               </Stack>
             </Stack>

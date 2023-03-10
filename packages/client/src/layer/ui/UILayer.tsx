@@ -4,14 +4,14 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useStore } from 'zustand'
 import { ChatBox } from '../../component/Chatbox'
 import { GameActionBox, GameActionBoxMode } from '../../component/game/GameActionBox'
-import { SendResourceModal } from '../../component/game/Modals/SendResourceModal'
+import { PlanetModal } from '../../component/game/Modals/PlanetModal'
 import { TeleportModal } from '../../component/game/Modals/TeleportModal'
 import { Profile } from '../../component/game/Profile'
 import { SettingActionBox } from '../../component/game/SettingActionBox'
 import { ToolButton } from '../../component/ToolButton'
 import { FACTION } from '../../const/faction'
 import { appStore } from '../../store/app'
-import { closeSendResourceModal, gameStore } from '../../store/game'
+import { gameStore } from '../../store/game'
 
 export const UILayer = () => {
   const store = useStore(appStore, (state) => state)
@@ -166,27 +166,25 @@ export const UILayer = () => {
       </div>
       {/*</ClickAwayListener>*/}
       {/* Modals */}
-      <SendResourceModals />
       <TeleportModals />
+      <PlanetModals />
     </div>
   )
 }
 
-const SendResourceModals = () => {
-  const modals = useStore(gameStore, (state) => [...state.sendResourceModal.entries()])
+const PlanetModals = () => {
+  const modals = useStore(gameStore, (state) => [...state.planetModals.entries()])
   return (
     <>
       {modals.map((k) => (
-        <SendResourceModal id={k[0]} position={k[1]} key={k[0]} />
+        <PlanetModal id={k[0]} position={k[1]} key={k[0]} />
       ))}
     </>
   )
 }
 
 const TeleportModals = () => {
-  const modalMap = useStore(gameStore, (state) => state.teleportModal)
-  const modals = [...modalMap.entries()]
-  console.log('modals', modals)
+  const modals = useStore(gameStore, (state) => [...state.teleportModals.entries()])
   return (
     <>
       {modals.map((k) => (

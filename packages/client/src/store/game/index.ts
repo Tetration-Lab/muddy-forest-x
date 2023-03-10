@@ -3,15 +3,15 @@ import { HQShip } from '../../layer/phaser/gameobject/HQShip'
 import { Planet } from '../../layer/phaser/gameobject/Planet'
 
 export type Store = {
-  sendResourceModal: Map<string, Phaser.Math.Vector2>
-  teleportModal: Map<string, Phaser.Math.Vector2>
+  teleportModals: Map<string, Phaser.Math.Vector2>
+  planetModals: Map<string, Phaser.Math.Vector2>
   planets: Map<string, Planet>
   spaceships: Map<string, HQShip>
 }
 
 const initialState = {
-  sendResourceModal: new Map<string, Phaser.Math.Vector2>(),
-  teleportModal: new Map<string, Phaser.Math.Vector2>(),
+  teleportModals: new Map<string, Phaser.Math.Vector2>(),
+  planetModals: new Map<string, Phaser.Math.Vector2>(),
   planets: new Map<string, Planet>(),
   spaceships: new Map<string, HQShip>(),
 }
@@ -36,35 +36,34 @@ export const addSpaceship = (id: string, spaceship: HQShip) => {
   })
 }
 
-export const closeSendResourceModal = (id: string) => {
+export const closePlanetModal = (id: string) => {
   gameStore.setState((state) => {
-    const sendResourceModal = new Map(state.sendResourceModal)
-    sendResourceModal.delete(id)
-    return { sendResourceModal }
+    const planetModals = new Map(state.planetModals)
+    planetModals.delete(id)
+    return { planetModals }
   })
 }
 
-export const openSendResourceModal = (id: string, position: Phaser.Math.Vector2) => {
+export const openPlanetModal = (id: string, position: Phaser.Math.Vector2) => {
   gameStore.setState((state) => {
-    const sendResourceModal = new Map(state.sendResourceModal)
-    sendResourceModal.set(id, position)
-    return { sendResourceModal }
+    const planetModals = new Map(state.planetModals)
+    planetModals.set(id, position)
+    return { planetModals }
   })
 }
 
 export const openTeleportModal = (id: string, position: Phaser.Math.Vector2) => {
   gameStore.setState((state) => {
-    const teleportModal = new Map(state.teleportModal)
-    teleportModal.set(id, position)
-    return { teleportModal }
+    const teleportModals = new Map(state.teleportModals)
+    teleportModals.set(id, position)
+    return { teleportModals }
   })
 }
 
 export const closeTeleportModal = (id: string) => {
-  console.log('close modal', id)
   gameStore.setState((state) => {
-    const teleportModal = new Map(state.teleportModal)
-    teleportModal.delete(id)
-    return { teleportModal }
+    const teleportModals = new Map(state.teleportModals)
+    teleportModals.delete(id)
+    return { teleportModals }
   })
 }
