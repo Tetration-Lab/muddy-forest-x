@@ -170,6 +170,8 @@
                 "BaseBlueprintComponent",
                 "BlueprintTypeComponent",
                 "TypeComponent",
+                "ResearchComponent",
+                "OwnerComponent",
                 "BlueprintComponent"
             ]
         },
