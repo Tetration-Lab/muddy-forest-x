@@ -32,6 +32,7 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
   return (
     <Draggable
       bounds="body"
+      cancel=".inner-planet-modal"
       defaultPosition={{
         x: position.x,
         y: position.y,
@@ -52,7 +53,6 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
         }}
       >
         <Stack
-          spacing={1}
           sx={{
             px: 1,
             py: 0.5,
@@ -84,25 +84,27 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
             </Stack>
             <CloseModalButton onClick={() => closePlanetModal(id)} />
           </Stack>
-          <Stack>
-            <Stack direction="row" gap={1}>
-              <EnergyInfoTab key={planet.energy.value} {...planet.energy} />
-              <InfoTab
-                iconSrc="/assets/svg/location-icon.svg"
-                title={`${planetLocations[0]},${planetLocations[1]}`}
-                suffix={<SaveButton onClick={() => console.log('save!')} />}
-              />
+          <Stack spacing={1} className="inner-planet-modal">
+            <Stack>
+              <Stack direction="row" gap={1}>
+                <EnergyInfoTab key={planet.energy.value} {...planet.energy} />
+                <InfoTab
+                  iconSrc="/assets/svg/location-icon.svg"
+                  title={`${planetLocations[0]},${planetLocations[1]}`}
+                  suffix={<SaveButton onClick={() => console.log('save!')} />}
+                />
+              </Stack>
             </Stack>
-          </Stack>
-          <FactionInfoTab
-            faction={owner.faction}
-            name={owner.name}
-            isYou={planet?.owner === network.connectedAddress.get()}
-          />
-          <Stack sx={{ p: 1, backgroundColor: theme.palette.grayScale.black }} spacing={0.5}>
-            <Typography sx={{ fontSize: 14, fontWeight: 400 }}>Stats</Typography>
-            <StatInfoTab iconSrc="/assets/svg/attack-icon.svg" title="Attack" value={planet.attack} />
-            <StatInfoTab iconSrc="/assets/svg/shield-icon.svg" title="Defense" value={planet.defense} />
+            <FactionInfoTab
+              faction={owner.faction}
+              name={owner.name}
+              isYou={planet?.owner === network.connectedAddress.get()}
+            />
+            <Stack sx={{ p: 1, backgroundColor: theme.palette.grayScale.black }} spacing={0.5}>
+              <Typography sx={{ fontSize: 14, fontWeight: 400 }}>Stats</Typography>
+              <StatInfoTab iconSrc="/assets/svg/attack-icon.svg" title="Attack" value={planet.attack} />
+              <StatInfoTab iconSrc="/assets/svg/shield-icon.svg" title="Defense" value={planet.defense} />
+            </Stack>
           </Stack>
         </Stack>
       </Box>
