@@ -5,8 +5,8 @@ import { useStore } from 'zustand'
 import { planetLevel } from '../const/planet'
 import { getEnergyEntityId } from '../const/resources'
 import { appStore } from '../store/app'
-import { Planet } from '../store/data'
 import { filter } from 'rxjs'
+import { Planet } from '../types/entity'
 
 export const usePlanet = (id: string) => {
   const { world, components } = useStore(appStore, (state) => state.networkLayer)

@@ -1,12 +1,12 @@
 import { getComponentValue } from '@latticexyz/recs'
 import { useEffect, useMemo, useState } from 'react'
 import { appStore } from '../store/app'
-import { Spaceship } from '../store/data'
 import { filter } from 'rxjs'
 import { formatEntityID } from '@latticexyz/network'
 import { getEnergyEntityId } from '../const/resources'
 import { getMoveCooldownEntityId } from '../const/cooldown'
 import { useStore } from 'zustand'
+import { Spaceship } from '../types/entity'
 
 export const useSpaceship = (id: string) => {
   const { world, components } = useStore(appStore, (state) => state.networkLayer)
@@ -29,6 +29,7 @@ export const useSpaceship = (id: string) => {
     const energy = getComponentValue(components.Resource, energyIndex)
     const owner = getComponentValue(components.Owner, ind)?.value
     const cooldown = getComponentValue(components.Cooldown, cooldownIndex)?.value
+    const level = getComponentValue(components.Level, ind)?.level
 
     setShip({
       index: ind,
@@ -41,6 +42,7 @@ export const useSpaceship = (id: string) => {
       },
       resources: [],
       owner,
+      level,
       cooldown: Number(cooldown ?? 0),
     })
   }, [ind, energyIndex, cooldownIndex])

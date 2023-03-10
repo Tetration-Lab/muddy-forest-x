@@ -3,7 +3,7 @@ import { getComponentValue } from '@latticexyz/recs'
 import { useEffect, useMemo, useState } from 'react'
 import { useStore } from 'zustand'
 import { appStore } from '../store/app'
-import { Player } from '../store/data'
+import { Player } from '../types/entity'
 
 export const usePlayer = (id: string) => {
   const { world, components } = useStore(appStore, (state) => state.networkLayer)
