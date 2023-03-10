@@ -1,15 +1,15 @@
 import { Typography, useTheme } from '@mui/material'
 import { Box, Stack } from '@mui/system'
-import { closePlanetModal, gameStore } from '../../../store/game'
-import { CloseModalButton } from '../common/CloseModalButton'
 import { useStore } from 'zustand'
-import { GameItem } from '../common/GameItem'
-import { SaveButton } from '../common/SaveButton'
-import { TypeTag } from '../GameActionBox/TypeTag'
 import Draggable from 'react-draggable'
-import { generatePlanetName } from '../../../utils/random'
 import { useMemo } from 'react'
-import { dataStore } from '../../../store/data'
+import { generatePlanetName } from '../../../../utils/random'
+import { closePlanetModal, gameStore } from '../../../../store/game'
+import { dataStore } from '../../../../store/data'
+import { GameItem } from '../../common/GameItem'
+import { TypeTag } from '../../GameActionBox/TypeTag'
+import { CloseModalButton } from '../../common/CloseModalButton'
+import { SaveButton } from '../../common/SaveButton'
 
 export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Math.Vector2 }) => {
   const theme = useTheme()
