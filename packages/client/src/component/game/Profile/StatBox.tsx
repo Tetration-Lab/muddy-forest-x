@@ -1,15 +1,17 @@
 import { Box, Typography, useTheme } from '@mui/material'
 import { Stack } from '@mui/system'
 import { useEffect, useState } from 'react'
+import { Components } from '../../../layer/network/components'
+import { ComponentV } from '../../../types/entity'
 
-export const EnergyStatBox = (props: { regen: number; value: number; cap: number; latestRegen: number }) => {
+export const EnergyStatBox = (props: ComponentV<Components['Resource']>) => {
   const [value, setValue] = useState(
-    Math.min(props.cap, props.value + props.regen * (Math.floor(Date.now() / 1000) - props.latestRegen)),
+    Math.min(props.cap, props.value + props.rpb * (Math.floor(Date.now() / 1000) - props.lrt)),
   )
   useEffect(() => {
-    const interval = setInterval(() => setValue((e) => Math.min(props.cap, e + props.regen)), 1000)
+    const interval = setInterval(() => setValue((e) => Math.min(props.cap, e + props.rpb)), 1000)
     return () => clearInterval(interval)
-  }, [props.regen, props.cap])
+  }, [props.rpb, props.cap])
 
   return <StatBox iconSrc="/assets/svg/item-energy-icon.svg" title="Energy" value={`${value}/${props.cap}`} />
 }

@@ -40,5 +40,6 @@ declare module '@mui/material/styles' {
 declare module '@mui/material/styles/createPalette' {
   interface CommonColors {
     green: string
+    gold: string
   }
 }

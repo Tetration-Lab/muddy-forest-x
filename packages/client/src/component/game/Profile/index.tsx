@@ -82,13 +82,7 @@ export const Profile = () => {
                 alignItems: 'center',
               }}
             >
-              <EnergyStatBox
-                key={ship.energy.value}
-                value={ship.energy.value}
-                cap={ship.energy.cap}
-                regen={ship.energy.rpb}
-                latestRegen={ship.energy.lrt}
-              />
+              <EnergyStatBox key={ship.energy.value} {...ship.energy} />
               <StatBox title="Planets" value="0" iconSrc="/assets/svg/planet-icon.svg" />
             </Stack>
           </Box>

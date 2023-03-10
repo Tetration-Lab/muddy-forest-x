@@ -9,13 +9,18 @@ import { dataStore } from '../../../../store/data'
 import { GameItem } from '../../common/GameItem'
 import { CloseModalButton } from '../../common/CloseModalButton'
 import { SaveButton } from '../../common/SaveButton'
-import { TypeTag } from '../../common/LabelTag'
+import { LevelTag, TypeTag } from '../../common/LabelTag'
+import { usePlanet } from '../../../../hook/usePlanet'
+import { EnergyStatBox } from '../../Profile/StatBox'
 
 export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Math.Vector2 }) => {
   const theme = useTheme()
   const name = useMemo(() => generatePlanetName(BigInt(id)), [id])
   const planetSprite = useStore(gameStore, (state) => state.planets.get(id))
   const planetLocations = useStore(dataStore, (state) => state.planetLocations.get(id))
+  const planet = usePlanet(id)
+
+  if (!planet) return <></>
 
   return (
     <Draggable
@@ -51,15 +56,20 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
         >
           <Stack
             direction="row"
-            spacing={0.5}
+            spacing={1}
             sx={{
               alignItems: 'center',
             }}
           >
             <GameItem imageUrl={planetSprite.texture.manager.getBase64(planetSprite.texture.key)} />
-            <Stack mt="12px" px={2} alignItems="flex-start" flex={1}>
-              <Typography sx={{ fontSize: 16, fontWeight: 700, wordBreak: 'break-all' }}>{name}</Typography>
-              <TypeTag type="RESOURCE" />
+            <Stack pb={1} alignItems="flex-start" flex={1}>
+              <Typography sx={{ fontSize: 22, fontWeight: 700, wordBreak: 'break-all', fontFamily: 'VT323' }}>
+                {name}
+              </Typography>
+              <Stack direction="row" spacing={1} alignItems="center">
+                <LevelTag level={planet.level} />
+                <TypeTag type="RESOURCE" />
+              </Stack>
             </Stack>
             <CloseModalButton onClick={() => closePlanetModal(id)} />
           </Stack>
@@ -73,7 +83,7 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
                 flex={1}
               >
                 <Box component="img" src="/assets/svg/planet-prop-energy.svg" />
-                <Typography>{`100/200`}</Typography>
+                <Typography>{`${planet.energy.value}/${planet.energy.cap}`}</Typography>
               </Stack>
               <Stack
                 direction="row"

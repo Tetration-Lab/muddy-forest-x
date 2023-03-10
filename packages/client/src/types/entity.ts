@@ -1,7 +1,7 @@
 import { Component, ComponentValue, EntityIndex } from '@latticexyz/recs'
 import { Components } from '../layer/network/components'
 
-type ComponentV<T extends Component> = ComponentValue<T['schema'], undefined>
+export type ComponentV<T extends Component> = ComponentValue<T['schema'], undefined>
 
 export interface BaseEntity {
   index: EntityIndex
