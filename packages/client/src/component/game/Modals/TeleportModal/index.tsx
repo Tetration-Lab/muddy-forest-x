@@ -29,6 +29,7 @@ export const TeleportModal = ({ id, open = false, position = { x: 0, y: 0 } }) =
   const onPredictMove = (x: number, y: number) => {
     ship.predictMove(x, y)
     setPredictMove({ x: ship.predictMoveCoordinate.x, y: ship.predictMoveCoordinate.y })
+    ship.drawPredictLine()
   }
 
   useEffect(() => {
@@ -36,7 +37,7 @@ export const TeleportModal = ({ id, open = false, position = { x: 0, y: 0 } }) =
       return
     }
     setPredictMove({ x: ship.predictMoveCoordinate.x, y: ship.predictMoveCoordinate.y })
-  }, [ship])
+  }, [])
 
   const onTeleport = async () => {
     if (!networkLayer) {
@@ -50,7 +51,7 @@ export const TeleportModal = ({ id, open = false, position = { x: 0, y: 0 } }) =
       console.log(err)
       ship.stopPlayTeleport()
     } finally {
-      onClose(id)
+      closeTeleportModal(id)
     }
   }
 

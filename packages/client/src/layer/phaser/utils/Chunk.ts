@@ -2,7 +2,7 @@ import Phaser from 'phaser'
 import { CHUNK_HEIGHT_SIZE, CHUNK_WIDTH_SIZE, TILE_SIZE } from '../config/chunk'
 
 import { Tile } from './Tile'
-
+const debug = false
 export class Chunk extends Phaser.GameObjects.Container {
   tiles: Phaser.GameObjects.Group
   isLoaded: boolean
@@ -28,7 +28,7 @@ export class Chunk extends Phaser.GameObjects.Container {
     this.groupObjects = this.scene.add.group()
     this.isLoaded = false
     this.tileSize = TILE_SIZE
-    this.graphics = this.scene.add.graphics()
+    // this.graphics = this.scene.add.graphics()
 
     this.rt = this.scene.add.renderTexture(
       this.chunkX * (CHUNK_WIDTH_SIZE * this.tileSize),
@@ -61,7 +61,9 @@ export class Chunk extends Phaser.GameObjects.Container {
     if (!this.isLoaded) {
       this.loadTile()
       this.killAll()
-      this.drawBounceRect()
+      // if (debug) {
+      //   this.drawBounceRect()
+      // }
       this.isLoaded = true
     }
   }
@@ -71,14 +73,17 @@ export class Chunk extends Phaser.GameObjects.Container {
   }
 
   drawBounceRect() {
-    this.graphics.clear()
-    this.graphics.strokeRect(
-      this.chunkX * (CHUNK_WIDTH_SIZE * this.tileSize),
-      this.chunkY * (CHUNK_HEIGHT_SIZE * this.tileSize),
-      TILE_SIZE * CHUNK_WIDTH_SIZE,
-      TILE_SIZE * CHUNK_HEIGHT_SIZE,
-    )
-    this.graphics.setDepth(101)
+    if (!debug) {
+      return
+    }
+    // this.graphics.clear()
+    // this.graphics.strokeRect(
+    //   this.chunkX * (CHUNK_WIDTH_SIZE * this.tileSize),
+    //   this.chunkY * (CHUNK_HEIGHT_SIZE * this.tileSize),
+    //   TILE_SIZE * CHUNK_WIDTH_SIZE,
+    //   TILE_SIZE * CHUNK_HEIGHT_SIZE,
+    // )
+    // this.graphics.setDepth(101)
   }
 
   killAll() {
@@ -118,7 +123,7 @@ export class Chunk extends Phaser.GameObjects.Container {
     }
 
     this.killAll()
-    this.drawBounceRect()
+    // this.drawBounceRect()
     this.draw(taListTable)
   }
 

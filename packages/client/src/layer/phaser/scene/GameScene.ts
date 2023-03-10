@@ -51,7 +51,6 @@ class GameScene extends Phaser.Scene {
   cameraSpeed = 10
   navigation!: Phaser.GameObjects.Rectangle
   rectBound!: Phaser.GameObjects.Rectangle
-  graphicsGp!: Phaser.GameObjects.Graphics
   chunkLoader!: ChunkLoader
   pane: Pane
   paramsDebug: { position: string; chunkCoordinate: string; tileCoordinate: string; cameraSize: string } | null
@@ -139,11 +138,8 @@ class GameScene extends Phaser.Scene {
           this.followPoint.x = +pos.x
           this.followPoint.y = +pos.y
           this.navigation.setPosition(this.followPoint.x, this.followPoint.y)
+          ship.predictCursor.setVisible(true)
           ship.registerOnClick((pointer: Phaser.Input.Pointer) => {
-            // setTimeout(() => {
-            //   console.log(dataStore.getState().spaceships.get(id))
-            //   this.gameUIState = GAME_UI_STATE.SELECTED_HQ_SHIP
-            // }, 100)
             const position = this.input.activePointer.position
             const pos = new Phaser.Math.Vector2(position.x, position.y)
             openTeleportModal(id, pos)
