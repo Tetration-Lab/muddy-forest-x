@@ -11,11 +11,13 @@ import { CloseModalButton } from '../../common/CloseModalButton'
 import { SaveButton } from '../../common/SaveButton'
 import { LevelTag, TypeTag } from '../../common/LabelTag'
 import { usePlanet } from '../../../../hook/usePlanet'
-import { EnergyStatBox } from '../../Profile/StatBox'
 import { usePlayer } from '../../../../hook/usePlayer'
+import { EnergyInfoTab, FactionInfoTab, InfoTab, StatInfoTab } from './InfoTab'
+import { appStore } from '../../../../store/app'
 
 export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Math.Vector2 }) => {
   const theme = useTheme()
+  const { network } = useStore(appStore, (state) => state.networkLayer)
   const name = useMemo(() => generatePlanetName(BigInt(id)), [id])
   const { planetSprite, focusLocation } = useStore(gameStore, (state) => ({
     planetSprite: state.planets.get(id),
@@ -45,7 +47,8 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
           p: 1,
           borderRadius: 2,
           px: 0,
-          py: 0,
+          pt: 0,
+          pb: 1,
         }}
       >
         <Stack
@@ -71,7 +74,7 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
               onClick={() => focusLocation(planetSprite.getCenter())}
             />
             <Stack pb={1} alignItems="flex-start" flex={1}>
-              <Typography sx={{ fontSize: 22, fontWeight: 700, wordBreak: 'break-all', fontFamily: 'VT323' }}>
+              <Typography sx={{ fontSize: 24, fontWeight: 700, wordBreak: 'break-all', fontFamily: 'VT323' }}>
                 {name}
               </Typography>
               <Stack direction="row" spacing={1} alignItems="center">
@@ -83,51 +86,23 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
           </Stack>
           <Stack>
             <Stack direction="row" gap={1}>
-              <Stack
-                direction="row"
-                spacing={1}
-                sx={{ height: 36, backgroundColor: theme.palette.grayScale.black, borderRadius: '4px' }}
-                alignItems="center"
-                flex={1}
-              >
-                <Box component="img" src="/assets/svg/planet-prop-energy.svg" />
-                <Typography>{`${planet.energy.value}/${planet.energy.cap}`}</Typography>
-              </Stack>
-              <Stack
-                direction="row"
-                spacing={1}
-                sx={{ height: 36, backgroundColor: theme.palette.grayScale.black, borderRadius: '4px' }}
-                alignItems="center"
-                flex={1}
-              >
-                <Box component="img" src="/assets/svg/planet-prop-location.svg" />
-                <Typography>{`${planetLocations[0]}, ${planetLocations[1]}`}</Typography>
-                <SaveButton onClick={() => console.log('save!')} />
-              </Stack>
+              <EnergyInfoTab key={planet.energy.value} {...planet.energy} />
+              <InfoTab
+                iconSrc="/assets/svg/location-icon.svg"
+                title={`${planetLocations[0]},${planetLocations[1]}`}
+                suffix={<SaveButton onClick={() => console.log('save!')} />}
+              />
             </Stack>
           </Stack>
-          <Box
-            sx={{
-              display: 'flex',
-              gap: 1,
-              px: 1,
-              py: 0.5,
-              border: `1px solid ${theme.palette.grayScale.white}`,
-              borderRadius: '4px',
-              heigh: '32px',
-            }}
-          >
-            <Box component="img" src="/assets/svg/fraction-unknown.svg" />
-            <Typography>-</Typography>
-          </Box>
+          <FactionInfoTab
+            faction={owner.faction}
+            name={owner.name}
+            isYou={planet?.owner === network.connectedAddress.get()}
+          />
           <Stack sx={{ p: 1, backgroundColor: theme.palette.grayScale.black }} spacing={0.5}>
-            <Typography sx={{ fontSize: 12, fontWeight: 400 }}>Stats</Typography>
-            <Box sx={{ p: 1, backgroundColor: theme.palette.grayScale.almostBlack, borderRadius: '4px' }}>
-              <Typography sx={{ fontWeight: 400, fontSize: 12, lineHeight: '14px' }}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna.
-                Pellentesque sit amet sapien fringilla, mattis l
-              </Typography>
-            </Box>
+            <Typography sx={{ fontSize: 14, fontWeight: 400 }}>Stats</Typography>
+            <StatInfoTab iconSrc="/assets/svg/attack-icon.svg" title="Attack" value={100} />
+            <StatInfoTab iconSrc="/assets/svg/shield-icon.svg" title="Defense" value={100} />
           </Stack>
         </Stack>
       </Box>
