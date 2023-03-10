@@ -12,7 +12,7 @@ library Level {
 
   function getLevelResourceStorageMultiplier(IUint256Component components, uint256 entity) public returns (uint32) {
     LevelComponent.Level memory lvl = LevelComponent(getAddressById(components, LID)).getValue(entity);
-    return ((lvl.level * 10) * (lvl.tier + 1) * (lvl.multiplier + 100));
+    return lvl.level * 10 + 100;
   }
 
   function getEnergyLevelMultiplier(uint32 level) public returns (uint32) {

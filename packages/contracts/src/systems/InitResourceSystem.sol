@@ -8,7 +8,7 @@ import { TypeComponent, ID as TID } from "components/TypeComponent.sol";
 import { Resource } from "libraries/LibResource.sol";
 import { Level } from "libraries/LibLevel.sol";
 import { Type } from "libraries/LibType.sol";
-import { ADVANCED_CAP_REGEN } from "../constants/resources.sol";
+import { ADVANCED_CAP, ADVANCED_REGEN } from "../constants/resources.sol";
 import { EType } from "../constants/type.sol";
 
 uint256 constant ID = uint256(keccak256("system.InitResource"));
@@ -36,21 +36,19 @@ contract InitResourceSystem is System {
     uint256 id = getResourceEntity(args.entity, args.resourceId);
 
     uint32 mult = Level.getLevelResourceStorageMultiplier(components, args.entity);
-    (uint64 baseCap, uint32 baseRegen) = ADVANCED_CAP_REGEN(args.resourceId);
 
     if (ty == uint32(EType.PLANET)) {
       // Storage
-      require(Resource.isContainResource(args.entity, args.resourceId), "Resource not contained in this entity");
       rC.regen(args.entity);
       ResourceComponent.Resource memory r = rC.getValue(args.entity);
-      r.cap = (baseCap * mult) / 100;
-      r.rpb = (baseRegen * mult) / 100;
+      if (Resource.isContainResource(args.entity, args.resourceId)) r.rpb = (ADVANCED_REGEN * mult) / 200;
+      r.cap = (ADVANCED_CAP * mult) / 100;
       rC.set(args.entity, r);
     } else if (ty == uint32(EType.SPACESHIP) || ty == uint32(EType.HQSHIP)) {
       // Non storage
       ResourceComponent.Resource memory r = rC.getValue(args.entity);
       rC.regen(args.entity);
-      r.cap = (baseCap * mult) / 100;
+      r.cap = (ADVANCED_CAP * mult) / 100;
       rC.set(args.entity, r);
     }
   }
