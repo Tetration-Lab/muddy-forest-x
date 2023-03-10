@@ -7,9 +7,9 @@ import { generatePlanetName } from '../../../../utils/random'
 import { closePlanetModal, gameStore } from '../../../../store/game'
 import { dataStore } from '../../../../store/data'
 import { GameItem } from '../../common/GameItem'
-import { TypeTag } from '../../GameActionBox/TypeTag'
 import { CloseModalButton } from '../../common/CloseModalButton'
 import { SaveButton } from '../../common/SaveButton'
+import { TypeTag } from '../../common/LabelTag'
 
 export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Math.Vector2 }) => {
   const theme = useTheme()

@@ -8,7 +8,7 @@ import { FilterButton } from './FilterButton'
 import { GameItem } from '../common/GameItem'
 import { GameItemRow } from './GameItemRow'
 import { BuildItemType, BuildTabType, IBuildItem, ItemVisibility } from './types'
-import { TypeTag } from './TypeTag'
+import { TypeTag } from '../common/LabelTag'
 
 const BuildTabs = ({
   activeTab,

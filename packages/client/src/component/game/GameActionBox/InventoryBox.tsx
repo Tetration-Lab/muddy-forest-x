@@ -8,7 +8,7 @@ import { ActionButton } from './ActionButton'
 import { FilterButton } from './FilterButton'
 import { GameItem } from '../common/GameItem'
 import { IInventoryItem, InventoryTabType, InventoryType, ItemVisibility } from './types'
-import { TypeTag } from './TypeTag'
+import { TypeTag } from '../common/LabelTag'
 
 const InventoryTabs = ({
   activeTab,
