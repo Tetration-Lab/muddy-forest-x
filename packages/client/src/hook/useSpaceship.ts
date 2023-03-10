@@ -6,9 +6,10 @@ import { filter } from 'rxjs'
 import { formatEntityID } from '@latticexyz/network'
 import { getEnergyEntityId } from '../const/resources'
 import { getMoveCooldownEntityId } from '../const/cooldown'
+import { useStore } from 'zustand'
 
 export const useSpaceship = (id: string) => {
-  const { world, components } = appStore.getState().networkLayer
+  const { world, components } = useStore(appStore, (state) => state.networkLayer)
   const eid = formatEntityID(id)
   const ind = world.registerEntity({ id: eid })
   const energyIndex = world.registerEntity({ id: formatEntityID(getEnergyEntityId(eid)) })
@@ -41,7 +42,6 @@ export const useSpaceship = (id: string) => {
     const cooldown = components.Cooldown.update$
       .pipe(filter((update) => update.entity === cooldownIndex))
       .subscribe((u) => {
-        console.log(u)
         setShip((ship) => {
           return {
             ...ship,
@@ -71,8 +71,6 @@ export const useSpaceship = (id: string) => {
       energy.unsubscribe()
     }
   }, [cooldownIndex, energyIndex])
-
-  useEffect(() => console.log(ship), [ship])
 
   return ship
 }

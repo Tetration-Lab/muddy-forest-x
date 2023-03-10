@@ -4,6 +4,7 @@ import { Stack } from '@mui/system'
 import { useEffect } from 'react'
 import { useStore } from 'zustand'
 import { FACTION } from '../../../const/faction'
+import { usePlayer } from '../../../hook/usePlayer'
 import { useSpaceship } from '../../../hook/useSpaceship'
 import { appStore } from '../../../store/app'
 import { dataStore } from '../../../store/data'
@@ -13,16 +14,11 @@ import { CooldownStatusBadge } from './StatusBadge'
 
 export const Profile = () => {
   const theme = useTheme()
+
   const { network } = useStore(appStore, (state) => state.networkLayer)
-  const { shipId, player } = useStore(dataStore, (state) => {
-    const shipId = state.ownedSpaceships[0]
-    const player = state.players.get(formatEntityID(network.connectedAddress.get()))
-    return {
-      shipId,
-      player,
-    }
-  })
+  const shipId = useStore(dataStore, (state) => state.ownedSpaceships[0])
   const ship = useSpaceship(shipId ?? '0x0')
+  const player = usePlayer(formatEntityID(network.connectedAddress.get()))
   const shipSprite = useStore(gameStore, (state) => state.spaceships.get(shipId))
 
   if (!ship || !shipSprite || !player) return <></>
