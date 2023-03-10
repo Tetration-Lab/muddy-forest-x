@@ -128,7 +128,6 @@ export const UILayer = () => {
       </div>
       {/*</ClickAwayListener>*/}
       {/* debug */}
-      <TeleportModal />
       <div className="absolute top-1/2 left-0">
         <div id="debug-pane"></div>
       </div>
@@ -168,6 +167,7 @@ export const UILayer = () => {
       {/*</ClickAwayListener>*/}
       {/* Modals */}
       <SendResourceModals />
+      <TeleportModals />
     </div>
   )
 }
@@ -178,6 +178,19 @@ const SendResourceModals = () => {
     <>
       {modals.map((k) => (
         <SendResourceModal id={k[0]} position={k[1]} key={k[0]} />
+      ))}
+    </>
+  )
+}
+
+const TeleportModals = () => {
+  const modalMap = useStore(gameStore, (state) => state.teleportModal)
+  const modals = [...modalMap.entries()]
+  console.log('modals', modals)
+  return (
+    <>
+      {modals.map((k) => (
+        <TeleportModal id={k[0]} open={true} position={{ x: k[1].x, y: k[1].y }} key={k[0]} />
       ))}
     </>
   )

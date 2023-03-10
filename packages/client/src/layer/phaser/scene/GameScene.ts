@@ -13,7 +13,7 @@ import { Hasher } from 'circuits'
 import { initConfigAnim } from '../anim'
 import { CursorExplorer } from '../gameobject/CursorExplorer'
 import { Planet } from '../gameobject/Planet'
-import { addPlanet, addSpaceship, gameStore, openSendResourceModal } from '../../../store/game'
+import { addPlanet, addSpaceship, gameStore, openSendResourceModal, openTeleportModal } from '../../../store/game'
 import { createSpawnCapitalSystem } from '../../../system/createSpawnCapitalSystem'
 import { NetworkLayer } from '../../network/types'
 import { IMAGE, SPRITE, SPRITE_PLANET } from '../constant/resource'
@@ -25,6 +25,7 @@ import { HQShip } from '../gameobject/HQShip'
 import { formatEntityID } from '@latticexyz/network'
 import { dataStore, initPlanet, initSpaceship } from '../../../store/data'
 import { FACTION } from '../../../const/faction'
+import { openStdin } from 'process'
 
 const ZOOM_OUT_LIMIT = 0.01
 const ZOOM_IN_LIMIT = 2
@@ -139,10 +140,13 @@ class GameScene extends Phaser.Scene {
           this.followPoint.y = +pos.y
           this.navigation.setPosition(this.followPoint.x, this.followPoint.y)
           ship.registerOnClick((pointer: Phaser.Input.Pointer) => {
-            setTimeout(() => {
-              console.log(dataStore.getState().spaceships.get(id))
-              this.gameUIState = GAME_UI_STATE.SELECTED_HQ_SHIP
-            }, 100)
+            // setTimeout(() => {
+            //   console.log(dataStore.getState().spaceships.get(id))
+            //   this.gameUIState = GAME_UI_STATE.SELECTED_HQ_SHIP
+            // }, 100)
+            const position = this.input.activePointer.position
+            const pos = new Phaser.Math.Vector2(position.x, position.y)
+            openTeleportModal(id, pos)
           })
           ship.setDepth(1000)
           dataStore.setState((state) => {
@@ -203,34 +207,37 @@ class GameScene extends Phaser.Scene {
       this.followPoint.y -= (p.y - p.prevPosition.y) / cam.zoom
     })
 
-    this.input.on('pointerup', async (p) => {
-      if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
-        const position = snapToGrid(p.worldX, p.worldY, 16)
-        const entityID = dataStore.getState().ownedSpaceships[0]
-        const networkLayer = appStore.getState().networkLayer
-        if (networkLayer) {
-          const tileX = Math.floor(position.x / TILE_SIZE)
-          const tileY = Math.floor(position.y / TILE_SIZE)
-          console.log(entityID, tileX, tileY)
-          const id = formatEntityID(entityID)
-          const ship = gameStore.getState().spaceships.get(id)
-          const dist = Phaser.Math.Distance.Between(position.x, position.y, ship.x, ship.y)
-          if (dist === 0) {
-            this.gameUIState = GAME_UI_STATE.NONE
-            return
-          }
-          try {
-            ship.playTeleport()
-            await networkLayer.api.move(entityID, tileX, tileY)
-          } catch (err) {
-            ship.stopPlayTeleport()
-          } finally {
-            this.gameUIState = GAME_UI_STATE.NONE
-          }
-        }
-        this.gameUIState = GAME_UI_STATE.NONE
-      }
-    })
+    // this.input.on('pointerup', async (p) => {
+    //   if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
+    //     const position = snapToGrid(p.worldX, p.worldY, 16)
+    //     const entityID = dataStore.getState().ownedSpaceships[0]
+    //     const networkLayer = appStore.getState().networkLayer
+    //     if (networkLayer) {
+    //       const tileX = Math.floor(position.x / TILE_SIZE)
+    //       const tileY = Math.floor(position.y / TILE_SIZE)
+    //       console.log(entityID, tileX, tileY)
+    //       const id = formatEntityID(entityID)
+    //       const ship = gameStore.getState().spaceships.get(id)
+    //       // const dist = Phaser.Math.Distance.Between(position.x, position.y, ship.x, ship.y)
+    //       // if (dist === 0) {
+    //       //   this.gameUIState = GAME_UI_STATE.NONE
+    //       //   return
+    //       // }
+    //       try {
+    //         // ship.playTeleport()
+    //         // await networkLayer.api.move(entityID, tileX, tileY)
+    //         const position = this.input.activePointer.position
+    //         const pos = new Phaser.Math.Vector2(position.x, position.y)
+    //         openTeleportModal(id, pos)
+    //       } catch (err) {
+    //         ship.stopPlayTeleport()
+    //       } finally {
+    //         this.gameUIState = GAME_UI_STATE.NONE
+    //       }
+    //     }
+    //     this.gameUIState = GAME_UI_STATE.NONE
+    //   }
+    // })
 
     this.input.on('wheel', function (pointer, gameObjects, deltaX, deltaY, deltaZ) {
       // handle zoom in range MAX and MIN zoom value

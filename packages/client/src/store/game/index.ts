@@ -4,12 +4,14 @@ import { Planet } from '../../layer/phaser/gameobject/Planet'
 
 export type Store = {
   sendResourceModal: Map<string, Phaser.Math.Vector2>
+  teleportModal: Map<string, Phaser.Math.Vector2>
   planets: Map<string, Planet>
   spaceships: Map<string, HQShip>
 }
 
 const initialState = {
   sendResourceModal: new Map<string, Phaser.Math.Vector2>(),
+  teleportModal: new Map<string, Phaser.Math.Vector2>(),
   planets: new Map<string, Planet>(),
   spaceships: new Map<string, HQShip>(),
 }
@@ -47,5 +49,22 @@ export const openSendResourceModal = (id: string, position: Phaser.Math.Vector2)
     const sendResourceModal = new Map(state.sendResourceModal)
     sendResourceModal.set(id, position)
     return { sendResourceModal }
+  })
+}
+
+export const openTeleportModal = (id: string, position: Phaser.Math.Vector2) => {
+  gameStore.setState((state) => {
+    const teleportModal = new Map(state.teleportModal)
+    teleportModal.set(id, position)
+    return { teleportModal }
+  })
+}
+
+export const closeTeleportModal = (id: string) => {
+  console.log('close modal', id)
+  gameStore.setState((state) => {
+    const teleportModal = new Map(state.teleportModal)
+    teleportModal.delete(id)
+    return { teleportModal }
   })
 }

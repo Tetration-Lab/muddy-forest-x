@@ -66,7 +66,7 @@ export async function createNetworkLayer(config: SetupContractConfig) {
   }
 
   const move = async (entity: string, x: number, y: number) => {
-    await systems['system.Move'].executeTyped({
+    return await systems['system.Move'].executeTyped({
       entity: entity,
       position: {
         x,

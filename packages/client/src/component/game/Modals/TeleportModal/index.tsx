@@ -1,8 +1,14 @@
-import { FaQuestion } from 'react-icons/fa'
+import { FaMinus, FaPlus, FaQuestion } from 'react-icons/fa'
 import { Box, ButtonBase, useTheme } from '@mui/material'
 import { HiXMark } from 'react-icons/hi2'
 import Draggable from 'react-draggable'
+import { closeTeleportModal, gameStore } from '../../../../store/game'
+import { useStore } from 'zustand'
+import { useEffect, useState } from 'react'
+import { appStore } from '../../../../store/app'
+import { dataStore } from '../../../../store/data'
 export interface Props {
+  id: string
   open?: boolean
   onClose: () => void
   energy: number
@@ -11,8 +17,50 @@ export interface Props {
   position?: { x: number; y: number }
 }
 
-export const TeleportModal = ({ open = false, position = { x: 0, y: 0 } }) => {
+export const TeleportModal = ({ id, open = false, position = { x: 0, y: 0 } }) => {
   const theme = useTheme()
+  const ship = useStore(gameStore, (state) => state.spaceships.get(id))
+  const networkLayer = useStore(appStore, (state) => state.networkLayer)
+  const [predictMove, setPredictMove] = useState<{ x: number; y: number }>({
+    x: 0,
+    y: 0,
+  })
+
+  const onPredictMove = (x: number, y: number) => {
+    ship.predictMove(x, y)
+    setPredictMove({ x: ship.predictMoveCoordinate.x, y: ship.predictMoveCoordinate.y })
+  }
+
+  useEffect(() => {
+    if (!ship) {
+      return
+    }
+    setPredictMove({ x: ship.predictMoveCoordinate.x, y: ship.predictMoveCoordinate.y })
+  }, [ship])
+
+  const onTeleport = async () => {
+    if (!networkLayer) {
+      return
+    }
+    const entityID = dataStore.getState().ownedSpaceships[0]
+    try {
+      ship.playTeleport()
+      await networkLayer.api.move(entityID, predictMove.x, predictMove.y)
+    } catch (err) {
+      console.log(err)
+      ship.stopPlayTeleport()
+    } finally {
+      onClose(id)
+    }
+  }
+
+  const onClose = () => {
+    closeTeleportModal(id)
+    if (ship) {
+      ship.resetPredictMovePosition()
+    }
+  }
+
   if (!open) return null
   return (
     <>
@@ -37,6 +85,7 @@ export const TeleportModal = ({ open = false, position = { x: 0, y: 0 } }) => {
                   <FaQuestion />
                 </div>
                 <ButtonBase
+                  onClick={() => onClose()}
                   sx={{
                     width: 28,
                     height: 28,
@@ -50,12 +99,13 @@ export const TeleportModal = ({ open = false, position = { x: 0, y: 0 } }) => {
               </div>
             </div>
           </div>
-          <section className="bg-[#222529] p-2 space-y-2">
+          {/* TODO: save position */}
+          {/* <section className="bg-[#222529] p-2 space-y-2">
             <div>Saved coordinate</div>
             <div className="p-2 border-2 border-dashed rounded-md border-[#787C80] bg-[#363A3F] text-center text-gray-500">
               Empty
             </div>
-          </section>
+          </section> */}
 
           <section>
             <div className="flex justify-between p-2 bg-[#222529]">
@@ -65,10 +115,30 @@ export const TeleportModal = ({ open = false, position = { x: 0, y: 0 } }) => {
               </div>
             </div>
             <div className="flex p-2 space-x-2">
-              <div className="w-full p-2 bg-[#4A5056] rounded-md text-center">
-                <input className="w-full bg-transparent outline-none" placeholder="X coordinate" />
+              <div className="w-full flex items-center space-x-2 p-2 bg-[#4A5056] rounded-md text-center">
+                <FaMinus
+                  onClick={() => onPredictMove(ship.predictMoveCoordinate.x - 1, ship.predictMoveCoordinate.y)}
+                />
+                <input
+                  onChange={(e) => onPredictMove(Number(e.target.value), ship.predictMoveCoordinate.y)}
+                  className="w-full bg-transparent outline-none"
+                  placeholder="X coordinate"
+                  value={predictMove.x}
+                />
+                <FaPlus onClick={() => onPredictMove(ship.predictMoveCoordinate.x + 1, ship.predictMoveCoordinate.y)} />
               </div>
-              <input className="w-full bg-transparent outline-none" placeholder="Y coordinate" />
+              <div className="w-full flex items-center space-x-2 p-2 bg-[#4A5056] rounded-md text-center">
+                <FaMinus
+                  onClick={() => onPredictMove(ship.predictMoveCoordinate.x, ship.predictMoveCoordinate.y - 1)}
+                />
+                <input
+                  onChange={(e) => onPredictMove(ship.predictMoveCoordinate.x, Number(e.target.value))}
+                  className="w-full bg-transparent outline-none"
+                  placeholder="Y coordinate"
+                  value={predictMove.y}
+                />
+                <FaPlus onClick={() => onPredictMove(ship.predictMoveCoordinate.x, ship.predictMoveCoordinate.y + 1)} />
+              </div>
             </div>
           </section>
           <section>
@@ -91,7 +161,9 @@ export const TeleportModal = ({ open = false, position = { x: 0, y: 0 } }) => {
             </div>
           </section>
           <section className="flex justify-center">
-            <button className="text-white p-2 bg-[#4A5056] rounded-md">Teleport</button>
+            <button className="text-white p-2 bg-[#4A5056] rounded-md" onClick={() => onTeleport()}>
+              Teleport
+            </button>
           </section>
         </div>
       </Draggable>
