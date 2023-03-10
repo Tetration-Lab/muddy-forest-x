@@ -22,6 +22,8 @@ contract SetupFactionSystem is System {
   function execute(bytes memory arguments) public returns (bytes memory) {
     Args memory args = abi.decode(arguments, (Args));
 
+    require(args.id >= 10, "Invalid faction id range");
+
     PositionComponent(getAddressById(components, PID)).set(uint256(args.id), args.capitalPosition);
     NameComponent(getAddressById(components, NID)).set(uint256(args.id), args.name);
     TypeComponent(getAddressById(components, TID)).set(uint256(args.id), uint32(EType.FACTION));
