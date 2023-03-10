@@ -3,7 +3,7 @@ import { getComponentValue } from '@latticexyz/recs'
 import { useEffect, useMemo, useState } from 'react'
 import { useStore } from 'zustand'
 import { planetLevel } from '../const/planet'
-import { getEnergyEntityId } from '../const/resources'
+import { BASE_ENERGY_CAP, BASE_ENERGY_REGEN, getEnergyEntityId, getEnergyLevelMultiplier } from '../const/resources'
 import { appStore } from '../store/app'
 import { filter } from 'rxjs'
 import { Planet } from '../types/entity'
@@ -33,9 +33,9 @@ export const usePlanet = (id: string) => {
       index: ind,
       name,
       energy: {
-        value: Number(energy?.value),
-        cap: Number(energy?.cap),
-        rpb: Number(energy?.rpb),
+        value: Number(energy?.value ?? (BASE_ENERGY_CAP * getEnergyLevelMultiplier(level)) / 100),
+        cap: Number(energy?.cap ?? (BASE_ENERGY_CAP * getEnergyLevelMultiplier(level)) / 100),
+        rpb: Number(energy?.rpb ?? (BASE_ENERGY_REGEN * getEnergyLevelMultiplier(level)) / 100),
         lrt: energy?.lrt ?? 0,
       },
       resources: [],

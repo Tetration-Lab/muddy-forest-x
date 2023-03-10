@@ -12,13 +12,18 @@ import { SaveButton } from '../../common/SaveButton'
 import { LevelTag, TypeTag } from '../../common/LabelTag'
 import { usePlanet } from '../../../../hook/usePlanet'
 import { EnergyStatBox } from '../../Profile/StatBox'
+import { usePlayer } from '../../../../hook/usePlayer'
 
 export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Math.Vector2 }) => {
   const theme = useTheme()
   const name = useMemo(() => generatePlanetName(BigInt(id)), [id])
-  const planetSprite = useStore(gameStore, (state) => state.planets.get(id))
+  const { planetSprite, focusLocation } = useStore(gameStore, (state) => ({
+    planetSprite: state.planets.get(id),
+    focusLocation: state.focusLocation,
+  }))
   const planetLocations = useStore(dataStore, (state) => state.planetLocations.get(id))
   const planet = usePlanet(id)
+  const owner = usePlayer(planet?.owner ?? '0x0')
 
   if (!planet) return <></>
 
@@ -61,7 +66,10 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
               alignItems: 'center',
             }}
           >
-            <GameItem imageUrl={planetSprite.texture.manager.getBase64(planetSprite.texture.key)} />
+            <GameItem
+              imageUrl={planetSprite.texture.manager.getBase64(planetSprite.texture.key)}
+              onClick={() => focusLocation(planetSprite.getCenter())}
+            />
             <Stack pb={1} alignItems="flex-start" flex={1}>
               <Typography sx={{ fontSize: 22, fontWeight: 700, wordBreak: 'break-all', fontFamily: 'VT323' }}>
                 {name}
