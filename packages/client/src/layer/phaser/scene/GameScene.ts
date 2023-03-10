@@ -141,7 +141,6 @@ class GameScene extends Phaser.Scene {
           ship.predictCursor.setVisible(true)
           ship.registerOnClick((pointer: Phaser.Input.Pointer) => {
             setTimeout(() => {
-              console.log(dataStore.getState().spaceships.get(id))
               this.gameUIState = GAME_UI_STATE.SELECTED_HQ_SHIP
             }, 100)
             // const position = this.input.activePointer.position
@@ -206,7 +205,6 @@ class GameScene extends Phaser.Scene {
       this.followPoint.x -= (p.x - p.prevPosition.x) / cam.zoom
       this.followPoint.y -= (p.y - p.prevPosition.y) / cam.zoom
     })
-
 
     gameStore.setState(() => ({
       focusLocation: (v) => {
@@ -276,7 +274,6 @@ class GameScene extends Phaser.Scene {
         this.gameUIState = GAME_UI_STATE.NONE
       }
     })
-
 
     this.input.on('wheel', function (pointer, gameObjects, deltaX, deltaY, deltaZ) {
       // handle zoom in range MAX and MIN zoom value
