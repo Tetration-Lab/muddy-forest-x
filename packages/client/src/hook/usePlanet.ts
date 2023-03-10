@@ -28,6 +28,8 @@ export const usePlanet = (id: string) => {
     const energy = getComponentValue(components.Resource, energyIndex)
     const owner = getComponentValue(components.Owner, ind)?.value
     const level = getComponentValue(components.Level, ind)?.level ?? planetLevel(eid)
+    const attack = (getComponentValue(components.Attack, ind)?.value ?? 10000) / 100
+    const defense = (getComponentValue(components.Defense, ind)?.value ?? 10000) / 100
 
     setPlanet({
       index: ind,
@@ -41,6 +43,8 @@ export const usePlanet = (id: string) => {
       resources: [],
       owner,
       level,
+      attack,
+      defense,
     })
   }, [eid, ind, energyIndex])
 
@@ -60,9 +64,27 @@ export const usePlanet = (id: string) => {
           }
         })
       })
+    const attack = components.Attack.update$.pipe(filter((update) => update.entity === ind)).subscribe((u) => {
+      setPlanet((planet) => {
+        return {
+          ...planet,
+          attack: Number(u.value[0].value) / 100,
+        }
+      })
+    })
+    const defense = components.Defense.update$.pipe(filter((update) => update.entity === ind)).subscribe((u) => {
+      setPlanet((planet) => {
+        return {
+          ...planet,
+          defense: Number(u.value[0].value) / 100,
+        }
+      })
+    })
 
     return () => {
       energy.unsubscribe()
+      attack.unsubscribe()
+      defense.unsubscribe()
     }
   }, [energyIndex])
 

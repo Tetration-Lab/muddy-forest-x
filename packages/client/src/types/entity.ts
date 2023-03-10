@@ -10,6 +10,8 @@ export interface BaseEntity {
   resources: ComponentV<Components['Resource']>[]
   owner?: string
   level: number
+  attack: number
+  defense: number
 }
 
 export interface Planet extends BaseEntity {}

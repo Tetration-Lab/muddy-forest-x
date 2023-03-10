@@ -101,8 +101,8 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
           />
           <Stack sx={{ p: 1, backgroundColor: theme.palette.grayScale.black }} spacing={0.5}>
             <Typography sx={{ fontSize: 14, fontWeight: 400 }}>Stats</Typography>
-            <StatInfoTab iconSrc="/assets/svg/attack-icon.svg" title="Attack" value={100} />
-            <StatInfoTab iconSrc="/assets/svg/shield-icon.svg" title="Defense" value={100} />
+            <StatInfoTab iconSrc="/assets/svg/attack-icon.svg" title="Attack" value={planet.attack} />
+            <StatInfoTab iconSrc="/assets/svg/shield-icon.svg" title="Defense" value={planet.defense} />
           </Stack>
         </Stack>
       </Box>

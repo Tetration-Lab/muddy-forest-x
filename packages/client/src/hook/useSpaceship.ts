@@ -30,6 +30,8 @@ export const useSpaceship = (id: string) => {
     const owner = getComponentValue(components.Owner, ind)?.value
     const cooldown = getComponentValue(components.Cooldown, cooldownIndex)?.value
     const level = getComponentValue(components.Level, ind)?.level
+    const attack = (getComponentValue(components.Attack, ind)?.value ?? 10000) / 100
+    const defense = (getComponentValue(components.Defense, ind)?.value ?? 10000) / 100
 
     setShip({
       index: ind,
@@ -44,6 +46,8 @@ export const useSpaceship = (id: string) => {
       owner,
       level,
       cooldown: Number(cooldown ?? 0),
+      attack,
+      defense,
     })
   }, [ind, energyIndex, cooldownIndex])
 
@@ -74,10 +78,28 @@ export const useSpaceship = (id: string) => {
           }
         })
       })
+    const attack = components.Attack.update$.pipe(filter((update) => update.entity === ind)).subscribe((u) => {
+      setShip((ship) => {
+        return {
+          ...ship,
+          attack: Number(u.value[0].value) / 100,
+        }
+      })
+    })
+    const defense = components.Defense.update$.pipe(filter((update) => update.entity === ind)).subscribe((u) => {
+      setShip((ship) => {
+        return {
+          ...ship,
+          defense: Number(u.value[0].value) / 100,
+        }
+      })
+    })
 
     return () => {
       cooldown.unsubscribe()
       energy.unsubscribe()
+      attack.unsubscribe()
+      defense.unsubscribe()
     }
   }, [cooldownIndex, energyIndex])
 
