@@ -36,18 +36,15 @@ contract BuildBuildingSystem is System {
     // Check for valid planet
     require(Type.getType(components, args.planetEntity) == uint32(EType.PLANET), "Not planet");
     require(
-      OwnerComponent(getAddressById(components, OID)).getValue(args.planetEntity) != addressToEntity(msg.sender),
+      OwnerComponent(getAddressById(components, OID)).getValue(args.planetEntity) == addressToEntity(msg.sender),
       "Not planet owner"
     );
 
     // Check for valid research
     ResearchComponent rs = ResearchComponent(getAddressById(components, RSID));
     require(rs.has(args.researchId), "Research not found");
-    require(
-      Faction.getFaction(components, msg.sender) ==
-        OwnerComponent(getAddressById(components, OID)).getValue(args.researchId),
-      "Invalid research faction"
-    );
+    uint256 owner = OwnerComponent(getAddressById(components, OID)).getValue(args.researchId);
+    require(owner == 0 || Faction.getFaction(components, msg.sender) == owner, "Invalid research faction");
     ResearchComponent.Research memory research = rs.getValue(args.researchId);
 
     // Check for valid blueprint

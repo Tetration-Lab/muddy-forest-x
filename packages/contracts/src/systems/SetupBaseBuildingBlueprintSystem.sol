@@ -5,6 +5,9 @@ import { getAddressById, addressToEntity } from "solecs/utils.sol";
 import { BaseBlueprintComponent, ID as BBID } from "components/BaseBlueprintComponent.sol";
 import { TypeComponent, ID as TID } from "components/TypeComponent.sol";
 import { BlueprintTypeComponent, ID as BTID } from "components/BlueprintTypeComponent.sol";
+import { ResearchComponent, ID as RID } from "components/ResearchComponent.sol";
+import { BlueprintComponent, ID as BID } from "components/BlueprintComponent.sol";
+import { OwnerComponent, ID as OID } from "components/OwnerComponent.sol";
 import { EType } from "../constants/type.sol";
 import { BlueprintType } from "../constants/blueprint.sol";
 
@@ -23,6 +26,9 @@ contract SetupBaseBuildingBlueprintSystem is System {
     BaseBlueprintComponent bb = BaseBlueprintComponent(getAddressById(components, BBID));
     TypeComponent t = TypeComponent(getAddressById(components, TID));
     BlueprintTypeComponent bt = BlueprintTypeComponent(getAddressById(components, TID));
+    ResearchComponent r = ResearchComponent(getAddressById(components, RID));
+    BlueprintComponent b = BlueprintComponent(getAddressById(components, BID));
+    OwnerComponent o = OwnerComponent(getAddressById(components, OID));
 
     for (uint256 i = 0; i < args.blueprints.length; ++i) {
       uint256 id = uint256(keccak256(abi.encode(BlueprintType.BUILDING, args.blueprints[i])));
@@ -30,6 +36,9 @@ contract SetupBaseBuildingBlueprintSystem is System {
       bb.set(id, args.blueprints[i]);
       t.set(id, uint32(EType.BLUEPRINT));
       bt.set(id, uint32(BlueprintType.BUILDING));
+      r.set(id, ResearchComponent.Research(10000, 10000));
+      b.set(id, id);
+      o.set(id, 0);
     }
   }
 
