@@ -11,7 +11,9 @@ import { SettingActionBox } from '../../component/game/SettingActionBox'
 import { ToolButton } from '../../component/ToolButton'
 import { FACTION } from '../../const/faction'
 import { appStore } from '../../store/app'
-import { gameStore } from '../../store/game'
+
+import { dataStore } from '../../store/data'
+import { closeSendResourceModal, gameStore, openTeleportModal } from '../../store/game'
 
 export const UILayer = () => {
   const store = useStore(appStore, (state) => state)
@@ -48,6 +50,13 @@ export const UILayer = () => {
   const handleSettingClose = () => {
     setSettingAnchorEl(null)
     setOpenSettingBox(false)
+  }
+
+  const handleOnClickTeleport = () => {
+    if (dataStore.getState().ownedSpaceships.length > 0) {
+      const id = dataStore.getState().ownedSpaceships[0]
+      openTeleportModal(id, new Phaser.Math.Vector2(window.innerWidth / 2, window.innerHeight / 2))
+    }
   }
 
   const handleToolsClick = (mode: GameActionBoxMode) => () => {
@@ -115,11 +124,7 @@ export const UILayer = () => {
         </div>
       </div>
       <div className="absolute top-1/2 right-0 mr-2">
-        <ToolButton
-          title={'Teleport'}
-          iconSrc="./assets/svg/teleport-icon.svg"
-          onClick={handleToolsClick(GameActionBoxMode.Build)}
-        />
+        <ToolButton title={'Teleport'} iconSrc="./assets/svg/teleport-icon.svg" onClick={handleOnClickTeleport} />
       </div>
       <div className="absolute top-50 left-0">
         <div className="p-4">
@@ -184,7 +189,9 @@ const PlanetModals = () => {
 }
 
 const TeleportModals = () => {
-  const modals = useStore(gameStore, (state) => [...state.teleportModals.entries()])
+  const modalMap = useStore(gameStore, (state) => state.teleportModals)
+  const modals = [...modalMap.entries()]
+
   return (
     <>
       {modals.map((k) => (
