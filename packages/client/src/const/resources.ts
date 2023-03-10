@@ -5,6 +5,8 @@ import { setNestedObjectValues } from 'formik'
 export const ENERGY_ID = '0xa7517d8398dfc2d794fbfb432372ce447c16514ec7de96d333a137d677415f43'
 export const BASE_ENERGY_CAP = 5000
 export const BASE_ENERGY_REGEN = 80
+export const ADVANCED_CAP = 500
+export const ADVANCED_REGEN = 2
 
 export const getResourceEntityId = (entity: string, resourceId: string) => {
   return formatEntityID(solidityKeccak256(['uint256', 'uint256'], [entity, resourceId]))
@@ -33,4 +35,8 @@ export const sendEnergyCost = (distance: number, weight: number) => {
 
 export const attackEnergyCost = (distance: number) => {
   return 100 + distance ** 2
+}
+
+export const getLevelResourceStorageMultiplier = (level: number) => {
+  return level * 10 + 100
 }
