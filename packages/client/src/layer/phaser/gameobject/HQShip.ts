@@ -73,6 +73,7 @@ export class HQShip extends Phaser.GameObjects.Sprite {
   }
 
   resetPredictMovePosition() {
+    this.graphics.clear()
     this.predictCursor.setPosition(this.x, this.y)
   }
 

@@ -4,9 +4,12 @@ import { HiXMark } from 'react-icons/hi2'
 import Draggable from 'react-draggable'
 import { closeTeleportModal, gameStore } from '../../../../store/game'
 import { useStore } from 'zustand'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { appStore } from '../../../../store/app'
 import { dataStore } from '../../../../store/data'
+import { moveEnergyCost } from '../../../../const/resources'
+import { useSpaceship } from '../../../../hook/useSpaceship'
+
 export interface Props {
   id: string
   open?: boolean
@@ -19,24 +22,38 @@ export interface Props {
 
 export const TeleportModal = ({ id, open = false, position = { x: 0, y: 0 } }) => {
   const theme = useTheme()
-  const ship = useStore(gameStore, (state) => state.spaceships.get(id))
+  const ship = useSpaceship(id ?? '0x0')
+  const shipSprite = useStore(gameStore, (state) => state.spaceships.get(id))
   const networkLayer = useStore(appStore, (state) => state.networkLayer)
   const [predictMove, setPredictMove] = useState<{ x: number; y: number }>({
     x: 0,
     y: 0,
   })
 
+  const calculatemoveEnergyCost = useMemo(() => {
+    if (!shipSprite) {
+      return 0
+    }
+    const distance = Phaser.Math.Distance.Between(
+      shipSprite.coordinate.x,
+      shipSprite.coordinate.y,
+      shipSprite.predictMoveCoordinate.x,
+      shipSprite.predictMoveCoordinate.y,
+    )
+    return moveEnergyCost(distance)
+  }, [predictMove])
+
   const onPredictMove = (x: number, y: number) => {
-    ship.predictMove(x, y)
-    setPredictMove({ x: ship.predictMoveCoordinate.x, y: ship.predictMoveCoordinate.y })
-    ship.drawPredictLine()
+    shipSprite.predictMove(x, y)
+    setPredictMove({ x: shipSprite.predictMoveCoordinate.x, y: shipSprite.predictMoveCoordinate.y })
+    shipSprite.drawPredictLine()
   }
 
   useEffect(() => {
-    if (!ship) {
+    if (!shipSprite) {
       return
     }
-    setPredictMove({ x: ship.predictMoveCoordinate.x, y: ship.predictMoveCoordinate.y })
+    setPredictMove({ x: shipSprite.predictMoveCoordinate.x, y: shipSprite.predictMoveCoordinate.y })
   }, [])
 
   const onTeleport = async () => {
@@ -45,11 +62,11 @@ export const TeleportModal = ({ id, open = false, position = { x: 0, y: 0 } }) =
     }
     const entityID = dataStore.getState().ownedSpaceships[0]
     try {
-      ship.playTeleport()
+      shipSprite.playTeleport()
       await networkLayer.api.move(entityID, predictMove.x, predictMove.y)
     } catch (err) {
       console.log(err)
-      ship.stopPlayTeleport()
+      shipSprite.stopPlayTeleport()
     } finally {
       closeTeleportModal(id)
     }
@@ -57,8 +74,8 @@ export const TeleportModal = ({ id, open = false, position = { x: 0, y: 0 } }) =
 
   const onClose = () => {
     closeTeleportModal(id)
-    if (ship) {
-      ship.resetPredictMovePosition()
+    if (shipSprite) {
+      shipSprite.resetPredictMovePosition()
     }
   }
 
@@ -118,27 +135,39 @@ export const TeleportModal = ({ id, open = false, position = { x: 0, y: 0 } }) =
             <div className="flex p-2 space-x-2">
               <div className="w-full flex items-center space-x-2 p-2 bg-[#4A5056] rounded-md text-center">
                 <FaMinus
-                  onClick={() => onPredictMove(ship.predictMoveCoordinate.x - 1, ship.predictMoveCoordinate.y)}
+                  onClick={() =>
+                    onPredictMove(shipSprite.predictMoveCoordinate.x - 1, shipSprite.predictMoveCoordinate.y)
+                  }
                 />
                 <input
-                  onChange={(e) => onPredictMove(Number(e.target.value), ship.predictMoveCoordinate.y)}
+                  onChange={(e) => onPredictMove(Number(e.target.value), shipSprite.predictMoveCoordinate.y)}
                   className="w-full bg-transparent outline-none"
                   placeholder="X coordinate"
                   value={predictMove.x}
                 />
-                <FaPlus onClick={() => onPredictMove(ship.predictMoveCoordinate.x + 1, ship.predictMoveCoordinate.y)} />
+                <FaPlus
+                  onClick={() =>
+                    onPredictMove(shipSprite.predictMoveCoordinate.x + 1, shipSprite.predictMoveCoordinate.y)
+                  }
+                />
               </div>
               <div className="w-full flex items-center space-x-2 p-2 bg-[#4A5056] rounded-md text-center">
                 <FaMinus
-                  onClick={() => onPredictMove(ship.predictMoveCoordinate.x, ship.predictMoveCoordinate.y - 1)}
+                  onClick={() =>
+                    onPredictMove(shipSprite.predictMoveCoordinate.x, shipSprite.predictMoveCoordinate.y - 1)
+                  }
                 />
                 <input
-                  onChange={(e) => onPredictMove(ship.predictMoveCoordinate.x, Number(e.target.value))}
+                  onChange={(e) => onPredictMove(shipSprite.predictMoveCoordinate.x, Number(e.target.value))}
                   className="w-full bg-transparent outline-none"
                   placeholder="Y coordinate"
                   value={predictMove.y}
                 />
-                <FaPlus onClick={() => onPredictMove(ship.predictMoveCoordinate.x, ship.predictMoveCoordinate.y + 1)} />
+                <FaPlus
+                  onClick={() =>
+                    onPredictMove(shipSprite.predictMoveCoordinate.x, shipSprite.predictMoveCoordinate.y + 1)
+                  }
+                />
               </div>
             </div>
           </section>
@@ -150,7 +179,8 @@ export const TeleportModal = ({ id, open = false, position = { x: 0, y: 0 } }) =
                   <img src="./assets/svg/item-energy-icon.svg" alt="item-energy-icon" />
                 </span>
                 <span>
-                  <span className="text-green-500">100</span> / 200
+                  <span className="text-green-500">{Math.floor(calculatemoveEnergyCost || 0)}</span> /{' '}
+                  {ship?.energy?.cap || ''}
                 </span>
               </div>
               <div className="flex items-center w-full p-2 bg-[#222529] rounded-md text-center">
