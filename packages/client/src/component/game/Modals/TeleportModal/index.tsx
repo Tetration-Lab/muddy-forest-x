@@ -45,7 +45,6 @@ export const TeleportModal = ({ id, open = false, position = { x: 0, y: 0 } }) =
 
   const onPredictMove = (x: number, y: number) => {
     shipSprite.predictMove(x, y)
-    setPredictMove({ x: shipSprite.predictMoveCoordinate.x, y: shipSprite.predictMoveCoordinate.y })
     shipSprite.drawPredictLine()
   }
 

@@ -13,7 +13,14 @@ import { Hasher } from 'circuits'
 import { initConfigAnim } from '../anim'
 import { CursorExplorer } from '../gameobject/CursorExplorer'
 import { Planet } from '../gameobject/Planet'
-import { addPlanet, addSpaceship, gameStore, openPlanetModal, openTeleportModal } from '../../../store/game'
+import {
+  addPlanet,
+  addSpaceship,
+  closeTeleportModal,
+  gameStore,
+  openPlanetModal,
+  openTeleportModal,
+} from '../../../store/game'
 import { createSpawnCapitalSystem } from '../../../system/createSpawnCapitalSystem'
 import { NetworkLayer } from '../../network/types'
 import { IMAGE, SPRITE, SPRITE_PLANET } from '../constant/resource'
@@ -289,6 +296,8 @@ class GameScene extends Phaser.Scene {
           } finally {
             this.gameUIState = GAME_UI_STATE.NONE
             this.targetHQMoverShip = null
+            const id = formatEntityID(entityID)
+            closeTeleportModal(id)
           }
         }
         this.gameUIState = GAME_UI_STATE.NONE
