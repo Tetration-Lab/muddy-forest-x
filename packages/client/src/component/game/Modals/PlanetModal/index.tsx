@@ -127,7 +127,7 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
               <Collapse in={isResourceExpanded.value} unmountOnExit>
                 <Grid container spacing={1}>
                   {[...planet.resources.entries()].map((r) => (
-                    <Grid item xs={12} flex={1}>
+                    <Grid item xs={12} flex={1} key={r[0]}>
                       <MaterialEntry id={r[0]} resource={r[1]} />
                     </Grid>
                   ))}
