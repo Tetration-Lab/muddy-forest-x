@@ -8,7 +8,7 @@ import { GAME_HEIGHT, GAME_WIDTH } from '../config/game'
 import { GAME_SCENE } from '../constant/scene'
 import { Tile } from '../utils/Tile'
 import { appStore } from '../../../store/app'
-import { snapPosToGrid, snapToGrid } from '../../../utils/snapToGrid'
+import { snapPosToGrid, snapToGrid, snapValToGrid } from '../../../utils/snapToGrid'
 import { Hasher } from 'circuits'
 import { initConfigAnim } from '../anim'
 import { CursorExplorer } from '../gameobject/CursorExplorer'
@@ -67,6 +67,7 @@ class GameScene extends Phaser.Scene {
   cursorExplorer!: CursorExplorer
   cursorMove!: Phaser.GameObjects.Image
   gameUIState: GAME_UI_STATE = GAME_UI_STATE.NONE
+  targetHQMoverShip: HQShip | null = null
 
   constructor() {
     super(GAME_SCENE)
@@ -142,6 +143,14 @@ class GameScene extends Phaser.Scene {
           ship.registerOnClick((pointer: Phaser.Input.Pointer) => {
             setTimeout(() => {
               this.gameUIState = GAME_UI_STATE.SELECTED_HQ_SHIP
+              this.targetHQMoverShip = ship
+              // center of the screen position
+              const pos = new Phaser.Math.Vector2(
+                window.innerWidth / 2 + (document.getElementById('teleport-modal')?.clientWidth || 300),
+                window.innerHeight / 2,
+              )
+              console.log('x', window.innerWidth / 2 + (document.getElementById('teleport-modal')?.clientWidth || 200))
+              openTeleportModal(id, pos)
             }, 100)
             // const position = this.input.activePointer.position
             // const pos = new Phaser.Math.Vector2(position.x, position.y)
@@ -246,6 +255,15 @@ class GameScene extends Phaser.Scene {
 
     this.input.on('pointerup', async (p) => {
       if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
+        if (this.input.activePointer.rightButtonReleased()) {
+          if (this.targetHQMoverShip) {
+            this.targetHQMoverShip.resetPredictMovePosition()
+          }
+          this.gameUIState = GAME_UI_STATE.NONE
+        }
+        if (!this.input.activePointer.leftButtonReleased()) {
+          return
+        }
         const position = snapToGrid(p.worldX, p.worldY, 16)
         const entityID = dataStore.getState().ownedSpaceships[0]
         const networkLayer = appStore.getState().networkLayer
@@ -269,9 +287,11 @@ class GameScene extends Phaser.Scene {
             ship.stopPlayTeleport()
           } finally {
             this.gameUIState = GAME_UI_STATE.NONE
+            this.targetHQMoverShip = null
           }
         }
         this.gameUIState = GAME_UI_STATE.NONE
+        this.targetHQMoverShip = null
       }
     })
 
@@ -312,23 +332,36 @@ class GameScene extends Phaser.Scene {
   }
 
   updateCursor() {
+    const camera = this.cameras.main
     const pointer = this.input.activePointer
-    const gridPos = snapToGrid(pointer.worldX, pointer.worldY, 16)
-    this.cursorMove.setPosition(gridPos.x, gridPos.y)
+    const gridX = snapValToGrid(pointer.worldX, TILE_SIZE)
+    const gridY = snapValToGrid(pointer.worldY, TILE_SIZE)
+    // gridPos  with zoom scale
+
+    this.cursorMove.setPosition(gridX, gridY)
+    if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
+      if (this.targetHQMoverShip) {
+        this.targetHQMoverShip.predictMove(
+          Math.floor(this.cursorMove.x / TILE_SIZE),
+          Math.floor(this.cursorMove.y / TILE_SIZE),
+        )
+        this.targetHQMoverShip.drawPredictLine()
+      }
+    }
   }
 
   update(time: number, delta: number): void {
     if (!this.ready) {
       return
     }
+    const pointer = this.input.activePointer
+    this.updateCursor()
 
     if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
       this.cursorMove.setVisible(true)
     } else {
       this.cursorMove.setVisible(false)
     }
-
-    this.updateCursor()
     this.chunkLoader.updateChunks(this.followPoint.x, this.followPoint.y)
     this.updateDebug()
 

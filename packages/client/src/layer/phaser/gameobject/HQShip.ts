@@ -69,7 +69,7 @@ export class HQShip extends Phaser.GameObjects.Sprite {
     this.graphics.clear()
     this.graphics.lineStyle(4, 0x00ff00, 1)
     this.graphics.lineBetween(this.x, this.y, this.predictCursor.x, this.predictCursor.y)
-    console.log(this.x, this.y, this.predictCursor.x, this.predictCursor.y)
+    // console.log(this.x, this.y, this.predictCursor.x, this.predictCursor.y)
   }
 
   resetPredictMovePosition() {

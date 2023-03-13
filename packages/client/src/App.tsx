@@ -66,6 +66,10 @@ function App() {
 
   useEffect(() => {
     onInitialSync()
+    // disable right click
+    document.addEventListener('contextmenu', (event) => {
+      event.preventDefault()
+    })
   }, [onInitialSync])
 
   if (!loaded) return <LoadingGame msg={loadingMsg.msg} percentage={loadingMsg.percentage} />

@@ -89,7 +89,7 @@ export const TeleportModal = ({ id, open = false, position = { x: 0, y: 0 } }) =
           y: position.y,
         }}
       >
-        <div className="absolute bg-[#1E1E1E] w-[300px] px-2 pb-4 pt-1 text-white">
+        <div id="teleport-modal" className="absolute bg-[#1E1E1E] w-[300px] px-2 pb-4 pt-1 text-white">
           <div className="flex justify-between p-1">
             <div className="flex space-x-2 items-center">
               <div className="w-8 h-8  p-2 bg-[#4A5056] rounded-md">

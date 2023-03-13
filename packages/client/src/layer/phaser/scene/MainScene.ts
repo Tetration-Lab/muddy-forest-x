@@ -41,9 +41,7 @@ class MainScene extends Phaser.Scene {
     this.registerScenes(gameScreen)
     this.registerResponsiveSubScenes(gameUIScreen)
     this.updateCamera()
-    if (debug) {
-      this.scene.bringToTop()
-    }
+    this.scene.bringToTop()
   }
 
   registerResponsiveSubScenes(...scene: Phaser.Scene[]) {
