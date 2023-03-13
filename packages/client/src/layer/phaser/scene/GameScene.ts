@@ -285,6 +285,7 @@ class GameScene extends Phaser.Scene {
             const pos = new Phaser.Math.Vector2(position.x, position.y)
           } catch (err) {
             ship.stopPlayTeleport()
+            ship.resetPredictMovePosition()
           } finally {
             this.gameUIState = GAME_UI_STATE.NONE
             this.targetHQMoverShip = null
