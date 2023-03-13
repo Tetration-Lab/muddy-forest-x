@@ -1,8 +1,17 @@
 import { formatEntityID } from '@latticexyz/network'
 import { solidityKeccak256 } from 'ethers/lib/utils'
 import { setNestedObjectValues } from 'formik'
+import _ from 'lodash'
 
 export const ENERGY_ID = '0xa7517d8398dfc2d794fbfb432372ce447c16514ec7de96d333a137d677415f43'
+
+export const ADVANCED_ID = '0x9f56a1af35c8caed4f9734f6062d93735763f6799f9a273891339650060de838'
+export const ADVANCED_CNT = 2
+export const ALL_ADVANCED_RESOURCE_ID = _.range(1, ADVANCED_CNT + 1).map((e) => {
+  const id = (BigInt(ADVANCED_ID) + BigInt(e)).toString(16)
+  return formatEntityID(`0x${id}`)
+})
+
 export const BASE_ENERGY_CAP = 5000
 export const BASE_ENERGY_REGEN = 80
 export const ADVANCED_CAP = 500
@@ -39,4 +48,8 @@ export const attackEnergyCost = (distance: number) => {
 
 export const getLevelResourceStorageMultiplier = (level: number) => {
   return level * 10 + 100
+}
+
+export const isContainResource = (location: string, resourceId: string) => {
+  return Number((BigInt(location) ^ BigInt(resourceId)) % BigInt(5)) > 3
 }

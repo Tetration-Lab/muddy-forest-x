@@ -1,5 +1,5 @@
 import { useTheme } from '@mui/material/styles'
-import { Box } from '@mui/system'
+import { Box, SxProps } from '@mui/system'
 import { ItemVisibility } from '../GameActionBox/types'
 
 export const GameItem = ({
@@ -10,6 +10,7 @@ export const GameItem = ({
   withBadge = false,
   withBlueprintBg = false,
   small = false,
+  sx,
 }: {
   imageUrl: string
   active?: boolean
@@ -18,6 +19,7 @@ export const GameItem = ({
   withBadge?: boolean
   withBlueprintBg?: boolean
   small?: boolean
+  sx?: SxProps
 }) => {
   const theme = useTheme()
 
@@ -54,6 +56,7 @@ export const GameItem = ({
             borderRadius: small ? '4px' : '10px',
           },
         }),
+        ...sx,
       }}
     >
       <Box component="img" src={imageUrl} alt={imageUrl} sx={{ width: 32, height: 32 }} />

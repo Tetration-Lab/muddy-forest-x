@@ -5,10 +5,12 @@ export const MainButton = (props: ButtonProps) => {
     <Button
       color="secondary"
       variant="contained"
+      disableElevation
       {...props}
       sx={{
         boxShadow: 0,
         maxWidth: 400,
+        textTransform: 'none',
         ...props.sx,
       }}
     />

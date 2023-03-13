@@ -42,7 +42,7 @@ export const useSpaceship = (id: string) => {
         rpb: Number(energy?.rpb),
         lrt: energy?.lrt ?? 0,
       },
-      resources: [],
+      resources: new Map(),
       owner,
       level,
       cooldown: Number(cooldown ?? 0),
