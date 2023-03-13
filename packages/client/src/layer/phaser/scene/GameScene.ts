@@ -147,6 +147,7 @@ class GameScene extends Phaser.Scene {
           this.followPoint.y = +pos.y
           this.navigation.setPosition(this.followPoint.x, this.followPoint.y)
           ship.predictCursor.setVisible(true)
+          ship.setPlayerIndicatorVisible(true)
           ship.registerOnClick((pointer: Phaser.Input.Pointer) => {
             setTimeout(() => {
               this.gameUIState = GAME_UI_STATE.SELECTED_HQ_SHIP

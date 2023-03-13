@@ -1,30 +1,42 @@
 import { TILE_SIZE } from '../config/chunk'
 import { IMAGE, SPRITE } from '../constant/resource'
 
-export class HQShip extends Phaser.GameObjects.Sprite {
+export class HQShip extends Phaser.GameObjects.Container {
   entityID: string
   owner: string
   teleportEffect!: Phaser.GameObjects.Sprite
   predictCursor!: Phaser.GameObjects.Image
+  shipImg!: Phaser.GameObjects.Image
   graphics!: Phaser.GameObjects.Graphics
+  playerIndicator!: Phaser.GameObjects.Image
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string, entityID: string, owner: string) {
-    super(scene, x, y, texture)
+    super(scene, x, y)
+    this.scene.add.existing(this)
+    this.shipImg = this.scene.add.image(0, 0, texture).setDepth(this.depth + 1)
+    this.shipImg.setInteractive()
+    this.add(this.shipImg)
     this.predictCursor = this.scene.add
       .image(this.x, this.y, texture)
       .setDepth(1000)
       .setAlpha(0.5)
       .setDepth(this.depth + 1)
     this.predictCursor.setVisible(false)
-    this.scene.add.existing(this)
-    this.setInteractive()
     this.entityID = entityID
     this.owner = owner
     this.teleportEffect = this.scene.add.sprite(0, 0, SPRITE.TELEPORT).setDepth(1000)
+    this.playerIndicator = this.scene.add.image(0, 0 + -48, IMAGE.PLAYER_INDICATOR).setDepth(1000)
+    this.playerIndicator.setDisplaySize(32, 32)
+    this.add(this.playerIndicator)
     this.graphics = this.scene.add.graphics()
+    this.playerIndicator.setVisible(false)
+  }
+
+  setPlayerIndicatorVisible(visible: boolean) {
+    this.playerIndicator.setVisible(visible)
   }
 
   registerOnClick(callback: (pointer?: Phaser.Input.Pointer) => void): this {
-    this.on('pointerup', callback)
+    this.shipImg.on('pointerup', callback)
     return this
   }
 
@@ -33,7 +45,7 @@ export class HQShip extends Phaser.GameObjects.Sprite {
   }
 
   onDestory() {
-    this.off('pointerup')
+    this.shipImg.off('pointerup')
     this.predictCursor.destroy()
     this.destroy()
   }
