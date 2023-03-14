@@ -40,8 +40,6 @@ export const AttackModal = ({
   const targetEnergy = useResourceRegen(target?.entity?.energy)
   const targetOwner = usePlayer(target?.entity?.owner ?? '0x0')
 
-  console.log(target)
-
   const { attackerName, attackerSprite, targetName, targetSprite, attackerPosition, targetPosition } = useMemo(() => {
     let attackerName: string
     let attackerSprite: any

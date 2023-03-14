@@ -56,17 +56,15 @@ contract AttackSystem is System {
 
       // Already Init
       // Deduct energy from attack
-      Resource.deductEnergyCap(
+      ResourceComponent.Resource memory energy = Resource.deductEnergyCap(
         components,
         args.targetEntity,
         Stat.calculateFinalEnergyReceived(components, args.entity, args.targetEntity, args.energy - energyCost)
       );
-    }
 
-    {
       uint32 targetTy = Type.getType(components, args.targetEntity);
+
       // If target energy = 0;
-      ResourceComponent.Resource memory energy = Resource.getResource(components, args.targetEntity, BASE_ENERGY);
       if (energy.value == 0) {
         if (targetTy == uint32(EType.SPACESHIP)) {
           // If spaceship = destroy

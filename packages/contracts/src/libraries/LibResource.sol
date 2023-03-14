@@ -12,8 +12,8 @@ library Resource {
     uint256 entity,
     uint256 resourceId
   ) public returns (ResourceComponent.Resource memory) {
-    uint256 id = getResourceEntity(entity, BASE_ENERGY);
-    ResourceComponent(getAddressById(components, RID)).getValue(entity);
+    uint256 id = getResourceEntity(entity, resourceId);
+    ResourceComponent(getAddressById(components, RID)).getValue(id);
   }
 
   function isInBaseResource(uint256 resourceId) public returns (bool) {
@@ -50,7 +50,11 @@ library Resource {
     r.set(id, resource);
   }
 
-  function deductEnergyCap(IUint256Component components, uint256 entity, uint64 energy) public {
+  function deductEnergyCap(
+    IUint256Component components,
+    uint256 entity,
+    uint64 energy
+  ) public returns (ResourceComponent.Resource memory) {
     ResourceComponent r = ResourceComponent(getAddressById(components, RID));
     uint256 id = getResourceEntity(entity, BASE_ENERGY);
     r.regen(id);
@@ -61,6 +65,7 @@ library Resource {
       resource.value -= energy;
     }
     r.set(id, resource);
+    return resource;
   }
 
   function increaseEnergy(IUint256Component components, uint256 entity, uint64 energy) public {

@@ -24,7 +24,7 @@ export const HashTwo = async (chunk: Pos[]) => {
   for (const c of chunk) {
     const val = hash.hash_two_i(BigInt(c.x), BigInt(c.y))
     res.push({
-      val: val.toString(),
+      val: val.toLowerCase(),
       x: c.x,
       y: c.y,
     })
