@@ -85,11 +85,12 @@ function App() {
             vertical: 'top',
           }}
           autoHideDuration={2000}
-          style={{ fontFamily: 'Fira Mono' }}
-        />
-        <BrowserRouter>
-          <AppRoutes />
-        </BrowserRouter>
+          style={{ fontFamily: 'Fira Mono', borderRadius: '100px' }}
+        >
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
+        </SnackbarProvider>
       </ThemeProvider>
     </>
   )
