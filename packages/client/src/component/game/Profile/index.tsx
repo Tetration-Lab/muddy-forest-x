@@ -1,7 +1,6 @@
 import { formatEntityID } from '@latticexyz/network'
 import { Box, Typography, useTheme } from '@mui/material'
 import { Stack } from '@mui/system'
-import { useEffect } from 'react'
 import { useStore } from 'zustand'
 import { FACTION } from '../../../const/faction'
 import { usePlayer } from '../../../hook/usePlayer'
@@ -31,7 +30,7 @@ export const Profile = () => {
       <Box sx={{ color: theme.palette.grayScale.white }}>
         <Stack direction="row" spacing={1}>
           <Box
-            onClick={() => focusLocation(shipSprite.getCenter())}
+            onClick={() => focusLocation(shipSprite?.shipImg?.getCenter())}
             sx={{
               width: 84,
               height: 84,
@@ -46,7 +45,7 @@ export const Profile = () => {
           >
             <Box
               component="img"
-              src={shipSprite?.texture?.manager?.getBase64(shipSprite?.texture?.key)}
+              src={shipSprite?.shipImg?.texture?.manager?.getBase64(shipSprite?.shipImg?.texture?.key)}
               sx={{ height: 40 }}
             />
           </Box>
