@@ -140,9 +140,10 @@ export const TeleportModal = ({ id, open = false, position = { x: 0, y: 0 } }) =
           <section>
             <div className="flex justify-between p-2 bg-[#222529]">
               <div>Enter teleport position</div>
-              <div className="w-8 h-8 bg-[#4A5056] rounded-md flex items-center justify-center">
+              {/* TODO: save position */}
+              {/* <div className="w-8 h-8 bg-[#4A5056] rounded-md flex items-center justify-center">
                 <img src="./assets/svg/save-icon.svg" alt="" />
-              </div>
+              </div> */}
             </div>
             <div className="flex p-2 space-x-2">
               <div className="w-full flex items-center space-x-2 p-2 bg-[#4A5056] rounded-md text-center">

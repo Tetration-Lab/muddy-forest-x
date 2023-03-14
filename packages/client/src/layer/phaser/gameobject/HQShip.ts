@@ -84,10 +84,7 @@ export class HQShip extends Phaser.GameObjects.Container {
   }
 
   getPosition() {
-    return {
-      x: this.x,
-      y: this.y,
-    }
+    return new Phaser.Math.Vector2(this.x, this.y)
   }
 
   drawPredictLine() {

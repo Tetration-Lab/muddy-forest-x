@@ -1,3 +1,4 @@
+import { formatEntityID } from '@latticexyz/network'
 import { defineSystem, EntityIndex, getComponentValue, Has, HasValue } from '@latticexyz/recs'
 import { EntityType } from '../const/types'
 import { NetworkLayer } from '../layer/network/types'
@@ -8,7 +9,7 @@ export type Callback = (x: number, y: number, entityIndex: EntityIndex, entityID
 export function createSpawnHQShipSystem(network: NetworkLayer, callback: Callback) {
   const {
     world,
-    components: { Type, Position, Owner, Faction },
+    components: { Type, Position, Owner, Faction, Name },
   } = network
 
   const query = [HasValue(Type, { value: EntityType.HQSHIP }), Has(Position), Has(Owner)]
@@ -19,10 +20,14 @@ export function createSpawnHQShipSystem(network: NetworkLayer, callback: Callbac
     const entity = update.entity
     const position = getComponentValue(Position, entity)
     const owner = getComponentValue(Owner, entity)
-    const faction = getComponentValue(Faction, entity)
-    const entityID = network.world.entities[entity] as string
+    const entityID = network.world.entities[entity]
+    const eid = formatEntityID(entityID)
+    const ownerId = formatEntityID(owner.value)
+    const ownerIndex = world.registerEntity({ id: ownerId })
+    const name = getComponentValue(Name, ownerIndex)?.value
+    const faction = getComponentValue(Faction, ownerIndex)?.value
     console.log('createSpawnHQShipSystem:position', hexToInt(position.x), hexToInt(position.y), 'eid', entity)
-    console.log('createSpawnHQShipSystem:faction', faction)
+    console.log('createSpawnHQShipSystem:faction', faction, name)
     callback(hexToInt(position.x) * TILE_SIZE, hexToInt(position.y) * TILE_SIZE, entity, entityID, owner.value)
   })
   console.log('createSpawnHQShipSystem:end')

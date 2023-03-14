@@ -325,7 +325,7 @@ class GameScene extends Phaser.Scene {
     })
 
     this.navigation.setDepth(10)
-    this.cameras.main.startFollow(this.navigation, false, 0.1, 0.1)
+    this.cameras.main.startFollow(this.navigation, false, 0.3, 0.3)
     this.ready = true
   }
   create() {
@@ -409,7 +409,7 @@ class GameScene extends Phaser.Scene {
       this.followPoint.x += this.cameraSpeed / cam.zoom
     }
     if (this.keyF.isDown) {
-      this.cameras.main.startFollow(this.navigation, false, 0.1, 0.1)
+      this.cameras.main.startFollow(this.navigation, false, 0.3, 0.3)
     }
     if (this.keyG.isDown) {
       this.cameras.main.startFollow(this.cursorExplorer)
