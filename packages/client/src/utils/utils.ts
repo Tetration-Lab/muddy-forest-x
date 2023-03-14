@@ -9,3 +9,8 @@ export function hexToInt(hex: string) {
   }
   return parseInt(hex, 16)
 }
+
+export const parseEtherError = (err: string) => {
+  const pattern = /reason="execution reverted: (.*?)"/
+  return err.toString().match(pattern)[1]
+}

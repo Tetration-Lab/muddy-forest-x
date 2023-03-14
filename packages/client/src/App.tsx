@@ -10,6 +10,7 @@ import { appStore } from './store/app'
 import { workerStore } from './store/worker'
 import { theme } from './themes/theme'
 import { config } from './config'
+import { SnackbarProvider } from 'notistack'
 
 interface LoadingGameProps {
   msg?: string
@@ -77,6 +78,15 @@ function App() {
   return (
     <>
       <ThemeProvider theme={theme}>
+        <SnackbarProvider
+          maxSnack={2}
+          anchorOrigin={{
+            horizontal: 'center',
+            vertical: 'top',
+          }}
+          autoHideDuration={2000}
+          style={{ fontFamily: 'Fira Mono' }}
+        />
         <BrowserRouter>
           <AppRoutes />
         </BrowserRouter>

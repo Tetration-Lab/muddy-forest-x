@@ -8,6 +8,8 @@ import { setupComponents } from './components'
 import { ethers, utils, Wallet } from 'ethers'
 import { faucetUrl, initialGasPrice } from '../../config'
 import { FACTION } from '../../const/faction'
+import { enqueueSnackbar } from 'notistack'
+import { parseEtherError } from '../../utils/utils'
 
 export async function createNetworkLayer(config: SetupContractConfig) {
   console.log(config, 'config')
@@ -66,13 +68,18 @@ export async function createNetworkLayer(config: SetupContractConfig) {
   }
 
   const move = async (entity: string, x: number, y: number) => {
-    return await systems['system.Move'].executeTyped({
-      entity: entity,
-      position: {
-        x,
-        y,
-      },
-    })
+    try {
+      return await systems['system.Move'].executeTyped({
+        entity: entity,
+        position: {
+          x,
+          y,
+        },
+      })
+    } catch (err) {
+      enqueueSnackbar(parseEtherError(err), { variant: 'error' })
+      throw err
+    }
   }
 
   const spawn = async (factionId: number, name: string) => {
