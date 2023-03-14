@@ -44,27 +44,30 @@ export const TeleportModal = ({ id, open = false, position = { x: 0, y: 0 } }) =
       shipSprite.predictMoveCoordinate.y,
     )
     return moveEnergyCost(distance)
-  }, [])
+  }, [predictMove])
+
+  const calculateDistance = useMemo(() => {
+    if (!shipSprite) {
+      return 0
+    }
+    const distance = Phaser.Math.Distance.Between(
+      shipSprite.coordinate.x,
+      shipSprite.coordinate.y,
+      shipSprite.predictMoveCoordinate.x,
+      shipSprite.predictMoveCoordinate.y,
+    )
+    return distance
+  }, [predictMove])
 
   const onPredictMove = (x: number, y: number) => {
     console.log('onPredictMove', x, y)
-    // shipSprite.predictMove(x, y)
-    // shipSprite.drawPredictLine()
-    // const id = formatEntityID(shipSprite.entityID)
-    // addSpaceship(id, shipSprite)
-    // setPredictMove({ x, y })
+    shipSprite.predictMove(x, y)
+    shipSprite.drawPredictLine()
+    setPredictMove({
+      x: shipSprite.predictMoveCoordinate.x,
+      y: shipSprite.predictMoveCoordinate.y,
+    })
   }
-
-  useEffect(() => {
-    if (!shipSprite) {
-      return
-    }
-    console.log('call')
-    // setPredictMove({
-    //   x: shipSprite.predictMoveCoordinate.x,
-    //   y: shipSprite.predictMoveCoordinate.y,
-    // })
-  }, [])
 
   const onTeleport = async (id: string) => {
     if (!networkLayer) {
@@ -196,7 +199,7 @@ export const TeleportModal = ({ id, open = false, position = { x: 0, y: 0 } }) =
                 <span>
                   <img src="./assets/svg/item-distance-icon.svg" alt="item-energy-icon" />
                 </span>
-                <span>xxx m</span>
+                <span>{calculateDistance.toFixed(2)} m</span>
               </div>
             </div>
           </section>
