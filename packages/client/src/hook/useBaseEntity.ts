@@ -42,6 +42,18 @@ export const useBaseEntity = (id: string) => {
   }, [id])
 
   const [entity, setEntity] = useState<BaseEntity>()
+  const [uninitilizedResources, setUninitializedResources] = useState<string[]>([])
+
+  useEffect(() => {
+    setUninitializedResources(
+      resourceIndexes
+        .map((e, i) => {
+          return [getComponentValue(components.Resource, e[1]) === undefined, i] as const
+        })
+        .filter((e) => e[0])
+        .map((e) => ALL_ADVANCED_RESOURCE_ID[e[1]]),
+    )
+  }, [resourceIndexes])
 
   useEffect(() => {
     const name = getComponentValue(components.Name, ind)?.value
@@ -163,5 +175,5 @@ export const useBaseEntity = (id: string) => {
     }
   }, [ind, energyIndex])
 
-  return { entity, containedResources }
+  return { entity, containedResources, eid, ind, uninitilizedResources }
 }

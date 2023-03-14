@@ -16,7 +16,7 @@ export const Profile = () => {
 
   const { network } = useStore(appStore, (state) => state.networkLayer)
   const shipId = useStore(dataStore, (state) => state.ownedSpaceships[0])
-  const ship = useSpaceship(shipId ?? '0x0')
+  const { ship } = useSpaceship(shipId ?? '0x0')
   const player = usePlayer(formatEntityID(network.connectedAddress.get()))
   const { shipSprite, focusLocation } = useStore(gameStore, (state) => ({
     shipSprite: state.spaceships.get(shipId),

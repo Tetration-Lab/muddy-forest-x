@@ -1,7 +1,5 @@
-import { formatEntityID } from '@latticexyz/network'
 import { getComponentValue } from '@latticexyz/recs'
 import { Box, Slider, Stack, Typography, useTheme } from '@mui/material'
-import { at } from 'lodash'
 import { useMemo, useState } from 'react'
 import Draggable from 'react-draggable'
 import { useStore } from 'zustand'
@@ -12,15 +10,13 @@ import { useBaseEntity } from '../../../../hook/useBaseEntity'
 import { usePlayer } from '../../../../hook/usePlayer'
 import { TILE_SIZE } from '../../../../layer/phaser/config/chunk'
 import { appStore } from '../../../../store/app'
-import { closeAttackModal, closePlanetModal, gameStore } from '../../../../store/game'
+import { closeAttackModal, gameStore } from '../../../../store/game'
 import { generatePlanetName } from '../../../../utils/random'
-import { snapValToGrid } from '../../../../utils/snapToGrid'
 import { MainButton } from '../../../common/MainButton'
 import { CloseModalButton } from '../../common/CloseModalButton'
 import { GameItem } from '../../common/GameItem'
 import { GameItemEntry } from '../PlanetModal/GameItemEntry'
 import { EnergyInfoTab, InfoTab } from '../PlanetModal/InfoTab'
-import { MaterialEntry } from '../PlanetModal/MaterialEntry'
 
 export const AttackModal = ({
   id,
@@ -32,7 +28,7 @@ export const AttackModal = ({
   position: Phaser.Math.Vector2
 }) => {
   const theme = useTheme()
-  const { world, network, components } = useStore(appStore, (state) => state.networkLayer)
+  const { components } = useStore(appStore, (state) => state.networkLayer)
   const focusLocation = useStore(gameStore, (state) => state.focusLocation)
 
   const attacker = useBaseEntity(id)

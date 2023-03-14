@@ -18,7 +18,7 @@ import { maxBuildingPerLevel } from '../../../../const/planet'
 import { MainButton } from '../../../common/MainButton'
 import { MaterialEntry } from './MaterialEntry'
 import { useBoolean } from 'usehooks-ts'
-import { FaAngleDown, FaAngleUp } from 'react-icons/fa'
+import { FaAngleDown } from 'react-icons/fa'
 
 export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Math.Vector2 }) => {
   const theme = useTheme()
@@ -140,10 +140,12 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
               sx={{ p: 1, backgroundColor: theme.palette.grayScale.black, borderRadius: '4px' }}
               spacing={0.5}
             ></Stack>
-            <Stack direction="row" spacing={1} justifyContent="center">
-              <MainButton>Attack</MainButton>
-              <MainButton>Build</MainButton>
-            </Stack>
+            {isOwner && (
+              <Stack direction="row" spacing={1} justifyContent="center">
+                <MainButton>Attack</MainButton>
+                <MainButton>Build</MainButton>
+              </Stack>
+            )}
           </Stack>
         </Stack>
       </Box>
