@@ -260,7 +260,7 @@ class GameScene extends Phaser.Scene {
         }
         if (this.targetHQMoverShip) {
           this.targetHQMoverShip.resetPredictMovePosition()
-          this.targetHQMoverShip.drawLine(COLOR_RED, p.worldX, p.worldY)
+          this.targetHQMoverShip.drawLine(COLOR_RED, this.targetAttack.x, this.targetAttack.y)
         }
         this.clearGameUIState()
         return
