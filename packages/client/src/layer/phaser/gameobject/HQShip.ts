@@ -80,6 +80,13 @@ export class HQShip extends Phaser.GameObjects.Container {
     })
   }
 
+  getPosition() {
+    return {
+      x: this.x,
+      y: this.y,
+    }
+  }
+
   drawPredictLine() {
     console.log('draw line')
     this.graphics.clear()

@@ -30,7 +30,7 @@ export const Profile = () => {
       <Box sx={{ color: theme.palette.grayScale.white }}>
         <Stack direction="row" spacing={1}>
           <Box
-            onClick={() => focusLocation(shipSprite?.shipImg?.getCenter())}
+            onClick={() => focusLocation(shipSprite?.getPosition())}
             sx={{
               width: 84,
               height: 84,
