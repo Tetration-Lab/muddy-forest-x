@@ -20,6 +20,7 @@ export class HQShip extends Phaser.GameObjects.Container {
       .setDepth(1000)
       .setAlpha(0.5)
       .setDepth(this.depth + 1)
+    this.predictCursor.setInteractive()
     this.predictCursor.setVisible(false)
     this.entityID = entityID
     this.owner = owner
@@ -35,13 +36,17 @@ export class HQShip extends Phaser.GameObjects.Container {
     this.playerIndicator.setVisible(visible)
   }
 
+  registerOnClickPredictCursor(callback: (pointer?: Phaser.Input.Pointer) => void): this {
+    this.predictCursor.on('pointerup', callback)
+    return this
+  }
+
   registerOnClick(callback: (pointer?: Phaser.Input.Pointer) => void): this {
     this.shipImg.on('pointerup', callback)
     return this
   }
 
   predictMove(x: number, y: number) {
-    console.log('predict move')
     this.predictCursor.setPosition(x * TILE_SIZE, y * TILE_SIZE)
   }
 
@@ -66,7 +71,6 @@ export class HQShip extends Phaser.GameObjects.Container {
     this.teleportEffect.setPosition(this.x, this.y)
     this.teleportEffect.setVisible(true)
     this.teleportEffect.play(SPRITE.TELEPORT).once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-      console.log('done')
       this.teleportEffect.setVisible(false)
       this.setPosition(x, y)
       this.graphics.clear()
@@ -74,7 +78,6 @@ export class HQShip extends Phaser.GameObjects.Container {
       this.teleportEffect.setPosition(this.x, this.y)
       this.teleportEffect.setVisible(true)
       this.teleportEffect.play(SPRITE.TELEPORT).once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-        console.log('done2')
         this.teleportEffect.setVisible(false)
       })
     })
@@ -88,14 +91,12 @@ export class HQShip extends Phaser.GameObjects.Container {
   }
 
   drawPredictLine() {
-    console.log('draw line')
     this.graphics.clear()
     this.graphics.lineStyle(4, 0x00ff00, 1)
     this.graphics.lineBetween(this.x, this.y, this.predictCursor.x, this.predictCursor.y)
   }
 
   resetPredictMovePosition() {
-    console.log('call reset')
     this.graphics.clear()
     this.predictCursor.setPosition(this.x, this.y)
   }

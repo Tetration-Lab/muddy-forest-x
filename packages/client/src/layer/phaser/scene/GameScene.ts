@@ -154,6 +154,17 @@ class GameScene extends Phaser.Scene {
               this.targetHQMoverShip = ship
             }, 100)
           })
+          ship.registerOnClickPredictCursor((pointer: Phaser.Input.Pointer) => {
+            setTimeout(() => {
+              console.log('hi')
+              if (this.gameUIState !== GAME_UI_STATE.NONE) {
+                return
+              }
+              console.log('hi2')
+              this.gameUIState = GAME_UI_STATE.SELECTED_HQ_SHIP
+              this.targetHQMoverShip = ship
+            }, 100)
+          })
           ship.setDepth(1000)
           dataStore.setState((state) => {
             state.ownedSpaceships.push(id)
@@ -279,22 +290,10 @@ class GameScene extends Phaser.Scene {
           // center of the screen position
           const pos = new Phaser.Math.Vector2(window.innerWidth / 2, window.innerHeight / 2)
           openTeleportModal(id, pos)
-          // try {
-          //   ship.playTeleport()
-          //   await networkLayer.api.move(entityID, tileX, tileY)
-          //   const position = this.input.activePointer.position
-          //   const pos = new Phaser.Math.Vector2(position.x, position.y)
-          // } catch (err) {
-          //   ship.stopPlayTeleport()
-          //   ship.resetPredictMovePosition()
-          // } finally {
-          //   this.gameUIState = GAME_UI_STATE.NONE
-          //   this.targetHQMoverShip = null
-          //   const id = formatEntityID(entityID)
-          //   closeTeleportModal(id)
-          // }
-          this.gameUIState = GAME_UI_STATE.NONE
-          this.targetHQMoverShip = null
+          setTimeout(() => {
+            this.gameUIState = GAME_UI_STATE.NONE
+            this.targetHQMoverShip = null
+          }, 100)
         }
       }
     })
