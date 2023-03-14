@@ -82,6 +82,20 @@ export async function createNetworkLayer(config: SetupContractConfig) {
     }
   }
 
+  const attack = async (entity: string, targetEntity: string, energy: number, range: number) => {
+    try {
+      return await systems['system.Attack'].executeTyped({
+        entity: entity,
+        targetEntity,
+        energy,
+        range,
+      })
+    } catch (err) {
+      enqueueSnackbar(parseEtherError(err), { variant: 'error' })
+      throw err
+    }
+  }
+
   const spawn = async (factionId: number, name: string) => {
     await setupName(network.connectedAddress.get(), name)
     await systems['system.Spawn'].executeTyped({
@@ -116,6 +130,7 @@ export async function createNetworkLayer(config: SetupContractConfig) {
       spawn,
       setupName,
       move,
+      attack,
     },
     singletonIndex,
     playerIndex,
