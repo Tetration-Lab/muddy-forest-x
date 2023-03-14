@@ -38,15 +38,15 @@ contract AttackSystem is System {
     );
 
     {
-      // Deduct energy cost of attacking
-      uint64 energyCost = Resource.attackEnergyCost(args.range);
-      Resource.deductEnergy(components, args.entity, energyCost);
+      // If planet = -> assert location
+      if (Type.getType(components, args.entity) == uint32(EType.PLANET)) Planet.assertPlanetLocation(args.entity);
     }
 
-    uint32 ty = Type.getType(components, args.entity);
-    if (ty == uint32(EType.PLANET)) {
-      // Planet
-      Planet.assertPlanetLocation(args.entity);
+    {
+      // Deduct energy cost of attacking
+      uint64 energyCost = Resource.attackEnergyCost(args.range);
+      require(args.energy >= energyCost, "Too little energy to attack");
+      Resource.deductEnergy(components, args.entity, args.energy);
 
       // Not init
       if (!TypeComponent(getAddressById(components, TID)).has(args.targetEntity)) {
@@ -56,34 +56,24 @@ contract AttackSystem is System {
 
       // Already Init
       // Deduct energy from attack
-      Resource.deductEnergy(components, args.entity, args.energy);
       Resource.deductEnergyCap(
         components,
         args.targetEntity,
-        Stat.calculateFinalEnergyReceived(components, args.entity, args.targetEntity, args.energy)
+        Stat.calculateFinalEnergyReceived(components, args.entity, args.targetEntity, args.energy - energyCost)
       );
-      {
-        // If target energy = 0; capture
-        ResourceComponent.Resource memory energy = Resource.getResource(components, args.targetEntity, BASE_ENERGY);
-        if (energy.value == 0) {
-          OwnerComponent(getAddressById(components, OID)).set(args.targetEntity, addressToEntity(msg.sender));
-        }
-      }
-    } else {
-      // Other entity
-      // Deduct energy from attack
-      Resource.deductEnergy(components, args.entity, args.energy);
-      Resource.deductEnergyCap(components, args.targetEntity, args.energy);
+    }
 
-      {
-        // If target energy = 0;
-        ResourceComponent.Resource memory energy = Resource.getResource(components, args.targetEntity, BASE_ENERGY);
-
-        if (energy.value == 0) {
+    {
+      uint32 targetTy = Type.getType(components, args.targetEntity);
+      // If target energy = 0;
+      ResourceComponent.Resource memory energy = Resource.getResource(components, args.targetEntity, BASE_ENERGY);
+      if (energy.value == 0) {
+        if (targetTy == uint32(EType.SPACESHIP)) {
           // If spaceship = destroy
-          if (ty == uint32(EType.SPACESHIP)) {
-            DestroyedComponent(getAddressById(components, DID)).set(args.targetEntity);
-          }
+          DestroyedComponent(getAddressById(components, DID)).set(args.targetEntity);
+        } else if (targetTy == uint32(EType.PLANET)) {
+          // If planet = capture
+          OwnerComponent(getAddressById(components, OID)).set(args.targetEntity, addressToEntity(msg.sender));
         }
       }
     }

@@ -1,5 +1,5 @@
 import { formatEntityID } from '@latticexyz/network'
-import { getComponentValue } from '@latticexyz/recs'
+import { getComponentEntities, getComponentValue, getEntityComponents } from '@latticexyz/recs'
 import { useEffect, useMemo, useState } from 'react'
 import { useStore } from 'zustand'
 import { planetLevel } from '../const/planet'
@@ -161,11 +161,11 @@ export const useBaseEntity = (id: string) => {
         }
       })
     })
-    const buildings = components.Building.update$.pipe(filter((update) => update.entity === ind)).subscribe((u) => {
+    const owner = components.Owner.update$.pipe(filter((update) => update.entity === ind)).subscribe((u) => {
       setEntity((e) => {
         return {
           ...e,
-          buildings: u.value[0].value,
+          owner: u.value[0].value,
         }
       })
     })
@@ -174,7 +174,7 @@ export const useBaseEntity = (id: string) => {
       energy.unsubscribe()
       attack.unsubscribe()
       defense.unsubscribe()
-      buildings.unsubscribe()
+      owner.unsubscribe()
     }
   }, [ind, energyIndex])
 

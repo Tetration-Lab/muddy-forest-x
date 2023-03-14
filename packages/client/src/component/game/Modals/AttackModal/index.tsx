@@ -1,6 +1,6 @@
 import { getComponentValue } from '@latticexyz/recs'
 import { Box, Slider, Stack, Typography, useTheme } from '@mui/material'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import Draggable from 'react-draggable'
 import { useStore } from 'zustand'
 import { FACTION } from '../../../../const/faction'
@@ -8,6 +8,7 @@ import { attackEnergyCost } from '../../../../const/resources'
 import { EntityType } from '../../../../const/types'
 import { useBaseEntity } from '../../../../hook/useBaseEntity'
 import { usePlayer } from '../../../../hook/usePlayer'
+import { useResourceRegen } from '../../../../hook/useResourceRegen'
 import { TILE_SIZE } from '../../../../layer/phaser/config/chunk'
 import { appStore } from '../../../../store/app'
 import { closeAttackModal, gameStore } from '../../../../store/game'
@@ -28,13 +29,18 @@ export const AttackModal = ({
   position: Phaser.Math.Vector2
 }) => {
   const theme = useTheme()
-  const { components } = useStore(appStore, (state) => state.networkLayer)
+  const { components, api } = useStore(appStore, (state) => state.networkLayer)
   const focusLocation = useStore(gameStore, (state) => state.focusLocation)
 
   const attacker = useBaseEntity(id)
-  const target = useBaseEntity(targetId)
+  const attackerEnergy = useResourceRegen(attacker?.entity?.energy)
   const attackerOwner = usePlayer(attacker?.entity?.owner ?? '0x0')
+
+  const target = useBaseEntity(targetId)
+  const targetEnergy = useResourceRegen(target?.entity?.energy)
   const targetOwner = usePlayer(target?.entity?.owner ?? '0x0')
+
+  console.log(target)
 
   const { attackerName, attackerSprite, targetName, targetSprite, attackerPosition, targetPosition } = useMemo(() => {
     let attackerName: string
@@ -59,7 +65,7 @@ export const AttackModal = ({
       targetSprite = gameStore.getState().spaceships.get(targetId)?.shipImg
       targetPosition = gameStore.getState().spaceships.get(id)?.getPosition()
     } else {
-      targetName = generatePlanetName(BigInt(id))
+      targetName = generatePlanetName(BigInt(targetId))
       targetSprite = gameStore.getState().planets.get(targetId)
       targetPosition = targetSprite?.getCenter()
     }
@@ -85,15 +91,26 @@ export const AttackModal = ({
     [attackerPosition, targetPosition],
   )
 
-  const [energyUsedPercent, setEnergyUsedPercent] = useState(0)
+  const [energyUsedPercent, setEnergyUsedPercent] = useState(50)
 
   const effectiveEnergy = useMemo(() => {
     const energy = Math.floor(
-      (((energyUsedPercent * attacker?.entity?.energy?.value) / 100) * attacker?.entity?.attack) /
-        target?.entity?.defense,
+      (((energyUsedPercent * attackerEnergy) / 100) * attacker?.entity?.attack) / target?.entity?.defense,
     )
     return Math.max(0, energy - attackEnergyCost(distance))
-  }, [distance, energyUsedPercent, attacker?.entity?.energy?.value, attacker?.entity?.attack, target?.entity?.defense])
+  }, [distance, energyUsedPercent, attackerEnergy, attacker?.entity?.attack, target?.entity?.defense])
+
+  const [isAttacking, setAttacking] = useState(false)
+  const attack = useCallback(async () => {
+    setAttacking(true)
+    try {
+      const tx = await api.attack(id, targetId, Math.floor((energyUsedPercent * attackerEnergy) / 100), distance)
+      await tx.wait()
+    } catch (err) {
+    } finally {
+      setAttacking(false)
+    }
+  }, [id, targetId, energyUsedPercent, attackerEnergy, distance])
 
   if (!attacker || !target) return <></>
 
@@ -112,11 +129,9 @@ export const AttackModal = ({
           backgroundImage: 'none',
           backgroundColor: theme.palette.grayScale.soBlack,
           width: 300,
-          p: 1,
           borderRadius: 2,
           px: 0,
-          pt: 0,
-          pb: 1,
+          py: 1,
         }}
       >
         <Stack
@@ -187,8 +202,15 @@ export const AttackModal = ({
                 <GameItem imageUrl="/assets/svg/item-energy-icon.svg" />
                 <Stack flex={1} justifyContent="center" alignItems="end">
                   <Typography sx={{ fontSize: 14 }}>
-                    {Math.floor((energyUsedPercent * attacker?.entity?.energy?.value) / 100)}/
-                    {attacker?.entity?.energy?.cap}
+                    {attackerEnergy}{' '}
+                    <span
+                      style={{
+                        color: theme.palette.error.main,
+                      }}
+                    >
+                      (-{Math.floor((energyUsedPercent * attackerEnergy) / 100)})
+                    </span>{' '}
+                    / {attacker?.entity?.energy?.cap}
                   </Typography>
                   <Stack direction="row" spacing={1} alignItems="center" width="100%">
                     <Typography sx={{ fontSize: 14, color: theme.palette.grayScale.almostGray }}>0%</Typography>
@@ -227,7 +249,7 @@ export const AttackModal = ({
                 <GameItem imageUrl="/assets/svg/item-minus-energy-icon.svg" />
                 <Stack flex={1} justifyContent="center" alignItems="end">
                   <Typography sx={{ fontSize: 14 }}>
-                    {target?.entity?.energy?.value}{' '}
+                    {targetEnergy}{' '}
                     <span
                       style={{
                         color: theme.palette.error.main,
@@ -240,7 +262,7 @@ export const AttackModal = ({
                 </Stack>
               </Stack>
               <Stack alignItems="center">
-                <MainButton color="error" sx={{ width: 'fit-content' }}>
+                <MainButton color="error" sx={{ width: 'fit-content' }} onClick={attack} disabled={isAttacking}>
                   Attack
                 </MainButton>
               </Stack>

@@ -25,9 +25,10 @@ library Planet {
     {
       uint32 level = PLANET_LEVEL(location);
       uint32 mult = Level.getEnergyLevelMultiplier(level);
+      uint256 energyId = getResourceEntity(location, BASE_ENERGY);
       LevelComponent(getAddressById(components, LID)).set(location, LevelComponent.Level(level, 0, 0));
       ResourceComponent(getAddressById(components, RID)).set(
-        location,
+        energyId,
         ResourceComponent.Resource(
           (BASE_ENERGY_CAP * mult) / 100,
           (BASE_ENERGY_CAP * mult) / 100,

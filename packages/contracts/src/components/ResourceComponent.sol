@@ -56,7 +56,7 @@ contract ResourceComponent is Component {
   function regen(uint256 entity) public virtual {
     if (has(entity)) {
       Resource memory r = getValue(entity);
-      r.value = Math64.min(r.rpb * (uint64(block.timestamp) - r.lrt), r.cap);
+      r.value = Math64.min(r.value + r.rpb * (uint64(block.timestamp) - r.lrt), r.cap);
       r.lrt = uint64(block.timestamp);
       set(entity, r);
     }

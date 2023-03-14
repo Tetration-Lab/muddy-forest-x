@@ -79,6 +79,7 @@ export async function createNetworkLayer(config: SetupContractConfig) {
 
       enqueueSnackbar(`Move Queued`)
       tx.wait().then((_) => enqueueSnackbar(`Move successfully to ${x}, ${y}`))
+      return tx
     } catch (err) {
       enqueueSnackbar(parseEtherError(err), { variant: 'error' })
       throw err
@@ -86,13 +87,17 @@ export async function createNetworkLayer(config: SetupContractConfig) {
   }
 
   const attack = async (entity: string, targetEntity: string, energy: number, range: number) => {
+    console.log(targetEntity)
     try {
-      return await systems['system.Attack'].executeTyped({
+      const tx = await systems['system.Attack'].executeTyped({
         entity: entity,
         targetEntity,
         energy,
         range,
       })
+      enqueueSnackbar(`Attack Queued`)
+      tx.wait().then((_) => enqueueSnackbar(`Attack successfully with energy ${energy}`))
+      return tx
     } catch (err) {
       enqueueSnackbar(parseEtherError(err), { variant: 'error' })
       throw err
