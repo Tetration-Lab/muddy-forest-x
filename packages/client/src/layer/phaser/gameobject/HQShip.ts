@@ -121,7 +121,6 @@ export class HQShip extends Phaser.GameObjects.Container {
   }
 
   get predictMoveCoordinate(): { x: number; y: number } {
-    console.log('predict move coordinate', this.predictCursor.x, this.predictCursor.y)
     return { x: Math.floor(this.predictCursor.x / TILE_SIZE), y: Math.floor(this.predictCursor.y / TILE_SIZE) }
   }
 
