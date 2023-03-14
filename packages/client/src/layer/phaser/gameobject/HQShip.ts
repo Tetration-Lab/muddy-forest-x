@@ -1,6 +1,9 @@
 import { TILE_SIZE } from '../config/chunk'
 import { IMAGE, SPRITE } from '../constant/resource'
 
+export const COLOR_GREEN = 0x00ff00
+export const COLOR_RED = 0xff0000
+
 export class HQShip extends Phaser.GameObjects.Container {
   entityID: string
   owner: string
@@ -9,6 +12,7 @@ export class HQShip extends Phaser.GameObjects.Container {
   shipImg!: Phaser.GameObjects.Image
   graphics!: Phaser.GameObjects.Graphics
   playerIndicator!: Phaser.GameObjects.Image
+  energy = 0
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string, entityID: string, owner: string) {
     super(scene, x, y)
     this.scene.add.existing(this)
@@ -30,6 +34,10 @@ export class HQShip extends Phaser.GameObjects.Container {
     this.add(this.playerIndicator)
     this.graphics = this.scene.add.graphics()
     this.playerIndicator.setVisible(false)
+  }
+
+  setEnergy(e: number) {
+    this.energy = e
   }
 
   setPlayerIndicatorVisible(visible: boolean) {
@@ -87,10 +95,20 @@ export class HQShip extends Phaser.GameObjects.Container {
     return new Phaser.Math.Vector2(this.x, this.y)
   }
 
-  drawPredictLine() {
+  drawPredictLine(color = COLOR_GREEN) {
     this.graphics.clear()
-    this.graphics.lineStyle(4, 0x00ff00, 1)
+    this.graphics.lineStyle(4, color, 1)
     this.graphics.lineBetween(this.x, this.y, this.predictCursor.x, this.predictCursor.y)
+  }
+
+  drawLine(color = COLOR_GREEN, x, y) {
+    this.graphics.clear()
+    this.graphics.lineStyle(4, color, 1)
+    this.graphics.lineBetween(this.x, this.y, x, y)
+  }
+
+  clearLine() {
+    this.graphics.clear()
   }
 
   resetPredictMovePosition() {

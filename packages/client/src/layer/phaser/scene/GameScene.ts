@@ -28,7 +28,7 @@ import { HashTwoRespItem } from '../../../miner/hasher.worker'
 import { createSpawnHQShipSystem } from '../../../system/createSpawnHQShipSystem'
 import { createTeleportSystem } from '../../../system/createTeleportSystem'
 import { planetLevel, PLANET_RARITY } from '../../../const/planet'
-import { HQShip } from '../gameobject/HQShip'
+import { COLOR_RED, HQShip } from '../gameobject/HQShip'
 import { formatEntityID } from '@latticexyz/network'
 import { dataStore, initPlanetPosition } from '../../../store/data'
 import { FACTION } from '../../../const/faction'
@@ -43,6 +43,7 @@ const debug = import.meta.env.DEV && false
 export enum GAME_UI_STATE {
   NONE = 'NONE',
   SELECTED_HQ_SHIP = 'SELECTED_HQ_SHIP',
+  SELECTED_ATTACK = 'SELECTED_ATTACK',
 }
 class GameScene extends Phaser.Scene {
   bg!: Phaser.GameObjects.TileSprite
@@ -75,6 +76,7 @@ class GameScene extends Phaser.Scene {
   cursorMove!: Phaser.GameObjects.Image
   gameUIState: GAME_UI_STATE = GAME_UI_STATE.NONE
   targetHQMoverShip: HQShip | null = null
+  targetAttack: HQShip | Planet | null = null
 
   constructor() {
     super(GAME_SCENE)
@@ -87,9 +89,9 @@ class GameScene extends Phaser.Scene {
       const tileY = res[i].y
       const check = BigInt(hVal) < PLANET_RARITY
       if (check) {
-        const spriteKey = SPRITE_PLANET[Number(BigInt(hVal) % BigInt(SPRITE_PLANET.length))]
-        const sprite = new Planet(this, 0, 0, spriteKey)
         const id = formatEntityID(hVal)
+        const spriteKey = SPRITE_PLANET[Number(BigInt(hVal) % BigInt(SPRITE_PLANET.length))]
+        const sprite = new Planet(this, 0, 0, spriteKey, id)
         initPlanetPosition(id, [tileX, tileY])
 
         const pos = snapPosToGrid(
@@ -110,7 +112,16 @@ class GameScene extends Phaser.Scene {
         sprite.setScale(planetLevel(id) / 2 + 1)
         sprite.play(spriteKey)
         sprite.registerOnClick((pointer: Phaser.Input.Pointer) => {
-          openPlanetModal(id, pointer.position.clone())
+          if (!pointer.leftButtonReleased()) {
+            return
+          }
+          if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
+            // change to attack
+            this.gameUIState = GAME_UI_STATE.SELECTED_ATTACK
+            this.targetAttack = sprite
+          } else {
+            openPlanetModal(id, pointer.position.clone())
+          }
         })
 
         addPlanet(id, sprite)
@@ -183,6 +194,13 @@ class GameScene extends Phaser.Scene {
     })
   }
 
+  clearGameUIState() {
+    setTimeout(() => {
+      this.gameUIState = GAME_UI_STATE.NONE
+      this.targetHQMoverShip = null
+    }, 100)
+  }
+
   async onCreate() {
     initConfigAnim(this)
     this.input.setPollAlways()
@@ -230,39 +248,26 @@ class GameScene extends Phaser.Scene {
       },
     }))
 
-    // this.input.on('pointerup', async (p) => {
-    //   if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
-    //     const position = snapToGrid(p.worldX, p.worldY, 16)
-    //     const entityID = dataStore.getState().ownedSpaceships[0]
-    //     const networkLayer = appStore.getState().networkLayer
-    //     if (networkLayer) {
-    //       const tileX = Math.floor(position.x / TILE_SIZE)
-    //       const tileY = Math.floor(position.y / TILE_SIZE)
-    //       console.log(entityID, tileX, tileY)
-    //       const id = formatEntityID(entityID)
-    //       const ship = gameStore.getState().spaceships.get(id)
-    //       // const dist = Phaser.Math.Distance.Between(position.x, position.y, ship.x, ship.y)
-    //       // if (dist === 0) {
-    //       //   this.gameUIState = GAME_UI_STATE.NONE
-    //       //   return
-    //       // }
-    //       try {
-    //         // ship.playTeleport()
-    //         // await networkLayer.api.move(entityID, tileX, tileY)
-    //         const position = this.input.activePointer.position
-    //         const pos = new Phaser.Math.Vector2(position.x, position.y)
-    //         openTeleportModal(id, pos)
-    //       } catch (err) {
-    //         ship.stopPlayTeleport()
-    //       } finally {
-    //         this.gameUIState = GAME_UI_STATE.NONE
-    //       }
-    //     }
-    //     this.gameUIState = GAME_UI_STATE.NONE
-    //   }
-    // })
-
     this.input.on('pointerup', async (p) => {
+      if (this.gameUIState === GAME_UI_STATE.SELECTED_ATTACK) {
+        const networkLayer = appStore.getState().networkLayer
+        if (networkLayer) {
+          const range = Phaser.Math.Distance.Between(
+            this.targetHQMoverShip.coordinate.x,
+            this.targetHQMoverShip.coordinate.y,
+            this.targetAttack.coordinate.x,
+            this.targetAttack.coordinate.y,
+          )
+          const energy = this.targetHQMoverShip.energy
+          networkLayer.api.attack(this.targetHQMoverShip?.entityID, this.targetAttack?.entityID, energy, range)
+        }
+        if (this.targetHQMoverShip) {
+          this.targetHQMoverShip.resetPredictMovePosition()
+          this.targetHQMoverShip.drawLine(COLOR_RED, p.worldX, p.worldY)
+        }
+        this.clearGameUIState()
+        return
+      }
       if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
         if (this.input.activePointer.rightButtonReleased()) {
           if (this.targetHQMoverShip) {
@@ -290,10 +295,7 @@ class GameScene extends Phaser.Scene {
           // center of the screen position
           const pos = new Phaser.Math.Vector2(window.innerWidth / 2, window.innerHeight / 2)
           openTeleportModal(id, pos)
-          setTimeout(() => {
-            this.gameUIState = GAME_UI_STATE.NONE
-            this.targetHQMoverShip = null
-          }, 100)
+          this.clearGameUIState()
         }
       }
     })

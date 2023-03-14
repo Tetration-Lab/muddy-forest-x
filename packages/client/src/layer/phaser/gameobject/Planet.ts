@@ -1,9 +1,12 @@
+import { TILE_SIZE } from '../config/chunk'
+
 export class Planet extends Phaser.GameObjects.Sprite {
   rect: Phaser.GameObjects.Rectangle
-
-  constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
+  entityID: string
+  constructor(scene: Phaser.Scene, x: number, y: number, texture: string, entityID: string) {
     super(scene, x, y, texture)
     this.rect = this.scene.add.rectangle(this.x, this.y, this.displayWidth, this.displayHeight, 0x0000ff)
+    this.entityID = entityID
     this.rect.setVisible(false)
     this.scene.add.existing(this)
     this.setInteractive()
@@ -18,6 +21,10 @@ export class Planet extends Phaser.GameObjects.Sprite {
     this.off('pointerup')
     this.rect.destroy()
     this.destroy()
+  }
+
+  get coordinate(): { x: number; y: number } {
+    return { x: Math.floor(this.x / TILE_SIZE), y: Math.floor(this.y / TILE_SIZE) }
   }
 
   setPositionWithDebug(x: number, y: number, color = 0x0000ff): this {
