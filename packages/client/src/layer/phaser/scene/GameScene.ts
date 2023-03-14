@@ -138,7 +138,7 @@ class GameScene extends Phaser.Scene {
   onSetUpSystem(networkLayer: NetworkLayer) {
     createSpawnCapitalSystem(networkLayer, (x: number, y: number, entityID: number, factionId: number) => {
       const spriteKey = FACTION[factionId].capital
-      const p = new Planet(this, x, y, spriteKey)
+      const p = new Planet(this, x, y, spriteKey, entityID)
       p.setDisplaySize(4 * TILE_SIZE ** 2, 4 * TILE_SIZE ** 2)
       p.play(spriteKey)
     })
