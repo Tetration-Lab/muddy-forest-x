@@ -2,6 +2,16 @@ import { Typography } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { Box } from '@mui/system'
 
+export const GenericTag = ({ color, value, textColor }: { color: string; value: string; textColor?: string }) => {
+  return (
+    <Box sx={{ borderRadius: '4px', backgroundColor: color }}>
+      <Typography sx={{ fontSize: '12px', fontWeight: 500, px: '3px', py: '1px', color: textColor }}>
+        {value}
+      </Typography>
+    </Box>
+  )
+}
+
 export const TypeTag = ({ type }: { type: string }) => {
   const theme = useTheme()
   return (

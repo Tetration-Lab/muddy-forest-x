@@ -29,7 +29,7 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
     focusLocation: state.focusLocation,
   }))
   const planetLocations = useStore(dataStore, (state) => state.planetLocations.get(id))
-  const { planet } = usePlanet(id)
+  const { planet, uninitilizedResources } = usePlanet(id)
   const owner = usePlayer(planet?.owner ?? '0x0')
   const isOwner = useMemo(() => planet?.owner === network.connectedAddress.get(), [planet?.owner])
   const maxBuildings = useMemo(() => maxBuildingPerLevel(planet?.level ?? 0), [planet?.level])
@@ -127,7 +127,7 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
                 <Grid container spacing={1}>
                   {[...planet.resources.entries()].map((r) => (
                     <Grid item xs={12} flex={1} key={r[0]}>
-                      <MaterialEntry id={r[0]} resource={r[1]} />
+                      <MaterialEntry id={r[0]} resource={r[1]} disabled={uninitilizedResources.includes(r[0])} />
                     </Grid>
                   ))}
                 </Grid>

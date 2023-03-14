@@ -9,7 +9,7 @@ import { useBaseEntity } from './useBaseEntity'
 
 export const usePlanet = (id: string) => {
   const { components, network } = useStore(appStore, (state) => state.networkLayer)
-  const { entity, containedResources, ind } = useBaseEntity(id)
+  const { entity, containedResources, ind, uninitilizedResources } = useBaseEntity(id)
 
   const [planet, setPlanet] = useState<Planet>()
 
@@ -39,5 +39,5 @@ export const usePlanet = (id: string) => {
     }
   }, [ind])
 
-  return { planet, containedResources }
+  return { planet, containedResources, uninitilizedResources }
 }

@@ -1,5 +1,6 @@
 import { Box, Slide, Stack, styled, Tooltip, Typography, useTheme } from '@mui/material'
 import { forwardRef, useEffect, useState } from 'react'
+import { useCooldown } from '../../../hook/useCooldown'
 
 export interface CooldownStatusBadgeProps {
   imgSrc: string
@@ -11,11 +12,7 @@ export interface CooldownStatusBadgeProps {
 }
 
 export const CooldownStatusBadge = ({ finishTimestamp, imgSrc, hover }: CooldownStatusBadgeProps) => {
-  const [left, setLeft] = useState(Math.max(0, finishTimestamp - Math.floor(Date.now() / 1000)))
-  useEffect(() => {
-    const interval = setInterval(() => setLeft((e) => e - 1), 1000)
-    return () => clearInterval(interval)
-  }, [finishTimestamp])
+  const left = useCooldown(finishTimestamp)
 
   return (
     <Slide direction="right" in={left > 0}>

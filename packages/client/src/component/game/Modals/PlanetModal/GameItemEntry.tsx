@@ -1,5 +1,6 @@
 import { Badge, Typography, useTheme } from '@mui/material'
 import { Stack, SxProps } from '@mui/system'
+import { ReactNode } from 'react'
 import { GameItem } from '../../common/GameItem'
 
 export interface GameItemEntryProps {
@@ -9,9 +10,10 @@ export interface GameItemEntryProps {
   title: string
   description?: string
   sx?: SxProps
+  suffix?: ReactNode
 }
 
-export const GameItemEntry = ({ iconUrl, onClick, value, title, description, sx }: GameItemEntryProps) => {
+export const GameItemEntry = ({ iconUrl, onClick, value, title, description, sx, suffix }: GameItemEntryProps) => {
   const theme = useTheme()
 
   return (
@@ -44,19 +46,24 @@ export const GameItemEntry = ({ iconUrl, onClick, value, title, description, sx 
         <GameItem imageUrl={iconUrl} sx={{ cursor: !onClick ? undefined : 'pointer' }} onClick={onClick} />
       </Badge>
       <Stack
+        direction="row"
         px={1}
         py={0.5}
         sx={{ backgroundColor: theme.palette.grayScale.almostBlack, flex: 1, borderRadius: '8px' }}
-        justifyContent="center"
+        alignItems="center"
+        justifyContent="space-between"
       >
-        <Typography fontSize={14} color={theme.palette.grayScale.almostGray}>
-          {title}
-        </Typography>
-        {description && (
-          <Typography fontSize={12} color={theme.palette.grayScale.almostDarkGray}>
-            {description}
+        <Stack>
+          <Typography fontSize={14} color={theme.palette.grayScale.almostGray}>
+            {title}
           </Typography>
-        )}
+          {description && (
+            <Typography fontSize={12} color={theme.palette.grayScale.almostDarkGray}>
+              {description}
+            </Typography>
+          )}
+        </Stack>
+        {suffix}
       </Stack>
     </Stack>
   )

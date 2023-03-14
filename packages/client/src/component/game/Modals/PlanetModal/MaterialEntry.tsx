@@ -2,61 +2,37 @@ import { Badge, Typography, useTheme } from '@mui/material'
 import { Stack } from '@mui/system'
 import { useMemo } from 'react'
 import { MATERIALS } from '../../../../const/materials'
+import { useResourceRegen } from '../../../../hook/useResourceRegen'
 import { Components } from '../../../../layer/network/components'
 import { ComponentV } from '../../../../types/entity'
 import { GameItem } from '../../common/GameItem'
+import { GenericTag, TypeTag } from '../../common/LabelTag'
+import { GameItemEntry } from './GameItemEntry'
 
 export interface MaterialEntryProps {
   id: string
   resource: ComponentV<Components['Resource']>
+  disabled: boolean
 }
 
-export const MaterialEntry = ({ id, resource }: MaterialEntryProps) => {
+export const MaterialEntry = ({ id, resource, disabled }: MaterialEntryProps) => {
   const theme = useTheme()
   const material = useMemo(() => MATERIALS[id], [id])
+  const value = useResourceRegen(resource, !disabled)
+
   return (
-    <Stack
-      direction="row"
-      spacing={1}
-      p={0.5}
-      sx={{
-        borderRadius: '12px',
-        backgroundColor: theme.palette.grayScale.darkGray,
-      }}
-    >
-      <Badge
-        badgeContent={`${resource.value}`}
-        max={999999999}
-        color="primary"
-        anchorOrigin={{
-          horizontal: 'right',
-          vertical: 'bottom',
-        }}
-        sx={{
-          '& .MuiBadge-badge': {
-            backgroundColor: theme.palette.grayScale.black,
-            bottom: 4,
-            right: 4,
-          },
-        }}
-      >
-        <GameItem imageUrl={material.imageUrl} sx={{ cursor: undefined }} />
-      </Badge>
-      <Stack
-        px={1}
-        py={0.5}
-        sx={{ backgroundColor: theme.palette.grayScale.almostBlack, flex: 1, borderRadius: '8px' }}
-        justifyContent="center"
-      >
-        <Typography fontSize={14} color={theme.palette.grayScale.almostGray}>
-          {material.name}
-        </Typography>
-        {resource.rpb > 0 && (
-          <Typography fontSize={12} color={theme.palette.grayScale.almostDarkGray}>
-            +{resource.rpb}/s
-          </Typography>
-        )}
-      </Stack>
-    </Stack>
+    <GameItemEntry
+      iconUrl={material.imageUrl}
+      title={material.name}
+      description={resource.rpb > 0 && `+${resource.rpb}/s`}
+      value={`${value}`}
+      suffix={
+        disabled ? (
+          <GenericTag value="Inactive" color={theme.palette.common.gold} textColor="black" />
+        ) : (
+          <GenericTag value="Active" color={theme.palette.common.green} />
+        )
+      }
+    />
   )
 }

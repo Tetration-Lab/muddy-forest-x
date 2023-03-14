@@ -1,6 +1,7 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material'
-import { ReactNode, useEffect, useMemo, useState } from 'react'
+import { ReactNode, useMemo } from 'react'
 import { FACTION } from '../../../../const/faction'
+import { useResourceRegen } from '../../../../hook/useResourceRegen'
 import { Components } from '../../../../layer/network/components'
 import { ComponentV } from '../../../../types/entity'
 
@@ -62,14 +63,7 @@ export const StatInfoTab = ({ iconSrc, title, value }: StatInfoTabProps) => {
 }
 
 export const EnergyInfoTab = (props: ComponentV<Components['Resource']>) => {
-  const [value, setValue] = useState(
-    Math.min(props.cap, props.value + props.rpb * (Math.floor(Date.now() / 1000) - props.lrt)),
-  )
-  useEffect(() => {
-    const interval = setInterval(() => setValue((e) => Math.min(props.cap, e + props.rpb)), 1000)
-    return () => clearInterval(interval)
-  }, [props.rpb, props.cap])
-
+  const value = useResourceRegen(props)
   return (
     <InfoTab
       iconSrc="/assets/svg/item-energy-icon.svg"
