@@ -2,13 +2,15 @@ import { FaMinus, FaPlus, FaQuestion } from 'react-icons/fa'
 import { Box, ButtonBase, useTheme } from '@mui/material'
 import { HiXMark } from 'react-icons/hi2'
 import Draggable from 'react-draggable'
-import { closeTeleportModal, gameStore } from '../../../../store/game'
+import { closeTeleportModal, gameStore, addSpaceship } from '../../../../store/game'
 import { useStore } from 'zustand'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { appStore } from '../../../../store/app'
 import { dataStore } from '../../../../store/data'
 import { moveEnergyCost } from '../../../../const/resources'
 import { useSpaceship } from '../../../../hook/useSpaceship'
+import { formatEntityID } from '@latticexyz/network'
+import { HQShip } from '../../../../layer/phaser/gameobject/HQShip'
 
 export interface Props {
   id: string
@@ -24,6 +26,7 @@ export const TeleportModal = ({ id, open = false, position = { x: 0, y: 0 } }) =
   const theme = useTheme()
   const ship = useSpaceship(id ?? '0x0')
   const shipSprite = useStore(gameStore, (state) => state.spaceships.get(id))
+  // const shipSpriteRef = useRef<HQShip | null>(shipSprite)
   const networkLayer = useStore(appStore, (state) => state.networkLayer)
   const [predictMove, setPredictMove] = useState<{ x: number; y: number }>({
     x: 0,
@@ -41,30 +44,37 @@ export const TeleportModal = ({ id, open = false, position = { x: 0, y: 0 } }) =
       shipSprite.predictMoveCoordinate.y,
     )
     return moveEnergyCost(distance)
-  }, [predictMove])
+  }, [])
 
   const onPredictMove = (x: number, y: number) => {
-    shipSprite.predictMove(x, y)
-    shipSprite.drawPredictLine()
+    console.log('onPredictMove', x, y)
+    // shipSprite.predictMove(x, y)
+    // shipSprite.drawPredictLine()
+    // const id = formatEntityID(shipSprite.entityID)
+    // addSpaceship(id, shipSprite)
+    // setPredictMove({ x, y })
   }
 
   useEffect(() => {
     if (!shipSprite) {
       return
     }
-    setPredictMove({ x: shipSprite.predictMoveCoordinate.x, y: shipSprite.predictMoveCoordinate.y })
+    console.log('call')
+    // setPredictMove({
+    //   x: shipSprite.predictMoveCoordinate.x,
+    //   y: shipSprite.predictMoveCoordinate.y,
+    // })
   }, [])
 
-  const onTeleport = async () => {
+  const onTeleport = async (id: string) => {
     if (!networkLayer) {
       return
     }
-    const entityID = dataStore.getState().ownedSpaceships[0]
+    const entityID = id
     try {
       shipSprite.playTeleport()
-      await networkLayer.api.move(entityID, predictMove.x, predictMove.y)
+      await networkLayer.api.move(entityID, shipSprite.predictMoveCoordinate.x, shipSprite.predictMoveCoordinate.y)
     } catch (err) {
-      console.log(err)
       shipSprite.stopPlayTeleport()
     } finally {
       closeTeleportModal(id)
@@ -142,7 +152,7 @@ export const TeleportModal = ({ id, open = false, position = { x: 0, y: 0 } }) =
                   onChange={(e) => onPredictMove(Number(e.target.value), shipSprite.predictMoveCoordinate.y)}
                   className="w-full bg-transparent outline-none"
                   placeholder="X coordinate"
-                  value={predictMove.x}
+                  value={shipSprite.predictMoveCoordinate.x}
                 />
                 <FaPlus
                   onClick={() =>
@@ -160,7 +170,7 @@ export const TeleportModal = ({ id, open = false, position = { x: 0, y: 0 } }) =
                   onChange={(e) => onPredictMove(shipSprite.predictMoveCoordinate.x, Number(e.target.value))}
                   className="w-full bg-transparent outline-none"
                   placeholder="Y coordinate"
-                  value={predictMove.y}
+                  value={shipSprite.predictMoveCoordinate.y}
                 />
                 <FaPlus
                   onClick={() =>
@@ -191,7 +201,7 @@ export const TeleportModal = ({ id, open = false, position = { x: 0, y: 0 } }) =
             </div>
           </section>
           <section className="flex justify-center">
-            <button className="text-white p-2 bg-[#4A5056] rounded-md" onClick={() => onTeleport()}>
+            <button className="text-white p-2 bg-[#4A5056] rounded-md" onClick={() => onTeleport(id)}>
               Teleport
             </button>
           </section>

@@ -41,6 +41,7 @@ export class HQShip extends Phaser.GameObjects.Container {
   }
 
   predictMove(x: number, y: number) {
+    console.log('predict move')
     this.predictCursor.setPosition(x * TILE_SIZE, y * TILE_SIZE)
   }
 
@@ -64,27 +65,30 @@ export class HQShip extends Phaser.GameObjects.Container {
   teleport(x: number, y: number) {
     this.teleportEffect.setPosition(this.x, this.y)
     this.teleportEffect.setVisible(true)
-    this.teleportEffect.play(SPRITE.TELEPORT).on(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+    this.teleportEffect.play(SPRITE.TELEPORT).once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+      console.log('done')
       this.teleportEffect.setVisible(false)
       this.setPosition(x, y)
       this.graphics.clear()
       this.predictCursor.setPosition(this.x, this.y)
       this.teleportEffect.setPosition(this.x, this.y)
       this.teleportEffect.setVisible(true)
-      this.teleportEffect.play(SPRITE.TELEPORT).on(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+      this.teleportEffect.play(SPRITE.TELEPORT).once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+        console.log('done2')
         this.teleportEffect.setVisible(false)
       })
     })
   }
 
   drawPredictLine() {
+    console.log('draw line')
     this.graphics.clear()
     this.graphics.lineStyle(4, 0x00ff00, 1)
     this.graphics.lineBetween(this.x, this.y, this.predictCursor.x, this.predictCursor.y)
-    // console.log(this.x, this.y, this.predictCursor.x, this.predictCursor.y)
   }
 
   resetPredictMovePosition() {
+    console.log('call reset')
     this.graphics.clear()
     this.predictCursor.setPosition(this.x, this.y)
   }
@@ -94,6 +98,7 @@ export class HQShip extends Phaser.GameObjects.Container {
   }
 
   get predictMoveCoordinate(): { x: number; y: number } {
+    console.log('predict move coordinate', this.predictCursor.x, this.predictCursor.y)
     return { x: Math.floor(this.predictCursor.x / TILE_SIZE), y: Math.floor(this.predictCursor.y / TILE_SIZE) }
   }
 

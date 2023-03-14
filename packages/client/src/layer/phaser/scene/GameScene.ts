@@ -152,17 +152,7 @@ class GameScene extends Phaser.Scene {
             setTimeout(() => {
               this.gameUIState = GAME_UI_STATE.SELECTED_HQ_SHIP
               this.targetHQMoverShip = ship
-              // center of the screen position
-              const pos = new Phaser.Math.Vector2(
-                window.innerWidth / 2 + (document.getElementById('teleport-modal')?.clientWidth || 300),
-                window.innerHeight / 2,
-              )
-              console.log('x', window.innerWidth / 2 + (document.getElementById('teleport-modal')?.clientWidth || 200))
-              openTeleportModal(id, pos)
             }, 100)
-            // const position = this.input.activePointer.position
-            // const pos = new Phaser.Math.Vector2(position.x, position.y)
-            // openTeleportModal(id, pos)
           })
           ship.setDepth(1000)
           dataStore.setState((state) => {
@@ -286,23 +276,26 @@ class GameScene extends Phaser.Scene {
             this.gameUIState = GAME_UI_STATE.NONE
             return
           }
-          try {
-            ship.playTeleport()
-            await networkLayer.api.move(entityID, tileX, tileY)
-            const position = this.input.activePointer.position
-            const pos = new Phaser.Math.Vector2(position.x, position.y)
-          } catch (err) {
-            ship.stopPlayTeleport()
-            ship.resetPredictMovePosition()
-          } finally {
-            this.gameUIState = GAME_UI_STATE.NONE
-            this.targetHQMoverShip = null
-            const id = formatEntityID(entityID)
-            closeTeleportModal(id)
-          }
+          // center of the screen position
+          const pos = new Phaser.Math.Vector2(window.innerWidth / 2, window.innerHeight / 2)
+          openTeleportModal(id, pos)
+          // try {
+          //   ship.playTeleport()
+          //   await networkLayer.api.move(entityID, tileX, tileY)
+          //   const position = this.input.activePointer.position
+          //   const pos = new Phaser.Math.Vector2(position.x, position.y)
+          // } catch (err) {
+          //   ship.stopPlayTeleport()
+          //   ship.resetPredictMovePosition()
+          // } finally {
+          //   this.gameUIState = GAME_UI_STATE.NONE
+          //   this.targetHQMoverShip = null
+          //   const id = formatEntityID(entityID)
+          //   closeTeleportModal(id)
+          // }
+          this.gameUIState = GAME_UI_STATE.NONE
+          this.targetHQMoverShip = null
         }
-        this.gameUIState = GAME_UI_STATE.NONE
-        this.targetHQMoverShip = null
       }
     })
 

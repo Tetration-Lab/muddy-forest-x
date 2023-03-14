@@ -31,6 +31,7 @@ function createAnimIdle(
   repeat = -1, // 0 is no repeat, -1 is means repeat forever
   frameRate = 12,
 ) {
+  console.log('createAnimIdle', keyname, sheetName, start, end, repeat, frameRate)
   const config = {
     key: keyname,
     frames: scene.anims.generateFrameNumbers(sheetName, { start: start, end: end }),
