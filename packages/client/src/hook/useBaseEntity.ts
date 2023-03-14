@@ -19,6 +19,7 @@ import { appStore } from '../store/app'
 import { filter } from 'rxjs'
 import { BaseEntity } from '../types/entity'
 import _ from 'lodash'
+import { EntityType } from '../const/types'
 
 export const useBaseEntity = (id: string) => {
   const { world, components } = useStore(appStore, (state) => state.networkLayer)
@@ -62,6 +63,7 @@ export const useBaseEntity = (id: string) => {
     const level = getComponentValue(components.Level, ind)?.level ?? planetLevel(eid)
     const attack = (getComponentValue(components.Attack, ind)?.value ?? 10000) / 100
     const defense = (getComponentValue(components.Defense, ind)?.value ?? 10000) / 100
+    const type = getComponentValue(components.Type, ind)?.value
     const resources = resourceIndexes.map((e, i) => {
       const r = getComponentValue(components.Resource, e[1])
       return [
@@ -72,7 +74,7 @@ export const useBaseEntity = (id: string) => {
           rpb:
             Number(
               r?.rpb ??
-                (containedResources.includes(ALL_ADVANCED_RESOURCE_ID[i])
+                ((!type || type === EntityType.PLANET) && containedResources.includes(ALL_ADVANCED_RESOURCE_ID[i])
                   ? ADVANCED_REGEN * getLevelResourceStorageMultiplier(level)
                   : 0),
             ) / 100,
@@ -83,6 +85,7 @@ export const useBaseEntity = (id: string) => {
 
     setEntity({
       index: ind,
+      type,
       name,
       energy: {
         value: Number(energy?.value ?? (BASE_ENERGY_CAP * getEnergyLevelMultiplier(level)) / 100),

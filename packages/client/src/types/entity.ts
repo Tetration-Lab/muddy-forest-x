@@ -10,6 +10,7 @@ export enum BaseEntityType {
 
 export interface BaseEntity {
   index: EntityIndex
+  type: number
   name?: string
   energy: ComponentV<Components['Resource']>
   resources: Map<string, ComponentV<Components['Resource']>>
