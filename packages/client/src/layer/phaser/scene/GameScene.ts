@@ -167,11 +167,9 @@ class GameScene extends Phaser.Scene {
           })
           ship.registerOnClickPredictCursor((pointer: Phaser.Input.Pointer) => {
             setTimeout(() => {
-              console.log('hi')
               if (this.gameUIState !== GAME_UI_STATE.NONE) {
                 return
               }
-              console.log('hi2')
               this.gameUIState = GAME_UI_STATE.SELECTED_HQ_SHIP
               this.targetHQMoverShip = ship
             }, 100)
@@ -197,7 +195,6 @@ class GameScene extends Phaser.Scene {
   clearGameUIState() {
     setTimeout(() => {
       this.gameUIState = GAME_UI_STATE.NONE
-      this.targetHQMoverShip = null
     }, 100)
   }
 
@@ -284,7 +281,6 @@ class GameScene extends Phaser.Scene {
         if (networkLayer) {
           const tileX = Math.floor(position.x / TILE_SIZE)
           const tileY = Math.floor(position.y / TILE_SIZE)
-          console.log(entityID, tileX, tileY)
           const id = formatEntityID(entityID)
           const ship = gameStore.getState().spaceships.get(id)
           const dist = Phaser.Math.Distance.Between(position.x, position.y, ship.x, ship.y)
@@ -389,15 +385,22 @@ class GameScene extends Phaser.Scene {
   }
 
   handleKeyboardUpdate() {
+    if (this.keyESC.isDown) {
+      if (this.targetHQMoverShip) {
+        this.targetHQMoverShip.resetPredictMovePosition()
+        this.targetHQMoverShip.clearLine()
+        const entityID = this.targetHQMoverShip.entityID
+        const id = formatEntityID(entityID)
+        closeTeleportModal(id)
+      }
+      this.gameUIState = GAME_UI_STATE.NONE
+    }
     const focusUI = appStore.getState().isFocusUI
     if (focusUI) {
       return
     }
 
     const cam = this.cameras.main
-    if (this.keyESC.isDown) {
-      this.gameUIState = GAME_UI_STATE.NONE
-    }
     if (this.keyW.isDown) {
       this.followPoint.y -= this.cameraSpeed / cam.zoom
     }
