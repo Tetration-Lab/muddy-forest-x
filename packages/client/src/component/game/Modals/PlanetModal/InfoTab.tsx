@@ -97,10 +97,11 @@ export const InfoTab = ({ iconSrc, title, description, suffix }: InfoTabProps) =
       alignItems="center"
       justifyContent="center"
       flex={1}
-      p={0.5}
+      px={1}
+      py={0.5}
     >
       <Box component="img" src={iconSrc} sx={{ width: 24, height: 24 }} />
-      <Stack>
+      <Stack flex={1} alignItems="center">
         <Typography fontSize={12}>{title}</Typography>
         {description && (
           <Typography sx={{ fontSize: 10, color: theme.palette.grayScale.almostGray }}>{description}</Typography>

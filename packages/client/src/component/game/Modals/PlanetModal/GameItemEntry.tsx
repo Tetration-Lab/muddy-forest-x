@@ -1,19 +1,19 @@
 import { Badge, Typography, useTheme } from '@mui/material'
-import { Stack } from '@mui/system'
-import { useMemo } from 'react'
-import { MATERIALS } from '../../../../const/materials'
-import { Components } from '../../../../layer/network/components'
-import { ComponentV } from '../../../../types/entity'
+import { Stack, SxProps } from '@mui/system'
 import { GameItem } from '../../common/GameItem'
 
-export interface MaterialEntryProps {
-  id: string
-  resource: ComponentV<Components['Resource']>
+export interface GameItemEntryProps {
+  iconUrl: string
+  onClick?: () => void
+  value?: string
+  title: string
+  description?: string
+  sx?: SxProps
 }
 
-export const MaterialEntry = ({ id, resource }: MaterialEntryProps) => {
+export const GameItemEntry = ({ iconUrl, onClick, value, title, description, sx }: GameItemEntryProps) => {
   const theme = useTheme()
-  const material = useMemo(() => MATERIALS[id], [id])
+
   return (
     <Stack
       direction="row"
@@ -22,10 +22,11 @@ export const MaterialEntry = ({ id, resource }: MaterialEntryProps) => {
       sx={{
         borderRadius: '12px',
         backgroundColor: theme.palette.grayScale.darkGray,
+        ...sx,
       }}
     >
       <Badge
-        badgeContent={`${resource.value}`}
+        badgeContent={value}
         max={999999999}
         color="primary"
         anchorOrigin={{
@@ -40,7 +41,7 @@ export const MaterialEntry = ({ id, resource }: MaterialEntryProps) => {
           },
         }}
       >
-        <GameItem imageUrl={material.imageUrl} sx={{ cursor: undefined }} />
+        <GameItem imageUrl={iconUrl} sx={{ cursor: !onClick ? undefined : 'pointer' }} onClick={onClick} />
       </Badge>
       <Stack
         px={1}
@@ -49,11 +50,11 @@ export const MaterialEntry = ({ id, resource }: MaterialEntryProps) => {
         justifyContent="center"
       >
         <Typography fontSize={14} color={theme.palette.grayScale.almostGray}>
-          {material.name}
+          {title}
         </Typography>
-        {resource.rpb > 0 && (
+        {description && (
           <Typography fontSize={12} color={theme.palette.grayScale.almostDarkGray}>
-            +{resource.rpb}/s
+            {description}
           </Typography>
         )}
       </Stack>

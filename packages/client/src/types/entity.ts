@@ -3,6 +3,11 @@ import { Components } from '../layer/network/components'
 
 export type ComponentV<T extends Component> = ComponentValue<T['schema'], undefined>
 
+export enum BaseEntityType {
+  Planet = 'Planet',
+  Spaceship = 'Spaceship',
+}
+
 export interface BaseEntity {
   index: EntityIndex
   name?: string

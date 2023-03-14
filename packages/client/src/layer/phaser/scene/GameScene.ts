@@ -18,6 +18,7 @@ import {
   addSpaceship,
   closeTeleportModal,
   gameStore,
+  openAttackModal,
   openPlanetModal,
   openTeleportModal,
 } from '../../../store/game'
@@ -232,7 +233,6 @@ class GameScene extends Phaser.Scene {
     this.chunkLoader.initChunks(this.followPoint.x, this.followPoint.y)
 
     const cam = this.cameras.main
-    cam.zoom = 0.5
     this.input.on('pointermove', (p) => {
       if (!p.isDown) return
       this.followPoint.x -= (p.x - p.prevPosition.x) / cam.zoom
@@ -248,16 +248,18 @@ class GameScene extends Phaser.Scene {
     this.input.on('pointerup', async (p) => {
       if (this.gameUIState === GAME_UI_STATE.SELECTED_ATTACK) {
         const networkLayer = appStore.getState().networkLayer
-        if (networkLayer) {
-          const range = Phaser.Math.Distance.Between(
-            this.targetHQMoverShip.coordinate.x,
-            this.targetHQMoverShip.coordinate.y,
-            this.targetAttack.coordinate.x,
-            this.targetAttack.coordinate.y,
-          )
-          const energy = this.targetHQMoverShip.energy
-          networkLayer.api.attack(this.targetHQMoverShip?.entityID, this.targetAttack?.entityID, energy, range)
-        }
+        console.log()
+        openAttackModal(this.targetHQMoverShip.entityID, this.targetAttack.entityID, new Phaser.Math.Vector2(p.x, p.y))
+        //if (networkLayer) {
+        //const range = Phaser.Math.Distance.Between(
+        //this.targetHQMoverShip.coordinate.x,
+        //this.targetHQMoverShip.coordinate.y,
+        //this.targetAttack.coordinate.x,
+        //this.targetAttack.coordinate.y,
+        //)
+        //const energy = this.targetHQMoverShip.energy
+        //networkLayer.api.attack(this.targetHQMoverShip?.entityID, this.targetAttack?.entityID, energy, range)
+        //}
         if (this.targetHQMoverShip) {
           this.targetHQMoverShip.resetPredictMovePosition()
           this.targetHQMoverShip.drawLine(COLOR_RED, this.targetAttack.x, this.targetAttack.y)

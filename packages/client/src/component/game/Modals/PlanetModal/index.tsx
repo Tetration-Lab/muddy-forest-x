@@ -39,7 +39,6 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
 
   return (
     <Draggable
-      bounds="body"
       cancel=".inner-planet-modal"
       defaultPosition={{
         x: position.x,

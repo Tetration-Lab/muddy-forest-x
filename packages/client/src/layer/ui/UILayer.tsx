@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useStore } from 'zustand'
 import { ChatBox } from '../../component/Chatbox'
 import { GameActionBox, GameActionBoxMode } from '../../component/game/GameActionBox'
+import { AttackModal } from '../../component/game/Modals/AttackModal'
 import { PlanetModal } from '../../component/game/Modals/PlanetModal'
 import { TeleportModal } from '../../component/game/Modals/TeleportModal'
 import { Profile } from '../../component/game/Profile'
@@ -13,7 +14,7 @@ import { FACTION } from '../../const/faction'
 import { appStore } from '../../store/app'
 
 import { dataStore } from '../../store/data'
-import { closeSendResourceModal, gameStore, openTeleportModal } from '../../store/game'
+import { gameStore, openTeleportModal } from '../../store/game'
 
 export const UILayer = () => {
   const store = useStore(appStore, (state) => state)
@@ -172,6 +173,7 @@ export const UILayer = () => {
       {/*</ClickAwayListener>*/}
       {/* Modals */}
       <TeleportModals />
+      <AttackModals />
       <PlanetModals />
     </div>
   )
@@ -196,6 +198,17 @@ const TeleportModals = () => {
     <>
       {modals.map((k) => (
         <TeleportModal id={k[0]} open={true} position={{ x: k[1].x, y: k[1].y }} key={k[0]} />
+      ))}
+    </>
+  )
+}
+
+const AttackModals = () => {
+  const modals = useStore(gameStore, (state) => [...state.attackModals.entries()])
+  return (
+    <>
+      {modals.map((k) => (
+        <AttackModal id={k[0]} targetId={k[1][0]} position={k[1][1]} key={k[0]} />
       ))}
     </>
   )

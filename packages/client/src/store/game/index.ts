@@ -1,20 +1,23 @@
 import { createStore } from 'zustand/vanilla'
 import { HQShip } from '../../layer/phaser/gameobject/HQShip'
 import { Planet } from '../../layer/phaser/gameobject/Planet'
+import { BaseEntityType } from '../../types/entity'
 
 export type Store = {
   teleportModals: Map<string, Phaser.Math.Vector2>
   planetModals: Map<string, Phaser.Math.Vector2>
+  attackModals: Map<string, [string, Phaser.Math.Vector2]>
   planets: Map<string, Planet>
   spaceships: Map<string, HQShip>
   focusLocation: (v: Phaser.Math.Vector2) => void
 }
 
-const initialState = {
-  teleportModals: new Map<string, Phaser.Math.Vector2>(),
-  planetModals: new Map<string, Phaser.Math.Vector2>(),
-  planets: new Map<string, Planet>(),
-  spaceships: new Map<string, HQShip>(),
+const initialState: Store = {
+  teleportModals: new Map(),
+  planetModals: new Map(),
+  attackModals: new Map(),
+  planets: new Map(),
+  spaceships: new Map(),
   focusLocation: () => {},
 }
 
@@ -67,5 +70,21 @@ export const closeTeleportModal = (id: string) => {
     const teleportModals = new Map(state.teleportModals)
     teleportModals.delete(id)
     return { teleportModals }
+  })
+}
+
+export const openAttackModal = (id: string, targetId: string, position: Phaser.Math.Vector2) => {
+  gameStore.setState((state) => {
+    const attackModals = new Map(state.attackModals)
+    attackModals.set(id, [targetId, position])
+    return { attackModals }
+  })
+}
+
+export const closeAttackModal = (id: string) => {
+  gameStore.setState((state) => {
+    const attackModals = new Map(state.attackModals)
+    attackModals.delete(id)
+    return { attackModals }
   })
 }
