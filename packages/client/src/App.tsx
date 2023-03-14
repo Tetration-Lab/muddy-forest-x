@@ -80,12 +80,13 @@ function App() {
       <ThemeProvider theme={theme}>
         <SnackbarProvider
           maxSnack={2}
+          dense={true}
           anchorOrigin={{
             horizontal: 'center',
             vertical: 'top',
           }}
           autoHideDuration={2000}
-          style={{ fontFamily: 'Fira Mono', borderRadius: '100px' }}
+          style={{ fontFamily: 'Fira Mono', borderRadius: '100px', justifyContent: 'center' }}
         >
           <BrowserRouter>
             <AppRoutes />

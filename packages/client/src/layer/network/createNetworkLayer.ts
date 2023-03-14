@@ -69,13 +69,16 @@ export async function createNetworkLayer(config: SetupContractConfig) {
 
   const move = async (entity: string, x: number, y: number) => {
     try {
-      return await systems['system.Move'].executeTyped({
+      const tx = await systems['system.Move'].executeTyped({
         entity: entity,
         position: {
           x,
           y,
         },
       })
+
+      enqueueSnackbar(`Move Queued`)
+      tx.wait().then((_) => enqueueSnackbar(`Move successfully to ${x}, ${y}`))
     } catch (err) {
       enqueueSnackbar(parseEtherError(err), { variant: 'error' })
       throw err

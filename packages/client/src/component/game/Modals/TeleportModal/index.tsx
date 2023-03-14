@@ -80,7 +80,7 @@ export const TeleportModal = ({ id, open = false, position = { x: 0, y: 0 } }) =
     } catch (err) {
       shipSprite.stopPlayTeleport()
     } finally {
-      closeTeleportModal(id)
+      onClose()
     }
   }
 
