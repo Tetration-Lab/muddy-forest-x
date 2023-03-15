@@ -20,7 +20,7 @@ export const SettingActionBox = () => {
 
   return (
     <Stack
-      p={2}
+      p={1}
       sx={{
         background: theme.palette.grayScale.soBlack,
         color: theme.palette.common.white,

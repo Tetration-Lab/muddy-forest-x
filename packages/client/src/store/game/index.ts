@@ -4,16 +4,16 @@ import { Planet } from '../../layer/phaser/gameobject/Planet'
 import { BaseEntityType } from '../../types/entity'
 
 export type Store = {
-  teleportModals: Map<string, Phaser.Math.Vector2>
+  teleportAction?: string
   planetModals: Map<string, Phaser.Math.Vector2>
   attackModals: Map<string, [string, Phaser.Math.Vector2]>
   planets: Map<string, Planet>
   spaceships: Map<string, HQShip>
-  focusLocation: (v: Phaser.Math.Vector2) => void
+  focusLocation: (v: Phaser.Types.Math.Vector2Like) => void
 }
 
 const initialState: Store = {
-  teleportModals: new Map(),
+  teleportAction: undefined,
   planetModals: new Map(),
   attackModals: new Map(),
   planets: new Map(),
@@ -57,19 +57,18 @@ export const openPlanetModal = (id: string, position: Phaser.Math.Vector2) => {
   })
 }
 
-export const openTeleportModal = (id: string, position: Phaser.Math.Vector2) => {
+export const openTeleport = (id: string) => {
   gameStore.setState((state) => {
-    const teleportModals = new Map(state.teleportModals)
-    teleportModals.set(id, position)
-    return { teleportModals }
+    return { teleportAction: id }
   })
 }
 
-export const closeTeleportModal = (id: string) => {
+export const closeTeleport = () => {
   gameStore.setState((state) => {
-    const teleportModals = new Map(state.teleportModals)
-    teleportModals.delete(id)
-    return { teleportModals }
+    const ship = state.spaceships.get(state.teleportAction)
+    ship?.stopPlayTeleport()
+    ship?.resetPredictMovePosition()
+    return { teleportAction: undefined }
   })
 }
 

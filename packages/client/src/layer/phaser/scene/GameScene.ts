@@ -16,11 +16,11 @@ import { Planet } from '../gameobject/Planet'
 import {
   addPlanet,
   addSpaceship,
-  closeTeleportModal,
+  closeTeleport,
   gameStore,
   openAttackModal,
   openPlanetModal,
-  openTeleportModal,
+  openTeleport,
 } from '../../../store/game'
 import { createSpawnCapitalSystem } from '../../../system/createSpawnCapitalSystem'
 import { NetworkLayer } from '../../network/types'
@@ -250,14 +250,13 @@ class GameScene extends Phaser.Scene {
 
     gameStore.setState(() => ({
       focusLocation: (v) => {
-        this.followPoint = v
+        this.followPoint = new Phaser.Math.Vector2(v)
       },
     }))
 
     this.input.on('pointerup', async (p) => {
       if (this.gameUIState === GAME_UI_STATE.SELECTED_ATTACK) {
         const networkLayer = appStore.getState().networkLayer
-        console.log()
         openAttackModal(this.targetHQMoverShip.entityID, this.targetAttack.entityID, new Phaser.Math.Vector2(p.x, p.y))
         //if (networkLayer) {
         //const range = Phaser.Math.Distance.Between(
@@ -270,7 +269,7 @@ class GameScene extends Phaser.Scene {
         //networkLayer.api.attack(this.targetHQMoverShip?.entityID, this.targetAttack?.entityID, energy, range)
         //}
         if (this.targetHQMoverShip) {
-          this.targetHQMoverShip.resetPredictMovePosition()
+          //this.targetHQMoverShip.resetPredictMovePosition()
           this.targetHQMoverShip.drawLine(COLOR_RED, this.targetAttack.x, this.targetAttack.y)
         }
         this.clearGameUIState()
@@ -299,9 +298,7 @@ class GameScene extends Phaser.Scene {
             this.gameUIState = GAME_UI_STATE.NONE
             return
           }
-          // center of the screen position
-          const pos = new Phaser.Math.Vector2(window.innerWidth / 2, window.innerHeight / 2)
-          openTeleportModal(id, pos)
+          openTeleport(id)
           this.clearGameUIState()
         }
       }
@@ -402,7 +399,7 @@ class GameScene extends Phaser.Scene {
         this.targetHQMoverShip.clearLine()
         const entityID = this.targetHQMoverShip.entityID
         const id = formatEntityID(entityID)
-        closeTeleportModal(id)
+        closeTeleport()
       }
       this.gameUIState = GAME_UI_STATE.NONE
     }

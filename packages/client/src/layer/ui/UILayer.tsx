@@ -1,37 +1,41 @@
 import { useComponentValueStream } from '@latticexyz/std-client'
 import { Box, Popper } from '@mui/material'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from 'zustand'
 import { ChatBox } from '../../component/Chatbox'
 import { GameActionBox, GameActionBoxMode } from '../../component/game/GameActionBox'
 import { AttackModal } from '../../component/game/Modals/AttackModal'
 import { PlanetModal } from '../../component/game/Modals/PlanetModal'
-import { TeleportModal } from '../../component/game/Modals/TeleportModal'
 import { Profile } from '../../component/game/Profile'
 import { SettingActionBox } from '../../component/game/SettingActionBox'
+import { TeleportActionBox } from '../../component/game/TeleportActionBox'
 import { ToolButton } from '../../component/ToolButton'
 import { FACTION } from '../../const/faction'
 import { appStore } from '../../store/app'
-
 import { dataStore } from '../../store/data'
-import { gameStore, openTeleportModal } from '../../store/game'
+import { closeTeleport, gameStore, openTeleport } from '../../store/game'
 
 export const UILayer = () => {
   const store = useStore(appStore, (state) => state)
+
   const toolsContainerRef = useRef()
   const settingContainerRef = useRef()
+  const teleportContainerRef = useRef()
+
+  const openTeleportBox = useStore(gameStore, (state) => state.teleportAction)
 
   const [openSettingBox, setOpenSettingBox] = React.useState(false)
-  const [settingAnchorEl, setSettingAnchorEl] = React.useState<null | HTMLElement>()
 
   const [openGameActionBox, setOpenGameActionBox] = React.useState(false)
   const [currentMode, setCurrentMode] = useState<GameActionBoxMode | undefined>()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+
   const networkLayer = store.networkLayer
   const playerNameComponent = useComponentValueStream(networkLayer.components.Name, networkLayer.playerIndex)
   const factionID = useComponentValueStream(networkLayer.components.Faction, networkLayer.playerIndex)
   const [playerColor, setPlayerColor] = useState('white')
   const [playerName, setPlayerName] = useState<null | string>(null)
+
   useEffect(() => {
     if (playerNameComponent) {
       setPlayerName(playerNameComponent?.value)
@@ -40,7 +44,6 @@ export const UILayer = () => {
   }, [playerNameComponent, factionID])
 
   const handleSettingClick = () => {
-    setSettingAnchorEl(settingContainerRef.current)
     if (openSettingBox) {
       handleSettingClose()
     } else {
@@ -49,14 +52,17 @@ export const UILayer = () => {
   }
 
   const handleSettingClose = () => {
-    setSettingAnchorEl(null)
     setOpenSettingBox(false)
   }
 
   const handleOnClickTeleport = () => {
-    if (dataStore.getState().ownedSpaceships.length > 0) {
-      const id = dataStore.getState().ownedSpaceships[0]
-      openTeleportModal(id, new Phaser.Math.Vector2(window.innerWidth / 2, window.innerHeight / 2))
+    if (openTeleportBox) {
+      closeTeleport()
+    } else {
+      if (dataStore.getState().ownedSpaceships.length > 0) {
+        const id = dataStore.getState().ownedSpaceships[0]
+        openTeleport(id)
+      }
     }
   }
 
@@ -75,9 +81,6 @@ export const UILayer = () => {
     setOpenGameActionBox(false)
     setCurrentMode(undefined)
   }
-
-  const settingOpen = Boolean(anchorEl)
-  const settingId = settingOpen ? 'setting-popper' : undefined
 
   const toolOpen = Boolean(anchorEl)
   const toolId = toolOpen ? 'simple-popper' : undefined
@@ -116,7 +119,7 @@ export const UILayer = () => {
           <div className="flex space-x-2">
             <ToolButton iconSrc="./assets/svg/magnifying-glass-icon.svg"></ToolButton>
             <ToolButton iconSrc="./assets/svg/setting-icon.svg" onClick={handleSettingClick}></ToolButton>
-            <Popper id={settingId} open={openSettingBox} anchorEl={settingAnchorEl} placement="bottom-end">
+            <Popper open={openSettingBox} anchorEl={settingContainerRef.current} placement="bottom-end">
               <Box sx={{ mr: 2 }}>
                 <SettingActionBox />
               </Box>
@@ -124,8 +127,13 @@ export const UILayer = () => {
           </div>
         </div>
       </div>
-      <div className="absolute top-1/2 right-0 mr-2">
-        <ToolButton title={'Teleport'} iconSrc="./assets/svg/teleport-icon.svg" onClick={handleOnClickTeleport} />
+      <div className="absolute top-1/2 right-0" ref={teleportContainerRef}>
+        <div className="p-4">
+          <ToolButton title="Teleport" iconSrc="./assets/svg/teleport-icon.svg" onClick={handleOnClickTeleport} />
+          <Popper open={!!openTeleportBox} anchorEl={teleportContainerRef.current} placement="left">
+            <TeleportActionBox id={openTeleportBox} />
+          </Popper>
+        </div>
       </div>
       <div className="absolute top-50 left-0">
         <div className="p-4">
@@ -172,7 +180,6 @@ export const UILayer = () => {
       </div>
       {/*</ClickAwayListener>*/}
       {/* Modals */}
-      <TeleportModals />
       <AttackModals />
       <PlanetModals />
     </div>
@@ -185,19 +192,6 @@ const PlanetModals = () => {
     <>
       {modals.map((k) => (
         <PlanetModal id={k[0]} position={k[1]} key={k[0]} />
-      ))}
-    </>
-  )
-}
-
-const TeleportModals = () => {
-  const modalMap = useStore(gameStore, (state) => state.teleportModals)
-  const modals = [...modalMap.entries()]
-
-  return (
-    <>
-      {modals.map((k) => (
-        <TeleportModal id={k[0]} open={true} position={{ x: k[1].x, y: k[1].y }} key={k[0]} />
       ))}
     </>
   )
