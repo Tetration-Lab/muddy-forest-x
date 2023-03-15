@@ -83,7 +83,7 @@ contract AttackSystem is System {
 
   function executeTypedMulti(Args[] memory args) public returns (bytes[] memory output) {
     for (uint256 i = 0; i < args.length; ++i) {
-      output[i] = execute(abi.encode(args[i]));
+      execute(abi.encode(args[i]));
     }
   }
 }

@@ -39,17 +39,17 @@ contract InitResourceSystem is System {
 
     if (ty == uint32(EType.PLANET)) {
       // Storage
-      rC.regen(args.entity);
-      ResourceComponent.Resource memory r = rC.getValue(args.entity);
+      rC.regen(id);
+      ResourceComponent.Resource memory r = rC.getValue(id);
       if (Resource.isContainResource(args.entity, args.resourceId)) r.rpb = (ADVANCED_REGEN * mult) / 200;
       r.cap = (ADVANCED_CAP * mult) / 100;
-      rC.set(args.entity, r);
+      rC.set(id, r);
     } else if (ty == uint32(EType.SPACESHIP) || ty == uint32(EType.HQSHIP)) {
       // Non storage
-      ResourceComponent.Resource memory r = rC.getValue(args.entity);
-      rC.regen(args.entity);
+      ResourceComponent.Resource memory r = rC.getValue(id);
+      rC.regen(id);
       r.cap = (ADVANCED_CAP * mult) / 100;
-      rC.set(args.entity, r);
+      rC.set(id, r);
     }
   }
 
@@ -59,7 +59,7 @@ contract InitResourceSystem is System {
 
   function executeTypedMulti(Args[] memory args) public returns (bytes[] memory output) {
     for (uint256 i = 0; i < args.length; ++i) {
-      output[i] = execute(abi.encode(args[i]));
+      execute(abi.encode(args[i]));
     }
   }
 }
