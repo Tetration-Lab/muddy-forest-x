@@ -75,7 +75,7 @@ export const EnergyInfoTab = (props: ComponentV<Components['Resource']>) => {
 
 export interface InfoTabProps {
   iconSrc: string
-  title: string
+  title: React.ReactNode
   description?: string
   suffix?: ReactNode
 }

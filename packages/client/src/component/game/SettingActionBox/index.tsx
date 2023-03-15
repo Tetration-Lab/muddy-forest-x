@@ -6,6 +6,7 @@ import { minerStore } from '../../../store/miner'
 import { MainButton } from '../../common/MainButton'
 import { MiningPatternType } from '../../../miner/MiningPatterns'
 import { MAX_MINER_INSTANCE } from '../../../const/miner'
+import { WarningBox } from '../../common/WarningBox'
 
 export const SettingActionBox = () => {
   const theme = useTheme()
@@ -134,16 +135,7 @@ export const SettingActionBox = () => {
             </IconButton>
           </Stack>
         </Stack>
-        <Stack
-          direction="row"
-          alignItems="center"
-          sx={{ backgroundColor: 'rgba(214, 67, 47, 0.2)', borderRadius: '4px' }}
-          spacing={1}
-          p={1}
-        >
-          <FaExclamationCircle size={28} color={theme.palette.error.main} />
-          <Typography fontSize={12}>Using more miners may effect your devices performances</Typography>
-        </Stack>
+        <WarningBox label="Using more miners may effect your devices performances" />
       </Stack>
       <Stack
         sx={{
