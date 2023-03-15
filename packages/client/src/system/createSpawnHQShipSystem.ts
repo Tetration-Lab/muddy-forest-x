@@ -5,7 +5,15 @@ import { NetworkLayer } from '../layer/network/types'
 import { TILE_SIZE } from '../layer/phaser/config/chunk'
 import { hexToInt } from '../utils/utils'
 
-export type Callback = (x: number, y: number, entityIndex: EntityIndex, entityID: string, owner: string) => void
+export type Callback = (
+  x: number,
+  y: number,
+  entityIndex: EntityIndex,
+  entityID: string,
+  owner: string,
+  name: string,
+  fractionID: number,
+) => void
 export function createSpawnHQShipSystem(network: NetworkLayer, callback: Callback) {
   const {
     world,
@@ -28,7 +36,15 @@ export function createSpawnHQShipSystem(network: NetworkLayer, callback: Callbac
     const faction = getComponentValue(Faction, ownerIndex)?.value
     console.log('createSpawnHQShipSystem:position', hexToInt(position.x), hexToInt(position.y), 'eid', entity)
     console.log('createSpawnHQShipSystem:faction', faction, name)
-    callback(hexToInt(position.x) * TILE_SIZE, hexToInt(position.y) * TILE_SIZE, entity, entityID, owner.value)
+    callback(
+      hexToInt(position.x) * TILE_SIZE,
+      hexToInt(position.y) * TILE_SIZE,
+      entity,
+      entityID,
+      owner.value,
+      name,
+      faction,
+    )
   })
   console.log('createSpawnHQShipSystem:end')
 }

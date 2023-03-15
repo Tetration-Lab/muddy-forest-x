@@ -1,3 +1,4 @@
+import { FACTION } from '../../../const/faction'
 import { TILE_SIZE } from '../config/chunk'
 import { IMAGE, SPRITE } from '../constant/resource'
 
@@ -13,7 +14,18 @@ export class HQShip extends Phaser.GameObjects.Container {
   graphics!: Phaser.GameObjects.Graphics
   playerIndicator!: Phaser.GameObjects.Image
   energy = 0
-  constructor(scene: Phaser.Scene, x: number, y: number, texture: string, entityID: string, owner: string) {
+  nameText: Phaser.GameObjects.Text
+  fractionID = -1
+  signFactionImg: Phaser.GameObjects.Image
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    texture: string,
+    entityID: string,
+    owner: string,
+    fractionID: number,
+  ) {
     super(scene, x, y)
     this.scene.add.existing(this)
     this.shipImg = this.scene.add.image(0, 0, texture).setDepth(this.depth + 1)
@@ -28,16 +40,33 @@ export class HQShip extends Phaser.GameObjects.Container {
     this.predictCursor.setVisible(false)
     this.entityID = entityID
     this.owner = owner
+    this.nameText = this.scene.add
+      .text(0, 0 + 50, '')
+      .setDepth(1000)
+      .setOrigin(0.5, 0.5)
     this.teleportEffect = this.scene.add.sprite(0, 0, SPRITE.TELEPORT).setDepth(1000)
     this.playerIndicator = this.scene.add.image(0, 0 + -48, IMAGE.PLAYER_INDICATOR).setDepth(1000)
     this.playerIndicator.setDisplaySize(32, 32)
+
     this.add(this.playerIndicator)
+    this.add(this.nameText)
     this.graphics = this.scene.add.graphics()
     this.playerIndicator.setVisible(false)
+    this.nameText.setScale(2)
+    this.nameText.setColor(FACTION[fractionID].color || '#000')
+    this.signFactionImg = this.scene.add
+      .image(this.nameText.x - this.nameText.displayWidth, this.nameText.y, FACTION[fractionID].signImg)
+      .setDepth(1000)
+    this.add(this.signFactionImg)
   }
 
   setEnergy(e: number) {
     this.energy = e
+  }
+
+  setPlayerName(name: string) {
+    this.nameText.setText(name)
+    this.signFactionImg.setPosition(this.nameText.x - this.nameText.displayWidth, this.nameText.y)
   }
 
   setPlayerIndicatorVisible(visible: boolean) {

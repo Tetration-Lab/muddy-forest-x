@@ -145,13 +145,21 @@ class GameScene extends Phaser.Scene {
     })
     createSpawnHQShipSystem(
       networkLayer,
-      (x: number, y: number, entityIndex: number, entityID: string, owner: string) => {
+      (
+        x: number,
+        y: number,
+        entityIndex: number,
+        entityID: string,
+        owner: string,
+        name: string,
+        fractionID: number,
+      ) => {
         const id = formatEntityID(entityID)
         if (gameStore.getState().spaceships.has(id)) {
           return
         }
         const pos = snapToGrid(x, y, 16)
-        const ship = new HQShip(this, pos.x, pos.y, IMAGE.AI_SHIP, entityID, owner)
+        const ship = new HQShip(this, pos.x, pos.y, IMAGE.AI_SHIP, entityID, owner, fractionID)
         ship.setDepth(100)
         addSpaceship(id, ship)
         if (owner === networkLayer.connectedAddress) {
@@ -166,6 +174,7 @@ class GameScene extends Phaser.Scene {
               this.targetHQMoverShip = ship
             }, 100)
           })
+          ship.setPlayerName(name)
           ship.registerOnClickPredictCursor((pointer: Phaser.Input.Pointer) => {
             setTimeout(() => {
               if (this.gameUIState !== GAME_UI_STATE.NONE) {

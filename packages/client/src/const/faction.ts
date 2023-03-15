@@ -13,6 +13,7 @@ export const FACTION: {
     ship: ValueOf<typeof IMAGE>
     signSrc: string
     color: string
+    signImg: string
   }
 } = {
   10: {
@@ -25,6 +26,7 @@ export const FACTION: {
     ship: IMAGE.APE_SHIP,
     signSrc: '/assets/images/ape_ape_sign.png',
     color: '#5076C3',
+    signImg: IMAGE.APE_APE_SIGN,
   },
   11: {
     name: 'Alien Ape',
@@ -36,6 +38,7 @@ export const FACTION: {
     ship: IMAGE.ALIEN_SHIP,
     signSrc: '/assets/images/ape_alien_sign.png',
     color: '#BEF6AF',
+    signImg: IMAGE.APE_ALIEN_SIGN,
   },
   12: {
     name: 'AI Ape',
@@ -47,5 +50,6 @@ export const FACTION: {
     ship: IMAGE.AI_SHIP,
     signSrc: '/assets/images/ai_ape_sign.png',
     color: '#F091C8',
+    signImg: IMAGE.APE_AI_SIGN,
   },
 }
