@@ -43,12 +43,14 @@ contract InitResourceSystem is System {
       ResourceComponent.Resource memory r = rC.getValue(id);
       if (Resource.isContainResource(args.entity, args.resourceId)) r.rpb = (ADVANCED_REGEN * mult) / 200;
       r.cap = (ADVANCED_CAP * mult) / 100;
+      r.lrt = uint64(block.timestamp);
       rC.set(id, r);
     } else if (ty == uint32(EType.SPACESHIP) || ty == uint32(EType.HQSHIP)) {
       // Non storage
       ResourceComponent.Resource memory r = rC.getValue(id);
       rC.regen(id);
       r.cap = (ADVANCED_CAP * mult) / 100;
+      r.lrt = uint64(block.timestamp);
       rC.set(id, r);
     }
   }
