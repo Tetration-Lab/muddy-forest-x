@@ -5,6 +5,7 @@ export const SPRITE = {
   Capital_4: 'Capital_4',
   APE_APE_CAPITAL: 'APE_APE_CAPITAL',
   APE_ALINE_CAPITAL: 'APE_ALINE_CAPITAL',
+  BOMB: 'bomb',
   APE_AI_CAPITAL: 'APE_AI_CAPITAL',
   TELEPORT: 'TELEPORT',
   DOGE: 'dogeSheet',

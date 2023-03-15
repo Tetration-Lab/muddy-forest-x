@@ -20,6 +20,7 @@ export const initConfigAnim = (scene: Phaser.Scene) => {
   createAnimIdle(SPRITE.P7_2, SPRITE.P7_2, 0, 110, scene)
   createAnimIdle(SPRITE.P8_1, SPRITE.P8_1, 0, 110, scene)
   createAnimIdle(SPRITE.P8_2, SPRITE.P8_2, 0, 110, scene)
+  createAnimIdle(SPRITE.BOMB, SPRITE.BOMB, 0, 7, scene, 0, 20)
 }
 
 function createAnimIdle(

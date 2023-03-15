@@ -1,5 +1,6 @@
 import { FACTION } from '../../../const/faction'
 import { TILE_SIZE } from '../config/chunk'
+import constant from '../constant'
 import { IMAGE, SPRITE } from '../constant/resource'
 
 export const COLOR_GREEN = 0x00ff00
@@ -17,6 +18,8 @@ export class HQShip extends Phaser.GameObjects.Container {
   nameText: Phaser.GameObjects.Text
   fractionID = -1
   signFactionImg: Phaser.GameObjects.Image
+  laserSprite: Phaser.GameObjects.Rectangle
+  bombSprite: Phaser.GameObjects.Sprite
   constructor(
     scene: Phaser.Scene,
     x: number,
@@ -28,6 +31,12 @@ export class HQShip extends Phaser.GameObjects.Container {
   ) {
     super(scene, x, y)
     this.scene.add.existing(this)
+    //TODO: replace with sprite sheet
+    this.laserSprite = this.scene.add.rectangle(x, y, 48 + 16, 12, 0xff0000).setDepth(1000 + this.depth + 1)
+    this.bombSprite = this.scene.add.sprite(x, y, SPRITE.BOMB).setDepth(this.laserSprite.depth + 1)
+    this.bombSprite.play(SPRITE.BOMB)
+    this.bombSprite.setVisible(false)
+    this.laserSprite.setVisible(false)
     this.shipImg = this.scene.add.image(0, 0, texture).setDepth(this.depth + 1)
     this.shipImg.setInteractive()
     this.add(this.shipImg)
@@ -58,6 +67,37 @@ export class HQShip extends Phaser.GameObjects.Container {
       .image(this.nameText.x - this.nameText.displayWidth, this.nameText.y, FACTION[fractionID].signImg)
       .setDepth(1000)
     this.add(this.signFactionImg)
+  }
+
+  attackTo(targetPos: Phaser.Math.Vector2) {
+    this.laserSprite.setVisible(true)
+    this.laserSprite.setPosition(this.x, this.y)
+    this.laserSprite.setRotation(Phaser.Math.Angle.Between(this.x, this.y, targetPos.x, targetPos.y))
+    const tweenMove = this.scene.tweens.add({
+      targets: [this.laserSprite],
+      alpha: 1,
+      x: {
+        from: this.x,
+        to: targetPos.x,
+      },
+      y: {
+        from: this.y,
+        to: targetPos.y,
+      },
+      // },
+      ease: 'Linear', // 'Linear, 'Cubic', 'Elastic', 'Bounce', 'Back'
+      duration: 500,
+      repeat: 0, // -1: infinity
+      yoyo: false,
+    })
+    tweenMove.once(Phaser.Tweens.Events.TWEEN_COMPLETE, () => {
+      this.laserSprite.setVisible(false)
+      this.bombSprite.setPosition(targetPos.x, targetPos.y)
+      this.bombSprite.setVisible(true)
+      this.bombSprite.play(SPRITE.BOMB).once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+        this.bombSprite.setVisible(false)
+      })
+    })
   }
 
   setEnergy(e: number) {

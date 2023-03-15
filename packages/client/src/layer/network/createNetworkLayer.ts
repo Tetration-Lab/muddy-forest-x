@@ -96,7 +96,8 @@ export async function createNetworkLayer(config: SetupContractConfig) {
         range,
       })
       enqueueSnackbar(`Attack Queued`)
-      tx.wait().then((_) => enqueueSnackbar(`Attack successfully with energy ${energy}`))
+      await tx.wait()
+      enqueueSnackbar(`Attack successfully with energy ${energy}`)
       return tx
     } catch (err) {
       enqueueSnackbar(parseEtherError(err), { variant: 'error' })

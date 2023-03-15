@@ -105,8 +105,15 @@ export const AttackModal = ({
       const tx = await api.attack(id, targetId, Math.floor((energyUsedPercent * attackerEnergy) / 100), distance)
       await tx.wait()
     } catch (err) {
+      console.error(err)
     } finally {
       setAttacking(false)
+      const ship = gameStore.getState().spaceships.get(id)
+      if (ship) {
+        ship.clearLine()
+        ship.attackTo(targetSprite.getCenter())
+      }
+      console.log('done')
     }
   }, [id, targetId, energyUsedPercent, attackerEnergy, distance])
 
