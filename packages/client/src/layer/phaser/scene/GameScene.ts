@@ -269,7 +269,7 @@ class GameScene extends Phaser.Scene {
         //networkLayer.api.attack(this.targetHQMoverShip?.entityID, this.targetAttack?.entityID, energy, range)
         //}
         if (this.targetHQMoverShip) {
-          //this.targetHQMoverShip.resetPredictMovePosition()
+          this.targetHQMoverShip.clearPredictCursor()
           this.targetHQMoverShip.drawLine(COLOR_RED, this.targetAttack.x, this.targetAttack.y)
         }
         this.clearGameUIState()

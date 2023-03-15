@@ -180,6 +180,10 @@ export class HQShip extends Phaser.GameObjects.Container {
     this.graphics.clear()
   }
 
+  clearPredictCursor() {
+    this.predictCursor.setPosition(this.x, this.y)
+  }
+
   resetPredictMovePosition() {
     this.graphics.clear()
     this.predictCursor.setPosition(this.x, this.y)
