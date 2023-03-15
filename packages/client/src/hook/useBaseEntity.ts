@@ -22,7 +22,7 @@ import _ from 'lodash'
 import { EntityType } from '../const/types'
 
 export const useBaseEntity = (id: string) => {
-  const { world, components } = useStore(appStore, (state) => state.networkLayer)
+  const { world, components, network, api } = useStore(appStore, (state) => state.networkLayer)
   const { eid, ind, energyIndex, resourceIndexes, containedResources } = useMemo(() => {
     const eid = formatEntityID(id)
     const ind = world.registerEntity({ id: eid })
@@ -57,6 +57,14 @@ export const useBaseEntity = (id: string) => {
   }, [resourceIndexes])
 
   useEffect(() => {
+    if (uninitilizedResources.length > 0) {
+      if (entity?.owner === network.connectedAddress.get()) {
+        api.initResources(eid, uninitilizedResources)
+      }
+    }
+  }, [eid, uninitilizedResources, entity?.owner])
+
+  useEffect(() => {
     const name = getComponentValue(components.Name, ind)?.value
     const energy = getComponentValue(components.Resource, energyIndex)
     const owner = getComponentValue(components.Owner, ind)?.value
@@ -70,14 +78,13 @@ export const useBaseEntity = (id: string) => {
         ALL_ADVANCED_RESOURCE_ID[i],
         {
           value: 0,
-          cap: Number(r?.cap ?? ADVANCED_CAP * getLevelResourceStorageMultiplier(level)) / 100,
-          rpb:
-            Number(
-              r?.rpb ??
-                ((!type || type === EntityType.PLANET) && containedResources.includes(ALL_ADVANCED_RESOURCE_ID[i])
-                  ? ADVANCED_REGEN * getLevelResourceStorageMultiplier(level)
-                  : 0),
-            ) / 100,
+          cap: Number(r?.cap ?? (ADVANCED_CAP * getLevelResourceStorageMultiplier(level)) / 100),
+          rpb: Number(
+            r?.rpb ??
+              ((!type || type === EntityType.PLANET) && containedResources.includes(ALL_ADVANCED_RESOURCE_ID[i])
+                ? (ADVANCED_REGEN * getLevelResourceStorageMultiplier(level)) / 100
+                : 0),
+          ),
           lrt: r?.lrt ?? 0,
         },
       ] as const
@@ -109,12 +116,14 @@ export const useBaseEntity = (id: string) => {
       .subscribe((u) => {
         setEntity((e) => {
           const id = world.entities[u.entity]
+          const rid = ALL_ADVANCED_RESOURCE_ID[ids.indexOf(id)]
+          if (uninitilizedResources.includes(rid)) setUninitializedResources((e) => e.filter((e) => e !== rid))
           return {
             ...e,
             resources: new Map([
               ...e.resources,
               [
-                ALL_ADVANCED_RESOURCE_ID[ids.indexOf(id)],
+                rid,
                 {
                   value: Number(u.value[0].value),
                   cap: Number(u.value[0].cap),
@@ -127,7 +136,7 @@ export const useBaseEntity = (id: string) => {
         })
       })
     return () => resources.unsubscribe()
-  }, [resourceIndexes])
+  }, [resourceIndexes, uninitilizedResources])
 
   useEffect(() => {
     const energy = components.Resource.update$

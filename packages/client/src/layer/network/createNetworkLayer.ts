@@ -12,7 +12,6 @@ import { enqueueSnackbar } from 'notistack'
 import { parseEtherError } from '../../utils/utils'
 
 export async function createNetworkLayer(config: SetupContractConfig) {
-  console.log(config, 'config')
   const perlin = await createPerlin()
 
   // --- WORLD ----------------------------------------------------------------------
@@ -87,7 +86,6 @@ export async function createNetworkLayer(config: SetupContractConfig) {
   }
 
   const attack = async (entity: string, targetEntity: string, energy: number, range: number) => {
-    console.log(targetEntity)
     try {
       const tx = await systems['system.Attack'].executeTyped({
         entity: entity,
@@ -111,6 +109,15 @@ export async function createNetworkLayer(config: SetupContractConfig) {
       factionId: factionId,
       HQShipId: ethers.BigNumber.from(ethers.utils.randomBytes(32)),
     })
+  }
+
+  const initResources = async (entity: string, resources: string[]) => {
+    await systems['system.InitResource'].executeTypedMulti(
+      resources.map((e) => ({
+        entity,
+        resourceId: e,
+      })),
+    )
   }
 
   const debug = async () => {}
@@ -140,6 +147,7 @@ export async function createNetworkLayer(config: SetupContractConfig) {
       setupName,
       move,
       attack,
+      initResources,
     },
     singletonIndex,
     playerIndex,
