@@ -117,24 +117,23 @@ class GameScene extends Phaser.Scene {
         sprite.setDepth(100)
         sprite.setScale(planetLevel(id) / 2 + 1)
         sprite.play(spriteKey)
-        sprite.registerOnClick((pointer: Phaser.Input.Pointer) => {
-          if (!pointer.leftButtonReleased()) {
+        sprite.registerOnClick((p: Phaser.Input.Pointer) => {
+          if (!p.leftButtonReleased()) {
             return
           }
           if (this.gameUIState === GAME_UI_STATE.SELECTED_PLANET) {
             // change to attack
             this.gameUIState = GAME_UI_STATE.SELECTED_ATTACK_BY_PLANET
             this.targetAttack = sprite
-          } else {
-            openPlanetModal(id, pointer.position.clone())
+            return
           }
           if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
             // change to attack
             this.gameUIState = GAME_UI_STATE.SELECTED_ATTACK_BY_SHIP
             this.targetAttack = sprite
-          } else {
-            openPlanetModal(id, pointer.position.clone())
+            return
           }
+          openPlanetModal(id, new Phaser.Math.Vector2(p.x, p.y))
         })
 
         addPlanet(id, sprite)
@@ -175,6 +174,7 @@ class GameScene extends Phaser.Scene {
         const ship = new HQShip(this, pos.x, pos.y, IMAGE.AI_SHIP, entityID, owner, fractionID)
         ship.setDepth(100)
         addSpaceship(id, ship)
+        ship.setPlayerName(name)
         if (owner === networkLayer.connectedAddress) {
           this.followPoint.x = +pos.x
           this.followPoint.y = +pos.y
@@ -187,7 +187,6 @@ class GameScene extends Phaser.Scene {
               this.targetHQMoverShip = ship
             }, 100)
           })
-          ship.setPlayerName(name)
           ship.registerOnClickPredictCursor((pointer: Phaser.Input.Pointer) => {
             setTimeout(() => {
               if (this.gameUIState !== GAME_UI_STATE.NONE) {
@@ -223,6 +222,8 @@ class GameScene extends Phaser.Scene {
 
   clearAllDrawLine() {
     if (this.targetHQMoverShip) {
+      this.targetHQMoverShip.resetPredictMovePosition()
+      this.targetHQMoverShip.clearPredictCursor()
       this.targetHQMoverShip.clearLine()
     }
     if (this.targetPlanet) {
@@ -279,10 +280,7 @@ class GameScene extends Phaser.Scene {
 
     this.input.on('pointerup', async (p) => {
       if (this.input.activePointer.rightButtonReleased()) {
-        if (this.targetHQMoverShip) {
-          this.targetHQMoverShip.resetPredictMovePosition()
-          this.targetHQMoverShip.clearPredictCursor()
-        }
+        this.clearAllDrawLine()
         this.gameUIState = GAME_UI_STATE.NONE
       }
       if (this.gameUIState === GAME_UI_STATE.SELECTED_ATTACK_BY_PLANET) {
