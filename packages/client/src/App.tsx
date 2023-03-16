@@ -58,7 +58,7 @@ function App() {
           autoHideDuration={2000}
           style={{ fontFamily: 'Fira Mono', borderRadius: '100px', justifyContent: 'center' }}
         >
-          {true ? (
+          {!loaded ? (
             <Loading msg={loadingMsg.msg} percentage={loadingMsg.percentage} />
           ) : (
             <BrowserRouter>
