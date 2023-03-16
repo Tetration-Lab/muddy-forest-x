@@ -29,12 +29,13 @@ import { HashTwoRespItem } from '../../../miner/hasher.worker'
 import { createSpawnHQShipSystem } from '../../../system/createSpawnHQShipSystem'
 import { createTeleportSystem } from '../../../system/createTeleportSystem'
 import { planetLevel, PLANET_RARITY } from '../../../const/planet'
-import { COLOR_RED, HQShip } from '../gameobject/HQShip'
+import { HQShip } from '../gameobject/HQShip'
 import { formatEntityID } from '@latticexyz/network'
 import { dataStore, initPlanetPosition } from '../../../store/data'
 import { FACTION } from '../../../const/faction'
 import { openStdin } from 'process'
 import { getAddress } from 'ethers/lib/utils'
+import { COLOR_RED } from '../constant'
 
 const ZOOM_OUT_LIMIT = 0.01
 const ZOOM_IN_LIMIT = 2
@@ -78,7 +79,7 @@ class GameScene extends Phaser.Scene {
   gameUIState: GAME_UI_STATE = GAME_UI_STATE.NONE
   targetHQMoverShip: HQShip | null = null
   targetAttack: HQShip | Planet | null = null
-
+  targetPlanet: Planet | null = null
   constructor() {
     super(GAME_SCENE)
   }
@@ -255,6 +256,13 @@ class GameScene extends Phaser.Scene {
     }))
 
     this.input.on('pointerup', async (p) => {
+      if (this.input.activePointer.rightButtonReleased()) {
+        if (this.targetHQMoverShip) {
+          this.targetHQMoverShip.resetPredictMovePosition()
+          this.targetHQMoverShip.clearPredictCursor()
+        }
+        this.gameUIState = GAME_UI_STATE.NONE
+      }
       if (this.gameUIState === GAME_UI_STATE.SELECTED_ATTACK) {
         const networkLayer = appStore.getState().networkLayer
         openAttackModal(this.targetHQMoverShip.entityID, this.targetAttack.entityID, new Phaser.Math.Vector2(p.x, p.y))
@@ -355,6 +363,15 @@ class GameScene extends Phaser.Scene {
           Math.floor(this.cursorMove.y / TILE_SIZE),
         )
         this.targetHQMoverShip.drawPredictLine()
+      }
+    }
+    if (this.gameUIState === GAME_UI_STATE.SELECTED_PLANET) {
+      if (this.targetPlanet) {
+        this.targetPlanet.predictMove(
+          Math.floor(this.cursorMove.x / TILE_SIZE),
+          Math.floor(this.cursorMove.y / TILE_SIZE),
+        )
+        this.targetPlanet.drawPredictLine()
       }
     }
   }

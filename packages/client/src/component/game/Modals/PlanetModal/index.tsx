@@ -2,7 +2,7 @@ import { Collapse, Grid, IconButton, Typography, useTheme } from '@mui/material'
 import { Box, Stack } from '@mui/system'
 import { useStore } from 'zustand'
 import Draggable from 'react-draggable'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { generatePlanetName } from '../../../../utils/random'
 import { closePlanetModal, gameStore } from '../../../../store/game'
 import { dataStore } from '../../../../store/data'
@@ -34,6 +34,14 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
   const isOwner = useMemo(() => planet?.owner === network.connectedAddress.get(), [planet?.owner])
   const maxBuildings = useMemo(() => maxBuildingPerLevel(planet?.level ?? 0), [planet?.level])
   const isResourceExpanded = useBoolean(true)
+
+  useEffect(() => {
+    console.log(planet?.owner, 'owner')
+    planetSprite.setOwner(false)
+    if (planet?.owner) {
+      planetSprite.setOwner(true)
+    }
+  }, [planet?.owner])
 
   if (!planet || !planetSprite) return <></>
 

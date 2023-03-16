@@ -1,10 +1,7 @@
 import { FACTION } from '../../../const/faction'
 import { TILE_SIZE } from '../config/chunk'
-import constant from '../constant'
+import constant, { COLOR_GREEN } from '../constant'
 import { IMAGE, SPRITE } from '../constant/resource'
-
-export const COLOR_GREEN = 0x00ff00
-export const COLOR_RED = 0xff0000
 
 export class HQShip extends Phaser.GameObjects.Container {
   entityID: string
@@ -20,6 +17,7 @@ export class HQShip extends Phaser.GameObjects.Container {
   signFactionImg: Phaser.GameObjects.Image
   laserSprite: Phaser.GameObjects.Rectangle
   bombSprite: Phaser.GameObjects.Sprite
+  isOwner = false
   constructor(
     scene: Phaser.Scene,
     x: number,
@@ -67,6 +65,10 @@ export class HQShip extends Phaser.GameObjects.Container {
       .image(this.nameText.x - this.nameText.displayWidth, this.nameText.y, FACTION[fractionID].signImg)
       .setDepth(1000)
     this.add(this.signFactionImg)
+  }
+
+  setOwner(isOwner: boolean) {
+    this.isOwner = isOwner
   }
 
   attackTo(targetPos: Phaser.Math.Vector2) {
