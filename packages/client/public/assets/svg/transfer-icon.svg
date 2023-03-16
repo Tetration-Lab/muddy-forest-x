@@ -1,0 +1,51 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g clip-path="url(#clip0_1058_590208)">
+<path d="M5 3H4V4H5V3Z" fill="white"/>
+<path d="M4 4H3V5H4V4Z" fill="white"/>
+<path d="M3 5H2V6H3V5Z" fill="white"/>
+<path d="M2 6H1V7H2V6Z" fill="white"/>
+<path d="M3 6H2V7H3V6Z" fill="white"/>
+<path d="M4 6H3V7H4V6Z" fill="white"/>
+<path d="M5 6H4V7H5V6Z" fill="white"/>
+<path d="M6 6H5V7H6V6Z" fill="white"/>
+<path d="M7 6H6V7H7V6Z" fill="white"/>
+<path d="M8 6H7V7H8V6Z" fill="white"/>
+<path d="M9 6H8V7H9V6Z" fill="white"/>
+<path d="M10 6H9V7H10V6Z" fill="white"/>
+<path d="M11 6H10V7H11V6Z" fill="white"/>
+<path d="M3 7H2V8H3V7Z" fill="white"/>
+<path d="M4 8H3V9H4V8Z" fill="white"/>
+<path d="M5 9H4V10H5V9Z" fill="white"/>
+<path d="M20 14H19V15H20V14Z" fill="white"/>
+<path d="M21 15H20V16H21V15Z" fill="white"/>
+<path d="M22 16H21V17H22V16Z" fill="white"/>
+<path d="M14 17H13V18H14V17Z" fill="white"/>
+<path d="M15 17H14V18H15V17Z" fill="white"/>
+<path d="M16 17H15V18H16V17Z" fill="white"/>
+<path d="M17 17H16V18H17V17Z" fill="white"/>
+<path d="M18 17H17V18H18V17Z" fill="white"/>
+<path d="M19 17H18V18H19V17Z" fill="white"/>
+<path d="M20 17H19V18H20V17Z" fill="white"/>
+<path d="M21 17H20V18H21V17Z" fill="white"/>
+<path d="M22 17H21V18H22V17Z" fill="white"/>
+<path d="M23 17H22V18H23V17Z" fill="white"/>
+<path d="M22 18H21V19H22V18Z" fill="white"/>
+<path d="M21 19H20V20H21V19Z" fill="white"/>
+<path d="M20 20H19V21H20V20Z" fill="white"/>
+<rect x="12" width="12" height="12" fill="url(#pattern0)"/>
+<rect y="12" width="12" height="12" fill="url(#pattern1)"/>
+</g>
+<defs>
+<pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image0_1058_590208" transform="scale(0.03125)"/>
+</pattern>
+<pattern id="pattern1" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image1_1058_590208" transform="scale(0.03125)"/>
+</pattern>
+<clipPath id="clip0_1058_590208">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+<image id="image0_1058_590208" width="32" height="32" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAACHElEQVRYhd2WT2rjMBTGvwyzGIwXnYDB5Ab2enSBgcnayyE3mG17AFsH6LZzg5Clt3VhDhBl2/gGJiSQBhpCd6+LWhollWzLCZSZDwyy9ef76VlP0oCI8JH69KHu/zzAcoNsuUF2zhif+xoDQBwgrd9RvzvDDFwW4amxoZ67gnSKwKlxPh0a2yWTrXNEGiNgmnE+HWL8/YuxffHnBclkq/dvjYgRwPCPeRwgPaxGDXM5hpB92kDe/YLlBtlpR5u8sFJlE5xmnALg9dhHENY0FEIgDpDaFpwXVhBCIM9zK6DsL4QAYB6ncREW5Z4DwDjyjZ2bFAdIb34/cAD4+e3K2r9TFvwFqdRAdXjTJElU+L2wQjJ5q5fmbXLaCYtyzyVMHCBljOGwGsELK3hhpdKzq7kzgA4iy15Y4bAaIZ8OkUy2Tua9AcaRr1LysBqp1HM17w2g6xzziwCcq4sBNKVak5yO46/7MgWAooy4TEk9/BJitth1/h2dAKTxkx+pgYtyz8eRL3c56MYuII0AJmMpuTsyxjBbPBzVnYI0yboGGGN48iNuM5ebTj4d4vbXD6PRbLHjs8WOM8asAO8iEAfI5IVCzlLfeBSE5U6gS4I5Hcd6wy4gfY2ViKj1eVxT9rimjGrdL59VmYjo+q7Iru8K9U1r3zp2JwAbCBHRfD5XZRdj+TjdiqVMV7bWUFvUC8AA4mx8EYBL6P85jPrqFbn907pno9rYAAAAAElFTkSuQmCC"/>
+<image id="image1_1058_590208" width="32" height="32" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAACCUlEQVRYhcWXu2obQRSG/xOCixQBJ2/gOqSVweBSgVRypULGqZVujfwUCd5O20agGBcGqRJoS4Nx0hq18RvYOAEbEhL+FKsZZjSz1sxYoANbaC/n++aiMzNCEuuMZ2ulA3juuykiMTkIQFJ70isQAycJEaEEWi+KOkMQ0Xref6uSDXsjoOqJ6EidA/x7Z/NSJVKGwIEDwPs3LQx7I+x/3uOwN6rtxq9HY3Q+tfTv2B7wwn0SoQljBPSYPxaxEqECQfAUiRCBKHisxDIB/v6RXqpDJB4TSGp5rESdwErgIRI+gZXCl0lYAiJCknjRWC18MhtjMqsKkFo71LPFSigiwtsvxOaH6saf6zSgGaryfXx3iKLMQVJXSqcUkxQRYfckAwD0p8fY2AIevrug0dkYnUbLgV5cnetvFRgAijJHt5lZZdoSUEullmhm+mOV7N9Pf6sV1AdehIuIZtUuRqaEmcwnUtfinbe7uLg6t+BFmVucpTsZU0LF7a8bnF4OnHdNsBIz4f3psd5vKG7QVqpOAgBOLwcO2ISbE26eyxKoHQJz/LrNTIoytyRevXytJergixPOF8HL8Vxi6XsKDkCKMoeIWFeyQIiECQ/NGb0nrJNIgQOoJoPvCvm0vX1Akuw2MyJyQ6o5TxCY5yEBOP+SUIEnHUza2wcyX8BCzyVOJB+pVhVrP5yuXeA/jd5tpW5EkjMAAAAASUVORK5CYII="/>
+</defs>
+</svg>

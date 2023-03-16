@@ -20,6 +20,7 @@ import {
   gameStore,
   openAttackModal,
   openPlanetModal,
+  openSendModal,
   openTeleport,
 } from '../../../store/game'
 import { createSpawnCapitalSystem } from '../../../system/createSpawnCapitalSystem'
@@ -124,7 +125,7 @@ class GameScene extends Phaser.Scene {
             return
           }
           if (this.gameUIState === GAME_UI_STATE.SELECTED_PLANET_SEND) {
-            alert('send')
+            openSendModal(this.targetPlanet.entityID, id, new Phaser.Math.Vector2(p.x, p.y))
             this.drawPlanetSends.delete(this.targetPlanet.entityID)
             this.gameUIState = GAME_UI_STATE.NONE
             return

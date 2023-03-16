@@ -6,6 +6,7 @@ import { ChatBox } from '../../component/Chatbox'
 import { GameActionBox, GameActionBoxMode } from '../../component/game/GameActionBox'
 import { AttackModal } from '../../component/game/Modals/AttackModal'
 import { PlanetModal } from '../../component/game/Modals/PlanetModal'
+import { SendModal } from '../../component/game/Modals/SendModal'
 import { Profile } from '../../component/game/Profile'
 import { SettingActionBox } from '../../component/game/SettingActionBox'
 import { TeleportActionBox } from '../../component/game/TeleportActionBox'
@@ -182,6 +183,7 @@ export const UILayer = () => {
       {/* Modals */}
       <AttackModals />
       <PlanetModals />
+      <SendModals />
     </div>
   )
 }
@@ -203,6 +205,17 @@ const AttackModals = () => {
     <>
       {modals.map((k) => (
         <AttackModal id={k[0]} targetId={k[1][0]} position={k[1][1]} key={k[0]} />
+      ))}
+    </>
+  )
+}
+
+const SendModals = () => {
+  const modals = useStore(gameStore, (state) => [...state.sendModals.entries()])
+  return (
+    <>
+      {modals.map((k) => (
+        <SendModal id={k[0]} targetId={k[1][0]} position={k[1][1]} key={k[0]} />
       ))}
     </>
   )
