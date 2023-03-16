@@ -7,6 +7,7 @@ export type Store = {
   teleportAction?: string
   planetModals: Map<string, Phaser.Math.Vector2>
   attackModals: Map<string, [string, Phaser.Math.Vector2]>
+  sendModals: Map<string, [string, Phaser.Math.Vector2]>
   planets: Map<string, Planet>
   spaceships: Map<string, HQShip>
   focusLocation: (v: Phaser.Types.Math.Vector2Like) => void
@@ -16,6 +17,7 @@ const initialState: Store = {
   teleportAction: undefined,
   planetModals: new Map(),
   attackModals: new Map(),
+  sendModals: new Map(),
   planets: new Map(),
   spaceships: new Map(),
   focusLocation: () => {},
@@ -85,5 +87,21 @@ export const closeAttackModal = (id: string) => {
     const attackModals = new Map(state.attackModals)
     attackModals.delete(id)
     return { attackModals }
+  })
+}
+
+export const openSendModal = (id: string, targetId: string, position: Phaser.Math.Vector2) => {
+  gameStore.setState((state) => {
+    const sendModals = new Map(state.sendModals)
+    sendModals.set(id, [targetId, position])
+    return { sendModals }
+  })
+}
+
+export const closeSendModal = (id: string) => {
+  gameStore.setState((state) => {
+    const sendModals = new Map(state.sendModals)
+    sendModals.delete(id)
+    return { sendModals }
   })
 }
