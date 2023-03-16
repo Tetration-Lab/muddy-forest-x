@@ -164,7 +164,7 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
             {isOwner && (
               <Stack direction="row" spacing={1} justifyContent="center">
                 <MainButton onClick={() => onAttack()}>Attack</MainButton>
-                <MainButton>Build</MainButton>
+                <MainButton>Send</MainButton>
               </Stack>
             )}
           </Stack>
