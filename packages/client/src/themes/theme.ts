@@ -27,6 +27,7 @@ export const theme = createTheme({
     common: {
       green: '#4BB543',
       gold: '#FFD700',
+      orange: '#D67D2F',
     },
     background: {
       paper: '#F8F9FA',

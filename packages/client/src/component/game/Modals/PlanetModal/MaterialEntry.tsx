@@ -1,4 +1,4 @@
-import { Badge, Typography, useTheme } from '@mui/material'
+import { Badge, Box, Typography, useTheme } from '@mui/material'
 import { Stack } from '@mui/system'
 import { useMemo } from 'react'
 import { MATERIALS } from '../../../../const/materials'
@@ -28,9 +28,9 @@ export const MaterialEntry = ({ id, resource, disabled }: MaterialEntryProps) =>
       value={`${value}`}
       suffix={
         disabled ? (
-          <GenericTag value="Inactive" color={theme.palette.common.gold} textColor="black" />
+          <Box sx={{ borderRadius: '100%', backgroundColor: theme.palette.common.orange, p: 0.5 }} />
         ) : (
-          <GenericTag value="Active" color={theme.palette.common.green} />
+          <Box sx={{ borderRadius: '100%', backgroundColor: theme.palette.common.green, p: 0.5 }} />
         )
       }
     />

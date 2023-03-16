@@ -1,10 +1,20 @@
 import { Typography } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { Box } from '@mui/system'
+import { Box, SxProps } from '@mui/system'
 
-export const GenericTag = ({ color, value, textColor }: { color: string; value: string; textColor?: string }) => {
+export const GenericTag = ({
+  color,
+  value,
+  textColor,
+  sx,
+}: {
+  color: string
+  value: string
+  textColor?: string
+  sx?: SxProps
+}) => {
   return (
-    <Box sx={{ borderRadius: '4px', backgroundColor: color }}>
+    <Box sx={{ borderRadius: '4px', backgroundColor: color, ...sx }}>
       <Typography sx={{ fontSize: '12px', fontWeight: 500, px: '3px', py: '1px', color: textColor }}>
         {value}
       </Typography>
