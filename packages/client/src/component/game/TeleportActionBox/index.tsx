@@ -16,6 +16,7 @@ import { useResourceRegen } from '../../../hook/useResourceRegen'
 import { InfoTab } from '../Modals/PlanetModal/InfoTab'
 import { MainButton } from '../../common/MainButton'
 import { WarningBox } from '../../common/WarningBox'
+import { SpriteEntry } from '../Modals/AttackModal/SpriteEntry'
 
 export const TeleportActionBox = ({ id }: { id: string }) => {
   const theme = useTheme()
@@ -76,15 +77,12 @@ export const TeleportActionBox = ({ id }: { id: string }) => {
         </Typography>
         <CloseModalButton onClick={closeTeleport} />
       </Stack>
-      <GameItemEntry
-        iconUrl={shipSprite?.shipImg?.texture?.manager?.getBase64(shipSprite?.shipImg?.texture?.key)}
-        title={owner?.name}
-        description={`${shipSprite?.coordinate?.x}, ${shipSprite?.coordinate?.y}`}
+      <SpriteEntry
+        sprite={shipSprite?.shipImg}
+        name={owner?.name}
+        position={shipSprite?.coordinate}
         onClick={() => focusLocation(shipSprite?.getPosition())}
-        sx={{
-          border: `2px solid ${FACTION[owner?.faction]?.color}`,
-          borderStyle: 'outset',
-        }}
+        faction={owner?.faction}
       />
       <Stack spacing={1} p={1} sx={{ backgroundColor: theme.palette.grayScale.black, borderRadius: '8px' }}>
         <Typography sx={{ fontSize: 14 }}>Teleport Position</Typography>

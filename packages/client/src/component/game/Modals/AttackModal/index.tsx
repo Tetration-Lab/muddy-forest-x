@@ -18,6 +18,7 @@ import { CloseModalButton } from '../../common/CloseModalButton'
 import { GameItem } from '../../common/GameItem'
 import { GameItemEntry } from '../PlanetModal/GameItemEntry'
 import { EnergyInfoTab, InfoTab } from '../PlanetModal/InfoTab'
+import { SpriteEntry } from './SpriteEntry'
 
 export const AttackModal = ({
   id,
@@ -164,32 +165,30 @@ export const AttackModal = ({
           </Stack>
           <Stack spacing={1} className="inner-attack-modal">
             <Typography sx={{ fontSize: 14, fontWeight: 400 }}>Target</Typography>
-            <GameItemEntry
-              iconUrl={targetSprite?.texture?.manager?.getBase64(targetSprite?.texture?.key)}
-              title={targetName}
-              description={`${Math.floor(targetPosition?.x / TILE_SIZE)}, ${Math.floor(targetPosition?.y / TILE_SIZE)}`}
-              onClick={() => focusLocation(targetPosition)}
-              sx={{
-                border: `2px solid ${FACTION[targetOwner?.faction]?.color}`,
-                borderStyle: 'outset',
+            <SpriteEntry
+              sprite={targetSprite}
+              name={targetName}
+              position={{
+                x: Math.floor(targetPosition?.x / TILE_SIZE),
+                y: Math.floor(targetPosition?.y / TILE_SIZE),
               }}
+              faction={targetOwner?.faction}
+              onClick={() => focusLocation(targetPosition)}
             />
             <Stack direction="row" gap={1}>
               <EnergyInfoTab key={target?.entity?.energy?.value} {...target?.entity?.energy} />
               <InfoTab iconSrc="/assets/svg/shield-icon.svg" title={`${target?.entity?.defense}%`} />
             </Stack>
             <Typography sx={{ fontSize: 14, fontWeight: 400 }}>Attacker</Typography>
-            <GameItemEntry
-              iconUrl={attackerSprite?.texture?.manager?.getBase64(attackerSprite?.texture?.key)}
-              title={attackerName}
-              description={`${Math.floor(attackerPosition?.x / TILE_SIZE)}, ${Math.floor(
-                attackerPosition?.y / TILE_SIZE,
-              )}`}
-              onClick={() => focusLocation(attackerPosition)}
-              sx={{
-                border: `2px solid ${FACTION[attackerOwner?.faction]?.color}`,
-                borderStyle: 'outset',
+            <SpriteEntry
+              sprite={attackerSprite}
+              name={attackerName}
+              position={{
+                x: Math.floor(attackerPosition?.x / TILE_SIZE),
+                y: Math.floor(attackerPosition?.y / TILE_SIZE),
               }}
+              faction={attackerOwner?.faction}
+              onClick={() => focusLocation(attackerPosition)}
             />
             <Stack direction="row" spacing={1}>
               <InfoTab iconSrc="/assets/svg/distance-icon.svg" title={`${distance} m`} />
