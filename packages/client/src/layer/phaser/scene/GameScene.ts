@@ -46,7 +46,9 @@ const debug = import.meta.env.DEV && false
 export enum GAME_UI_STATE {
   NONE = 'NONE',
   SELECTED_HQ_SHIP = 'SELECTED_HQ_SHIP',
-  SELECTED_ATTACK = 'SELECTED_ATTACK',
+  SELECTED_ATTACK_BY_SHIP = 'SELECTED_ATTACK_BY_SHIP',
+  SELECTED_ATTACK_BY_PLANET = 'SELECTED_ATTACK_BY_PLANET',
+  SELECTED_PLANET = 'SELECTED_PLANET',
 }
 class GameScene extends Phaser.Scene {
   bg!: Phaser.GameObjects.TileSprite
@@ -83,6 +85,7 @@ class GameScene extends Phaser.Scene {
   targetPlanet: Planet | null = null
   constructor() {
     super(GAME_SCENE)
+    appStore.setState({ gameScene: this })
   }
 
   handleWorker = async (res: HashTwoRespItem[]) => {
@@ -118,9 +121,16 @@ class GameScene extends Phaser.Scene {
           if (!pointer.leftButtonReleased()) {
             return
           }
+          if (this.gameUIState === GAME_UI_STATE.SELECTED_PLANET) {
+            // change to attack
+            this.gameUIState = GAME_UI_STATE.SELECTED_ATTACK_BY_PLANET
+            this.targetAttack = sprite
+          } else {
+            openPlanetModal(id, pointer.position.clone())
+          }
           if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
             // change to attack
-            this.gameUIState = GAME_UI_STATE.SELECTED_ATTACK
+            this.gameUIState = GAME_UI_STATE.SELECTED_ATTACK_BY_SHIP
             this.targetAttack = sprite
           } else {
             openPlanetModal(id, pointer.position.clone())
@@ -211,6 +221,16 @@ class GameScene extends Phaser.Scene {
     }, 100)
   }
 
+  clearAllDrawLine() {
+    if (this.targetHQMoverShip) {
+      this.targetHQMoverShip.clearLine()
+    }
+    if (this.targetPlanet) {
+      this.targetPlanet.clearLine()
+    }
+    this.clearGameUIState()
+  }
+
   async onCreate() {
     initConfigAnim(this)
     this.input.setPollAlways()
@@ -265,19 +285,17 @@ class GameScene extends Phaser.Scene {
         }
         this.gameUIState = GAME_UI_STATE.NONE
       }
-      if (this.gameUIState === GAME_UI_STATE.SELECTED_ATTACK) {
-        const networkLayer = appStore.getState().networkLayer
+      if (this.gameUIState === GAME_UI_STATE.SELECTED_ATTACK_BY_PLANET) {
+        openAttackModal(this.targetPlanet.entityID, this.targetAttack.entityID, new Phaser.Math.Vector2(p.x, p.y))
+        if (this.targetPlanet) {
+          this.targetPlanet.clearPredictCursor()
+          this.targetPlanet.drawLine(COLOR_RED, this.targetAttack.x, this.targetAttack.y)
+        }
+        this.clearGameUIState()
+        return
+      }
+      if (this.gameUIState === GAME_UI_STATE.SELECTED_ATTACK_BY_SHIP) {
         openAttackModal(this.targetHQMoverShip.entityID, this.targetAttack.entityID, new Phaser.Math.Vector2(p.x, p.y))
-        //if (networkLayer) {
-        //const range = Phaser.Math.Distance.Between(
-        //this.targetHQMoverShip.coordinate.x,
-        //this.targetHQMoverShip.coordinate.y,
-        //this.targetAttack.coordinate.x,
-        //this.targetAttack.coordinate.y,
-        //)
-        //const energy = this.targetHQMoverShip.energy
-        //networkLayer.api.attack(this.targetHQMoverShip?.entityID, this.targetAttack?.entityID, energy, range)
-        //}
         if (this.targetHQMoverShip) {
           this.targetHQMoverShip.clearPredictCursor()
           this.targetHQMoverShip.drawLine(COLOR_RED, this.targetAttack.x, this.targetAttack.y)
@@ -358,15 +376,6 @@ class GameScene extends Phaser.Scene {
     // gridPos  with zoom scale
 
     this.cursorMove.setPosition(gridX, gridY)
-    if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
-      if (this.targetHQMoverShip) {
-        this.targetHQMoverShip.predictMove(
-          Math.floor(this.cursorMove.x / TILE_SIZE),
-          Math.floor(this.cursorMove.y / TILE_SIZE),
-        )
-        this.targetHQMoverShip.drawPredictLine()
-      }
-    }
     if (this.gameUIState === GAME_UI_STATE.SELECTED_PLANET) {
       if (this.targetPlanet) {
         this.targetPlanet.predictMove(
@@ -374,6 +383,15 @@ class GameScene extends Phaser.Scene {
           Math.floor(this.cursorMove.y / TILE_SIZE),
         )
         this.targetPlanet.drawPredictLine()
+      }
+    }
+    if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
+      if (this.targetHQMoverShip) {
+        this.targetHQMoverShip.predictMove(
+          Math.floor(this.cursorMove.x / TILE_SIZE),
+          Math.floor(this.cursorMove.y / TILE_SIZE),
+        )
+        this.targetHQMoverShip.drawPredictLine()
       }
     }
   }

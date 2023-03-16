@@ -15,10 +15,8 @@ export const Game = () => {
       network: networkLayer,
       gotoGame: () => {
         // do nothing ?
-        console.log('ontinue gamec')
       },
       gotoIntroPage: () => {
-        console.log('createCheckFractionSystem done')
         navigate(`intro/${window.location.search}`)
       },
     })

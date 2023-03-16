@@ -1,5 +1,6 @@
 import { TILE_SIZE } from '../config/chunk'
 import { COLOR_GREEN, COLOR_RED } from '../constant'
+import { SPRITE } from '../constant/resource'
 
 export class Planet extends Phaser.GameObjects.Sprite {
   rect: Phaser.GameObjects.Rectangle
@@ -7,6 +8,8 @@ export class Planet extends Phaser.GameObjects.Sprite {
   predictCursor!: Phaser.GameObjects.Rectangle
   graphics!: Phaser.GameObjects.Graphics
   isOwner = false
+  laserSprite: Phaser.GameObjects.Rectangle
+  bombSprite: Phaser.GameObjects.Sprite
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string, entityID: string) {
     super(scene, x, y, texture)
     this.rect = this.scene.add.rectangle(this.x, this.y, this.displayWidth, this.displayHeight, 0x0000ff)
@@ -16,6 +19,12 @@ export class Planet extends Phaser.GameObjects.Sprite {
     this.setInteractive()
     this.graphics = this.scene.add.graphics()
     this.predictCursor = this.scene.add.rectangle(this.x, this.y, 0, 0, 0x00ff00).setAlpha(0.5)
+
+    this.laserSprite = this.scene.add.rectangle(x, y, 48 + 16, 12, 0xff0000).setDepth(1000 + this.depth + 1)
+    this.bombSprite = this.scene.add.sprite(x, y, SPRITE.BOMB).setDepth(this.laserSprite.depth + 1)
+    this.bombSprite.play(SPRITE.BOMB)
+    this.bombSprite.setVisible(false)
+    this.laserSprite.setVisible(false)
   }
 
   registerOnClick(callback: (pointer?: Phaser.Input.Pointer) => void): this {
@@ -25,6 +34,37 @@ export class Planet extends Phaser.GameObjects.Sprite {
 
   setOwner(isOwner: boolean) {
     this.isOwner = isOwner
+  }
+
+  attackTo(targetPos: Phaser.Math.Vector2) {
+    this.laserSprite.setVisible(true)
+    this.laserSprite.setPosition(this.x, this.y)
+    this.laserSprite.setRotation(Phaser.Math.Angle.Between(this.x, this.y, targetPos.x, targetPos.y))
+    const tweenMove = this.scene.tweens.add({
+      targets: [this.laserSprite],
+      alpha: 1,
+      x: {
+        from: this.x,
+        to: targetPos.x,
+      },
+      y: {
+        from: this.y,
+        to: targetPos.y,
+      },
+      // },
+      ease: 'Linear', // 'Linear, 'Cubic', 'Elastic', 'Bounce', 'Back'
+      duration: 500,
+      repeat: 0, // -1: infinity
+      yoyo: false,
+    })
+    tweenMove.once(Phaser.Tweens.Events.TWEEN_COMPLETE, () => {
+      this.laserSprite.setVisible(false)
+      this.bombSprite.setPosition(targetPos.x, targetPos.y)
+      this.bombSprite.setVisible(true)
+      this.bombSprite.play(SPRITE.BOMB).once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+        this.bombSprite.setVisible(false)
+      })
+    })
   }
 
   drawPredictLine(color = COLOR_RED) {

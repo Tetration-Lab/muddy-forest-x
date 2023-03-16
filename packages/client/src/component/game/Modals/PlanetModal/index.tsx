@@ -19,6 +19,7 @@ import { MainButton } from '../../../common/MainButton'
 import { MaterialEntry } from './MaterialEntry'
 import { useBoolean } from 'usehooks-ts'
 import { FaAngleDown } from 'react-icons/fa'
+import { GAME_UI_STATE } from '../../../../layer/phaser/scene/GameScene'
 
 export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Math.Vector2 }) => {
   const theme = useTheme()
@@ -34,6 +35,18 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
   const isOwner = useMemo(() => planet?.owner === network.connectedAddress.get(), [planet?.owner])
   const maxBuildings = useMemo(() => maxBuildingPerLevel(planet?.level ?? 0), [planet?.level])
   const isResourceExpanded = useBoolean(true)
+
+  const onAttack = () => {
+    const gameScene = appStore.getState().gameScene
+    if (gameScene) {
+      gameScene.clearGameUIState()
+      gameScene.clearAllDrawLine()
+      setTimeout(() => {
+        gameScene.targetPlanet = planetSprite
+        gameScene.gameUIState = GAME_UI_STATE.SELECTED_PLANET
+      }, 100)
+    }
+  }
 
   useEffect(() => {
     console.log(planet?.owner, 'owner')
@@ -150,7 +163,7 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
             ></Stack>
             {isOwner && (
               <Stack direction="row" spacing={1} justifyContent="center">
-                <MainButton>Attack</MainButton>
+                <MainButton onClick={() => onAttack()}>Attack</MainButton>
                 <MainButton>Build</MainButton>
               </Stack>
             )}
