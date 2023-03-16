@@ -36,6 +36,7 @@ import { FACTION } from '../../../const/faction'
 import { openStdin } from 'process'
 import { getAddress } from 'ethers/lib/utils'
 import { COLOR_RED } from '../constant'
+import { createAttackSystem } from '../../../system/createAttackSystem'
 
 const ZOOM_OUT_LIMIT = 0.01
 const ZOOM_IN_LIMIT = 2
@@ -138,6 +139,7 @@ class GameScene extends Phaser.Scene {
   }
 
   onSetUpSystem(networkLayer: NetworkLayer) {
+    createAttackSystem(networkLayer, this)
     createSpawnCapitalSystem(networkLayer, (x: number, y: number, entityID: number, factionId: number) => {
       const spriteKey = FACTION[factionId].capital
       const p = new Planet(this, x, y, spriteKey, formatEntityID(`0x${entityID.toString(16)}`))

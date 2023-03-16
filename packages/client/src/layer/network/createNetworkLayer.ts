@@ -1,6 +1,6 @@
 import { createPerlin } from '@latticexyz/noise'
 import { createWorld, EntityIndex } from '@latticexyz/recs'
-import { createActionSystem, setupMUDNetwork, SetupContractConfig } from '@latticexyz/std-client'
+import { createActionSystem, setupMUDNetwork, SetupContractConfig, DecodedSystemCall } from '@latticexyz/std-client'
 import { SystemTypes } from 'contracts/types/SystemTypes'
 import { SystemAbis } from 'contracts/types/SystemAbis.mjs'
 import { createFaucetService, formatEntityID, GodID } from '@latticexyz/network'
@@ -10,6 +10,7 @@ import { faucetUrl, initialGasPrice } from '../../config'
 import { FACTION } from '../../const/faction'
 import { enqueueSnackbar } from 'notistack'
 import { parseEtherError } from '../../utils/utils'
+import { Subject } from 'rxjs'
 
 export async function createNetworkLayer(config: SetupContractConfig) {
   const perlin = await createPerlin()
@@ -22,10 +23,11 @@ export async function createNetworkLayer(config: SetupContractConfig) {
   // --- COMPONENTS -----------------------------------------------------------------
   const _components = setupComponents(world)
   // --- SETUP ----------------------------------------------------------------------
-  const { txQueue, systems, txReduced$, network, startSync, encoders, components } = await setupMUDNetwork<
-    typeof _components,
-    SystemTypes
-  >(config, world, _components, SystemAbis, { initialGasPrice, fetchSystemCalls: true })
+  const { txQueue, systems, txReduced$, network, startSync, encoders, components, systemCallStreams } =
+    await setupMUDNetwork<typeof _components, SystemTypes>(config, world, _components, SystemAbis, {
+      initialGasPrice,
+      fetchSystemCalls: true,
+    })
   const connectedAddress = network.connectedAddress.get()
   const playerIndex = world.registerEntity({ id: formatEntityID(network.connectedAddress.get()) })
 
@@ -152,6 +154,10 @@ export async function createNetworkLayer(config: SetupContractConfig) {
     singletonIndex,
     playerIndex,
     connectedAddress,
+    systemCallStreams: systemCallStreams as Record<
+      keyof SystemTypes,
+      Subject<DecodedSystemCall<{ [key in keyof SystemTypes]: ethers.Contract }, typeof components>>
+    >,
   }
 
   return context
