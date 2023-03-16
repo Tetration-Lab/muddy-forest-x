@@ -11,38 +11,16 @@ import { workerStore } from './store/worker'
 import { theme } from './themes/theme'
 import { config } from './config'
 import { SnackbarProvider } from 'notistack'
-
-interface LoadingGameProps {
-  msg?: string
-  percentage?: number
-}
-const LoadingGame: React.FC<LoadingGameProps> = ({ msg, percentage }) => {
-  return (
-    <>
-      <div className="h-full w-full flex text-white justify-center items-center">
-        <div>
-          <div className="flex justify-center">Loading...</div>
-          <div className="flex justify-center">{percentage !== -1 && <div>{percentage.toFixed(2)}</div>}</div>
-          <div className="flex justify-center">{msg && <div>{msg}</div>}</div>
-        </div>
-      </div>
-    </>
-  )
-}
-
-interface GameLoadingState {
-  msg: string
-  percentage: number
-}
+import { Loading } from './component/Loading'
 
 function App() {
   const store = useStore(appStore, (state) => state)
   const [loaded, setLoaded] = useState(false)
-
-  const [loadingMsg, setLoadingMsg] = useState<GameLoadingState>({
+  const [loadingMsg, setLoadingMsg] = useState<{ msg: string; percentage: number }>({
     msg: '',
     percentage: -1,
   })
+
   const onInitialSync = useCallback(async () => {
     workerStore.setState({
       createWorker: () =>
@@ -52,28 +30,20 @@ function App() {
     networkLayer.startSync()
     store.setNetworkLayer(networkLayer)
     createLoadingStateSystem(networkLayer, (stage, msg, percentage) => {
-      if (stage === SyncState.LIVE) {
-        console.log('SYNC DONE')
-        setLoaded(true)
-        return
-      }
+      setLoaded(stage === SyncState.LIVE)
       setLoadingMsg({
         msg,
         percentage,
       })
-      console.log('loading state', stage, msg, percentage)
     })
   }, [])
 
   useEffect(() => {
     onInitialSync()
-    // disable right click
     document.addEventListener('contextmenu', (event) => {
       event.preventDefault()
     })
-  }, [onInitialSync])
-
-  if (!loaded) return <LoadingGame msg={loadingMsg.msg} percentage={loadingMsg.percentage} />
+  }, [])
 
   return (
     <>
@@ -88,9 +58,13 @@ function App() {
           autoHideDuration={2000}
           style={{ fontFamily: 'Fira Mono', borderRadius: '100px', justifyContent: 'center' }}
         >
-          <BrowserRouter>
-            <AppRoutes />
-          </BrowserRouter>
+          {true ? (
+            <Loading msg={loadingMsg.msg} percentage={loadingMsg.percentage} />
+          ) : (
+            <BrowserRouter>
+              <AppRoutes />
+            </BrowserRouter>
+          )}
         </SnackbarProvider>
       </ThemeProvider>
     </>
