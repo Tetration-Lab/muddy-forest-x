@@ -10,3 +10,4 @@ export default {
 
 export const COLOR_GREEN = 0x00ff00
 export const COLOR_RED = 0xff0000
+export const COLOR_YELLOW = 0xffff00

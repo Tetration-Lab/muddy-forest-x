@@ -22,7 +22,6 @@ export function createSpawnHQShipSystem(network: NetworkLayer, callback: Callbac
 
   const query = [HasValue(Type, { value: EntityType.HQSHIP }), Has(Position), Has(Owner)]
   //TODO: need to query faction
-  console.log('createSpawnHQShipSystem:start')
   // runQuery(query).forEach((entity) => {
   defineSystem(world, query, (update) => {
     const entity = update.entity
@@ -34,8 +33,6 @@ export function createSpawnHQShipSystem(network: NetworkLayer, callback: Callbac
     const ownerIndex = world.registerEntity({ id: ownerId })
     const name = getComponentValue(Name, ownerIndex)?.value
     const faction = getComponentValue(Faction, ownerIndex)?.value
-    console.log('createSpawnHQShipSystem:position', hexToInt(position.x), hexToInt(position.y), 'eid', entity)
-    console.log('createSpawnHQShipSystem:faction', faction, name)
     callback(
       hexToInt(position.x) * TILE_SIZE,
       hexToInt(position.y) * TILE_SIZE,
@@ -46,5 +43,4 @@ export function createSpawnHQShipSystem(network: NetworkLayer, callback: Callbac
       faction,
     )
   })
-  console.log('createSpawnHQShipSystem:end')
 }

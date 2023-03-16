@@ -11,12 +11,9 @@ export function createSpawnCapitalSystem(network: NetworkLayer, callback: Create
   } = network
 
   const query = [HasValue(Type, { value: EntityType.FACTION }), Has(Position), Has(Faction)]
-  console.log('createSpawnCapitalSystem:start')
   runQuery(query).forEach((entity) => {
     const position = getComponentValue(Position, entity)
     const faction = getComponentValue(Faction, entity)
-    console.log('position', hexToInt(position.x), hexToInt(position.y), 'eid', entity)
     callback(hexToInt(position.x) * TILE_SIZE, hexToInt(position.y) * TILE_SIZE, entity, faction.value)
   })
-  console.log('createSpawnCapitalSystem:end')
 }

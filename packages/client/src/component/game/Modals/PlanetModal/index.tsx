@@ -48,6 +48,17 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
     }
   }
 
+  const onSend = () => {
+    const gameScene = appStore.getState().gameScene
+    if (gameScene) {
+      setTimeout(() => {
+        gameScene.targetPlanet = planetSprite
+        gameScene.drawPlanetSends.set(planetSprite.entityID, planetSprite)
+        gameScene.gameUIState = GAME_UI_STATE.SELECTED_PLANET_SEND
+      }, 100)
+    }
+  }
+
   useEffect(() => {
     console.log(planet?.owner, 'owner')
     planetSprite.setOwner(false)
@@ -164,7 +175,7 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
             {isOwner && (
               <Stack direction="row" spacing={1} justifyContent="center">
                 <MainButton onClick={() => onAttack()}>Attack</MainButton>
-                <MainButton>Send</MainButton>
+                <MainButton onClick={() => onSend()}>Send</MainButton>
               </Stack>
             )}
           </Stack>

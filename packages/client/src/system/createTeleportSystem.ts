@@ -15,10 +15,8 @@ export function createTeleportSystem(network: NetworkLayer, cb: CreateTeleportSy
 
   const query = [HasValue(Type, { value: EntityType.HQSHIP }), Has(Position)]
   defineSystem(world, query, (update) => {
-    console.log('createTeleportSystem:start')
     const position = getComponentValue(Position, update.entity)
     if (!position) return
-    console.log('in game ==> Position system: ', position?.x, position?.y, 'eid', update.entity)
     const entityID = network.world.entities[update.entity] as string
     const newPos = snapPosToGrid(
       {
@@ -28,6 +26,5 @@ export function createTeleportSystem(network: NetworkLayer, cb: CreateTeleportSy
       TILE_SIZE,
     )
     cb(entityID, newPos.x, newPos.y)
-    console.log('createTeleportSystem:end')
   })
 }

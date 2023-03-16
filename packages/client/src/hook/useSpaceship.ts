@@ -35,7 +35,6 @@ export const useSpaceship = (id: string) => {
             cooldown: Number(u.value[0].value),
           }
         })
-        console.log(ship)
       })
     return () => {
       cooldown.unsubscribe()

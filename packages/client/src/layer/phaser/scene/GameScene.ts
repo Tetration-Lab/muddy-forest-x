@@ -35,7 +35,7 @@ import { dataStore, initPlanetPosition } from '../../../store/data'
 import { FACTION } from '../../../const/faction'
 import { openStdin } from 'process'
 import { getAddress } from 'ethers/lib/utils'
-import { COLOR_RED } from '../constant'
+import { COLOR_RED, COLOR_YELLOW } from '../constant'
 import { createAttackSystem } from '../../../system/createAttackSystem'
 
 const ZOOM_OUT_LIMIT = 0.01
@@ -49,6 +49,7 @@ export enum GAME_UI_STATE {
   SELECTED_ATTACK_BY_SHIP = 'SELECTED_ATTACK_BY_SHIP',
   SELECTED_ATTACK_BY_PLANET = 'SELECTED_ATTACK_BY_PLANET',
   SELECTED_PLANET = 'SELECTED_PLANET',
+  SELECTED_PLANET_SEND = 'SELECTED_PLANET_SEND',
 }
 class GameScene extends Phaser.Scene {
   bg!: Phaser.GameObjects.TileSprite
@@ -83,6 +84,7 @@ class GameScene extends Phaser.Scene {
   targetHQMoverShip: HQShip | null = null
   targetAttack: HQShip | Planet | null = null
   targetPlanet: Planet | null = null
+  drawPlanetSends = new Map<string, Planet>()
   constructor() {
     super(GAME_SCENE)
     appStore.setState({ gameScene: this })
@@ -119,6 +121,12 @@ class GameScene extends Phaser.Scene {
         sprite.play(spriteKey)
         sprite.registerOnClick((p: Phaser.Input.Pointer) => {
           if (!p.leftButtonReleased()) {
+            return
+          }
+          if (this.gameUIState === GAME_UI_STATE.SELECTED_PLANET_SEND) {
+            alert('send')
+            this.drawPlanetSends.delete(this.targetPlanet.entityID)
+            this.gameUIState = GAME_UI_STATE.NONE
             return
           }
           if (this.gameUIState === GAME_UI_STATE.SELECTED_PLANET) {
@@ -182,20 +190,25 @@ class GameScene extends Phaser.Scene {
           ship.predictCursor.setVisible(true)
           ship.setPlayerIndicatorVisible(true)
           ship.registerOnClick((pointer: Phaser.Input.Pointer) => {
-            setTimeout(() => {
-              this.gameUIState = GAME_UI_STATE.SELECTED_HQ_SHIP
-              this.targetHQMoverShip = ship
-            }, 100)
+            if (!pointer.leftButtonReleased()) {
+              return
+            }
+            if (this.gameUIState === GAME_UI_STATE.NONE) {
+              setTimeout(() => {
+                this.gameUIState = GAME_UI_STATE.SELECTED_HQ_SHIP
+                this.targetHQMoverShip = ship
+              }, 100)
+            }
           })
-          ship.registerOnClickPredictCursor((pointer: Phaser.Input.Pointer) => {
-            setTimeout(() => {
-              if (this.gameUIState !== GAME_UI_STATE.NONE) {
-                return
-              }
-              this.gameUIState = GAME_UI_STATE.SELECTED_HQ_SHIP
-              this.targetHQMoverShip = ship
-            }, 100)
-          })
+          // ship.registerOnClickPredictCursor((pointer: Phaser.Input.Pointer) => {
+          //   setTimeout(() => {
+          //     if (this.gameUIState !== GAME_UI_STATE.NONE) {
+          //       return
+          //     }
+          //     this.gameUIState = GAME_UI_STATE.SELECTED_HQ_SHIP
+          //     this.targetHQMoverShip = ship
+          //   }, 100)
+          // })
           ship.setDepth(1000)
           dataStore.setState((state) => {
             state.ownedSpaceships.push(id)
@@ -221,6 +234,7 @@ class GameScene extends Phaser.Scene {
   }
 
   clearAllDrawLine() {
+    this.drawPlanetSends.clear()
     if (this.targetHQMoverShip) {
       this.targetHQMoverShip.resetPredictMovePosition()
       this.targetHQMoverShip.clearPredictCursor()
@@ -392,6 +406,13 @@ class GameScene extends Phaser.Scene {
         this.targetHQMoverShip.drawPredictLine()
       }
     }
+
+    this.drawPlanetSends.forEach((s) => {
+      if (s) {
+        s.predictMove(Math.floor(this.cursorMove.x / TILE_SIZE), Math.floor(this.cursorMove.y / TILE_SIZE))
+        s.drawPredictLine(COLOR_YELLOW)
+      }
+    })
   }
 
   update(time: number, delta: number): void {
@@ -429,6 +450,7 @@ class GameScene extends Phaser.Scene {
 
   handleKeyboardUpdate() {
     if (this.keyESC.isDown) {
+      this.clearAllDrawLine()
       if (this.targetHQMoverShip) {
         this.targetHQMoverShip.resetPredictMovePosition()
         this.targetHQMoverShip.clearLine()
