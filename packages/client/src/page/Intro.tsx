@@ -11,14 +11,9 @@ import { useStore } from 'zustand'
 import { CommonTextField } from '../component/common/CommonTextField'
 import { MainButton } from '../component/common/MainButton'
 import { NavBar } from '../component/common/NavBar'
+import { FACTION } from '../const/faction'
 import { texts } from '../const/texts'
 import { appStore } from '../store/app'
-
-enum Tribe {
-  APE_APE = 'APE_APE',
-  ALIEN_APE = 'ALIEN_APE',
-  AI_APE = 'AI_APE',
-}
 
 const TOTAL_STEPS = 7
 const loadingDots = keyframes`
@@ -93,16 +88,10 @@ interface SumitPayload {
   displayName: string
 }
 
-export const TripeMapperID = {
-  [Tribe.APE_APE]: 10,
-  [Tribe.ALIEN_APE]: 11,
-  [Tribe.AI_APE]: 12,
-}
-
 export const Intro = () => {
   const theme = useTheme()
   const [currentStep, setCurrentStep] = useState(0)
-  const [selectedTribe, setSelectedTribe] = useState<Tribe | undefined>()
+  const [selectedTribe, setSelectedTribe] = useState<number | undefined>()
   const [loading, setLoading] = useState(false)
   const address = localStorage.getItem('burnerWallet')
   const store = useStore(appStore, (state) => state)
@@ -126,10 +115,9 @@ export const Intro = () => {
       })
       .required(),
     onSubmit: async (values: SumitPayload) => {
-      const factionId = TripeMapperID[selectedTribe!]
       setLoading(true)
       try {
-        await store.networkLayer.api.spawn(factionId, values.displayName)
+        await store.networkLayer.api.spawn(selectedTribe, values.displayName)
       } catch (err) {
         console.error(err)
       }
@@ -171,14 +159,9 @@ export const Intro = () => {
       <Stack height="100%" position="relative">
         {currentStep === 0 ? (
           <Fade in={currentStep === 0}>
-            <Stack
-              height="100%"
-              justifyContent="center"
-              alignItems="center"
-              sx={{ cursor: 'pointer', userSelect: 'none' }}
-              onClick={() => goToNextStep()}
-            >
+            <Stack height="100%" justifyContent="center" alignItems="center" spacing={1}>
               <Box component="img" src="/assets/svg/logo.svg" sx={{ width: '100%' }} />
+              <MainButton onClick={() => goToNextStep()}>Start Your Journey</MainButton>
             </Stack>
           </Fade>
         ) : (
@@ -238,24 +221,17 @@ export const Intro = () => {
                     <Stack spacing={12}>
                       <Typography color="textPrimary">Choose one of your supported fraction:</Typography>
                       <div className="grid grid-cols-1 sm:grid-cols-3">
-                        <TribeButton
-                          name="The APE APE"
-                          imgUrl="/assets/images/ape_ape_icon.png"
-                          isSelected={selectedTribe === Tribe.APE_APE}
-                          onClick={() => setSelectedTribe(Tribe.APE_APE)}
-                        />
-                        <TribeButton
-                          name="The ALIEN APE"
-                          imgUrl="/assets/images/alien_ape_icon.png"
-                          isSelected={selectedTribe === Tribe.ALIEN_APE}
-                          onClick={() => setSelectedTribe(Tribe.ALIEN_APE)}
-                        />
-                        <TribeButton
-                          name="The AI APE"
-                          imgUrl="/assets/images/ai_ape_icon.png"
-                          isSelected={selectedTribe === Tribe.AI_APE}
-                          onClick={() => setSelectedTribe(Tribe.AI_APE)}
-                        />
+                        {[...Object.entries(FACTION)].map((e) => {
+                          return (
+                            <TribeButton
+                              key={e[0]}
+                              name={e[1].name}
+                              imgUrl={e[1].signSrc}
+                              isSelected={selectedTribe === +e[0]}
+                              onClick={() => setSelectedTribe(+e[0])}
+                            />
+                          )
+                        })}
                       </div>
                       <NextButton disabled={!selectedTribe} onClick={() => goToNextStep()} />
                     </Stack>

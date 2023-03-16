@@ -17,7 +17,7 @@ export const FACTION: {
   }
 } = {
   10: {
-    name: 'Ape Ape',
+    name: 'Ape',
     capitalPosition: {
       x: 0,
       y: -250,
