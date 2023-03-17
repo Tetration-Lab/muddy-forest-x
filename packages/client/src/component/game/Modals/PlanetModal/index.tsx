@@ -20,6 +20,7 @@ import { MaterialEntry } from './MaterialEntry'
 import { useBoolean } from 'usehooks-ts'
 import { FaAngleDown } from 'react-icons/fa'
 import { GAME_UI_STATE } from '../../../../layer/phaser/scene/GameScene'
+import { BuildingItem } from './BuildingItem'
 
 export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Math.Vector2 }) => {
   const theme = useTheme()
@@ -167,10 +168,15 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
             <Typography
               sx={{ fontSize: 14, fontWeight: 400 }}
             >{`Buildings: ${planet.buildings.length}/${maxBuildings}`}</Typography>
-            <Stack
-              sx={{ p: 1, backgroundColor: theme.palette.grayScale.black, borderRadius: '4px' }}
-              spacing={0.5}
-            ></Stack>
+            {planet.buildings.length > 0 ||
+              (isOwner && (
+                <Stack
+                  sx={{ p: 0.5, backgroundColor: theme.palette.grayScale.black, borderRadius: '4px' }}
+                  spacing={0.5}
+                >
+                  <BuildingItem isBuildable={isOwner} />
+                </Stack>
+              ))}
             {isOwner && (
               <Stack direction="row" spacing={1} justifyContent="center">
                 <MainButton onClick={() => onAttack()}>Attack</MainButton>
