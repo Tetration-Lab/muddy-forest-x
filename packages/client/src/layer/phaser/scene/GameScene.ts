@@ -184,7 +184,7 @@ class GameScene extends Phaser.Scene {
           return
         }
         const pos = snapToGrid(x, y, 16)
-        const ship = new HQShip(this, pos.x, pos.y, IMAGE.AI_SHIP, entityID, owner, fractionID)
+        const ship = new HQShip(this, pos.x, pos.y, FACTION[fractionID].shipSpriteKey, entityID, owner, fractionID)
         this.ships.set(id, ship)
         ship.setDepth(100)
         addSpaceship(id, ship)
@@ -251,15 +251,15 @@ class GameScene extends Phaser.Scene {
               return
             }
           })
-          createTeleportSystem(networkLayer, (entityID: string, x: number, y: number) => {
-            const id = formatEntityID(entityID)
-            const ship = gameStore.getState().spaceships.get(id.toString())
-            const dist = Phaser.Math.Distance.Between(x, y, ship.x, ship.y)
-            if (ship && dist > 0) {
-              ship.teleport(x, y)
-            }
-          })
         }
+        createTeleportSystem(networkLayer, (entityID: string, x: number, y: number) => {
+          const id = formatEntityID(entityID)
+          const ship = gameStore.getState().spaceships.get(id.toString())
+          const dist = Phaser.Math.Distance.Between(x, y, ship.x, ship.y)
+          if (ship && dist > 0) {
+            ship.teleport(x, y)
+          }
+        })
       },
     )
   }

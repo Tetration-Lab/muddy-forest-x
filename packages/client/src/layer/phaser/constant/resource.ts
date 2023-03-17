@@ -23,6 +23,9 @@ export const SPRITE = {
   P8_2: 'P8_2',
   EXPLORER: 'explorerSheet',
   TILE: 'tile',
+  AI_SHIP: 'AI_SHIP',
+  ALIEN_SHIP: 'ALIEN_SHIP',
+  APE_SHIP: 'APE_SHIP',
 }
 
 export const SPRITE_PLANET = [
@@ -41,9 +44,9 @@ export const SPRITE_PLANET = [
 ]
 
 export const IMAGE = {
-  AI_SHIP: 'AI_SHIP',
-  ALIEN_SHIP: 'ALIEN_SHIP',
-  APE_SHIP: 'APE_SHIP',
+  AI_SHIP: 'IMAGE_AI_SHIP',
+  ALIEN_SHIP: 'IMAGE_ALIEN_SHIP',
+  APE_SHIP: 'IMAGE_APE_SHIP',
   SELECTED_CURSOR: 'SELECTED_CURSOR',
   PLAYER_INDICATOR: 'PLAYER_INDICATOR',
   APE_APE_SIGN: 'APE_APE_SIGN',

@@ -8,7 +8,7 @@ export class HQShip extends Phaser.GameObjects.Container {
   owner: string
   teleportEffect!: Phaser.GameObjects.Sprite
   predictCursor!: Phaser.GameObjects.Image
-  shipImg!: Phaser.GameObjects.Image
+  shipImg!: Phaser.GameObjects.Sprite
   graphics!: Phaser.GameObjects.Graphics
   playerIndicator!: Phaser.GameObjects.Image
   energy = 0
@@ -35,8 +35,9 @@ export class HQShip extends Phaser.GameObjects.Container {
     this.bombSprite.play(SPRITE.BOMB)
     this.bombSprite.setVisible(false)
     this.laserSprite.setVisible(false)
-    this.shipImg = this.scene.add.image(0, 0, texture).setDepth(this.depth + 1)
+    this.shipImg = this.scene.add.sprite(0, 0, texture).setDepth(this.depth + 1)
     this.shipImg.setInteractive()
+    this.shipImg.play(texture)
     this.add(this.shipImg)
     this.predictCursor = this.scene.add
       .image(this.x, this.y, texture)
