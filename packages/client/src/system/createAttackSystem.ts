@@ -4,33 +4,21 @@ import { EntityType } from '../const/types'
 import { NetworkLayer } from '../layer/network/types'
 import { Planet } from '../layer/phaser/gameobject/Planet'
 import GameScene from '../layer/phaser/scene/GameScene'
+import { gameStore } from '../store/game'
 import { hexToInt } from '../utils/utils'
 
 export function createAttackSystem(network: NetworkLayer, scene: GameScene) {
   const { world, systemCallStreams } = network
   const attack = systemCallStreams['system.Attack'].subscribe((data) => {
-    const attacker = formatEntityID(data.args['args']['entity'].toHexString())
-    const target = formatEntityID(data.args['args']['targetEntity'].toHexString())
-    console.log(attacker, target)
-    let attack = null
-    let targetObj = null
-    // find attacker
-    const objCollections = [scene.ships, scene.planets]
-    for (let i = 0; i < objCollections.length; i++) {
-      attack = objCollections[i].get(attacker) || null
-      if (attack) {
-        break
-      }
-    }
-    for (let i = 0; i < objCollections.length; i++) {
-      targetObj = objCollections[i].get(target) || null
-      if (targetObj) {
-        break
-      }
-    }
+    const attackerId = formatEntityID(data.args['args']['entity'].toHexString())
+    const targetId = formatEntityID(data.args['args']['targetEntity'].toHexString())
+    const { spaceships, planets } = gameStore.getState()
 
-    if (attack && targetObj) {
-      attack.attackTo(new Phaser.Math.Vector2(targetObj.x, targetObj.y))
+    const attacker = spaceships.get(attackerId) ?? planets.get(attackerId)
+    const target = spaceships.get(targetId) ?? planets.get(targetId)
+
+    if (attacker && target) {
+      attacker.attackTo(new Phaser.Math.Vector2(target.x, target.y))
     }
   })
 }
