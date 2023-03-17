@@ -1,8 +1,7 @@
-import { useComponentValueStream } from '@latticexyz/std-client'
 import { Box, Popper } from '@mui/material'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useStore } from 'zustand'
-import { ChatBox } from '../../component/Chatbox'
+import { ChatBoxWrapper } from '../../component/Chatbox'
 import { GameActionBox, GameActionBoxMode } from '../../component/game/GameActionBox'
 import { AttackModal } from '../../component/game/Modals/AttackModal'
 import { PlanetModal } from '../../component/game/Modals/PlanetModal'
@@ -11,38 +10,21 @@ import { Profile } from '../../component/game/Profile'
 import { SettingActionBox } from '../../component/game/SettingActionBox'
 import { TeleportActionBox } from '../../component/game/TeleportActionBox'
 import { ToolButton } from '../../component/ToolButton'
-import { FACTION } from '../../const/faction'
-import { appStore } from '../../store/app'
 import { dataStore } from '../../store/data'
 import { closeTeleport, gameStore, openTeleport } from '../../store/game'
 
 export const UILayer = () => {
-  const store = useStore(appStore, (state) => state)
-
   const toolsContainerRef = useRef()
   const settingContainerRef = useRef()
   const teleportContainerRef = useRef()
 
   const openTeleportBox = useStore(gameStore, (state) => state.teleportAction)
 
-  const [openSettingBox, setOpenSettingBox] = React.useState(false)
+  const [openSettingBox, setOpenSettingBox] = useState(false)
 
-  const [openGameActionBox, setOpenGameActionBox] = React.useState(false)
+  const [openGameActionBox, setOpenGameActionBox] = useState(false)
   const [currentMode, setCurrentMode] = useState<GameActionBoxMode | undefined>()
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-
-  const networkLayer = store.networkLayer
-  const playerNameComponent = useComponentValueStream(networkLayer.components.Name, networkLayer.playerIndex)
-  const factionID = useComponentValueStream(networkLayer.components.Faction, networkLayer.playerIndex)
-  const [playerColor, setPlayerColor] = useState('white')
-  const [playerName, setPlayerName] = useState<null | string>(null)
-
-  useEffect(() => {
-    if (playerNameComponent) {
-      setPlayerName(playerNameComponent?.value)
-      setPlayerColor(FACTION[factionID?.value].color)
-    }
-  }, [playerNameComponent, factionID])
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
   const handleSettingClick = () => {
     if (openSettingBox) {
@@ -86,13 +68,6 @@ export const UILayer = () => {
   const toolOpen = Boolean(anchorEl)
   const toolId = toolOpen ? 'simple-popper' : undefined
 
-  const onInputFocus = () => {
-    store.setFocusUI(true)
-  }
-  const onInputFocusOut = () => {
-    store.setFocusUI(false)
-  }
-
   return (
     <div
       onMouseDown={(e) => {
@@ -104,14 +79,7 @@ export const UILayer = () => {
     >
       <div className="absolute bottom-0 z-10">
         <div className="p-4">
-          {playerName && (
-            <ChatBox
-              playerColor={playerColor}
-              playerName={playerName}
-              focusInputCallback={onInputFocus}
-              focusOutInputCallback={onInputFocusOut}
-            />
-          )}
+          <ChatBoxWrapper />
         </div>
       </div>
       {/*<ClickAwayListener onClickAway={handleSettingClose}>*/}

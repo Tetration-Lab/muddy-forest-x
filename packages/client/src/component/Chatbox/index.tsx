@@ -1,6 +1,32 @@
+import { useComponentValueStream } from '@latticexyz/std-client'
 import { useEffect, useRef, useState } from 'react'
+import { useStore } from 'zustand'
+import { FACTION } from '../../const/faction'
 import useChatMessage, { ChatMessage } from '../../hook/useChatMessage'
+import { appStore } from '../../store/app'
 import './index.css'
+
+export const ChatBoxWrapper = () => {
+  const {
+    networkLayer: { playerIndex, components },
+    setFocusUI,
+  } = useStore(appStore, (state) => state)
+  const name = useComponentValueStream(components.Name, playerIndex)?.value
+  const faction = useComponentValueStream(components.Faction, playerIndex)?.value
+  return (
+    <>
+      {name && faction && (
+        <ChatBox
+          playerColor={FACTION[faction]?.color ?? 'white'}
+          playerName={name}
+          focusInputCallback={() => setFocusUI(true)}
+          focusOutInputCallback={() => setFocusUI(false)}
+        />
+      )}
+    </>
+  )
+}
+
 export interface ChatBoxProps {
   focusInputCallback?: () => void
   focusOutInputCallback?: () => void
