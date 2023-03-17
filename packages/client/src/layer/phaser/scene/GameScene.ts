@@ -86,6 +86,8 @@ class GameScene extends Phaser.Scene {
   targetAttack: HQShip | Planet | null = null
   targetPlanet: Planet | null = null
   drawPlanetSends = new Map<string, Planet>()
+  planets = new Map<string, Planet>()
+  ships = new Map<string, HQShip>()
   constructor() {
     super(GAME_SCENE)
     appStore.setState({ gameScene: this })
@@ -101,6 +103,7 @@ class GameScene extends Phaser.Scene {
         const id = formatEntityID(hVal)
         const spriteKey = SPRITE_PLANET[Number(BigInt(hVal) % BigInt(SPRITE_PLANET.length))]
         const sprite = new Planet(this, 0, 0, spriteKey, id)
+        this.planets.set(id, sprite)
         initPlanetPosition(id, [tileX, tileY])
 
         const pos = snapPosToGrid(
@@ -161,6 +164,7 @@ class GameScene extends Phaser.Scene {
     createSpawnCapitalSystem(networkLayer, (x: number, y: number, entityID: number, factionId: number) => {
       const spriteKey = FACTION[factionId].capital
       const p = new Planet(this, x, y, spriteKey, formatEntityID(`0x${entityID.toString(16)}`))
+      this.planets.set(p.entityID, p)
       p.setDisplaySize(4 * TILE_SIZE ** 2, 4 * TILE_SIZE ** 2)
       p.play(spriteKey)
     })
@@ -181,6 +185,7 @@ class GameScene extends Phaser.Scene {
         }
         const pos = snapToGrid(x, y, 16)
         const ship = new HQShip(this, pos.x, pos.y, IMAGE.AI_SHIP, entityID, owner, fractionID)
+        this.ships.set(id, ship)
         ship.setDepth(100)
         addSpaceship(id, ship)
         ship.setPlayerName(name)

@@ -108,12 +108,10 @@ export const AttackModal = ({
       const ship = gameStore.getState().spaceships.get(id)
       if (ship) {
         ship.clearLine()
-        ship.attackTo(targetSprite.getCenter())
       }
       const planet = gameStore.getState().planets.get(id)
       if (planet) {
         planet.clearLine()
-        planet.attackTo(targetSprite.getCenter())
       }
     } catch (err) {
       console.error(err)
