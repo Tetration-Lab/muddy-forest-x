@@ -1,4 +1,3 @@
-import { SyncState } from '@latticexyz/network'
 import { defineComponentSystem } from '@latticexyz/recs'
 import { NetworkLayer } from '../layer/network/types'
 

@@ -1,6 +1,7 @@
 import { formatEntityID } from '@latticexyz/network'
-import { getComponentEntities, getComponentValue, getEntityComponents } from '@latticexyz/recs'
+import { getComponentValue } from '@latticexyz/recs'
 import { useEffect, useMemo, useState } from 'react'
+import { filter } from 'rxjs'
 import { useStore } from 'zustand'
 import { planetLevel } from '../const/planet'
 import {
@@ -15,11 +16,9 @@ import {
   getResourceEntityId,
   isContainResource,
 } from '../const/resources'
-import { appStore } from '../store/app'
-import { filter } from 'rxjs'
-import { BaseEntity } from '../types/entity'
-import _ from 'lodash'
 import { EntityType } from '../const/types'
+import { appStore } from '../store/app'
+import { BaseEntity } from '../types/entity'
 
 export const useBaseEntity = (id: string) => {
   const { world, components, network, api } = useStore(appStore, (state) => state.networkLayer)

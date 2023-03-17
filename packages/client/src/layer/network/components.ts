@@ -1,10 +1,5 @@
 import { defineComponent, Type, World } from '@latticexyz/recs'
-import {
-  defineBoolComponent,
-  defineCoordComponent,
-  defineNumberComponent,
-  defineStringComponent,
-} from '@latticexyz/std-client'
+import { defineBoolComponent, defineNumberComponent, defineStringComponent } from '@latticexyz/std-client'
 
 export type Components = ReturnType<typeof setupComponents>
 

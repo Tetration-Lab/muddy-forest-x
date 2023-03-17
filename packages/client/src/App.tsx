@@ -1,17 +1,17 @@
 import { SyncState } from '@latticexyz/network'
 import { ThemeProvider } from '@mui/material'
+import { SnackbarProvider } from 'notistack'
 import { useCallback, useEffect, useState } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import { useStore } from 'zustand'
+import { Loading } from './component/Loading'
+import { config } from './config'
 import { createNetworkLayer } from './layer/network/createNetworkLayer'
-import { createLoadingStateSystem } from './system/createLoadingStateSystem'
 import { AppRoutes } from './router'
 import { appStore } from './store/app'
 import { workerStore } from './store/worker'
+import { createLoadingStateSystem } from './system/createLoadingStateSystem'
 import { theme } from './themes/theme'
-import { config } from './config'
-import { SnackbarProvider } from 'notistack'
-import { Loading } from './component/Loading'
 
 function App() {
   const store = useStore(appStore, (state) => state)

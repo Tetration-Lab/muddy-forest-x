@@ -1,6 +1,5 @@
 import { formatEntityID } from '@latticexyz/network'
 import { solidityKeccak256 } from 'ethers/lib/utils'
-import { setNestedObjectValues } from 'formik'
 import _ from 'lodash'
 
 export const ENERGY_ID = '0xa7517d8398dfc2d794fbfb432372ce447c16514ec7de96d333a137d677415f43'

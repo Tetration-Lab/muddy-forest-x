@@ -1,4 +1,4 @@
-import { Component, ComponentValue, EntityID, EntityIndex } from '@latticexyz/recs'
+import { Component, ComponentValue, EntityIndex } from '@latticexyz/recs'
 import { Components } from '../layer/network/components'
 
 export type ComponentV<T extends Component> = ComponentValue<T['schema'], undefined>

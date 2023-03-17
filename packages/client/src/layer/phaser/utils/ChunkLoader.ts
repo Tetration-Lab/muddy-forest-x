@@ -1,5 +1,5 @@
-import { Chunk } from './Chunk'
 import { CHUNK_HEIGHT_SIZE, CHUNK_WIDTH_SIZE, LOAD_RADIUS, TILE_SIZE } from '../config/chunk'
+import { Chunk } from './Chunk'
 import { Tile } from './Tile'
 export interface ChunkLoaderConfig {
   tileSize: number

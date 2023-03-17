@@ -3,12 +3,12 @@ import { useTheme } from '@mui/material/styles'
 import { Box, Stack } from '@mui/system'
 import { useMemo, useState } from 'react'
 import { MOCK_BUILD_ITEMS } from '../../../const/mocks'
+import { GameItem } from '../common/GameItem'
+import { TypeTag } from '../common/LabelTag'
 import { ActionButton } from './ActionButton'
 import { FilterButton } from './FilterButton'
-import { GameItem } from '../common/GameItem'
 import { GameItemRow } from './GameItemRow'
 import { BuildItemType, BuildTabType, IBuildItem, ItemVisibility } from './types'
-import { TypeTag } from '../common/LabelTag'
 
 const BuildTabs = ({
   activeTab,

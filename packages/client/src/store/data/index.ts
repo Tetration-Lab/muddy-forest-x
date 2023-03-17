@@ -1,6 +1,5 @@
 import { formatEntityID } from '@latticexyz/network'
 import { createStore } from 'zustand/vanilla'
-import { BaseEntityType } from '../../types/entity'
 
 export type Store = {
   planetLocations: Map<string, [number, number]>

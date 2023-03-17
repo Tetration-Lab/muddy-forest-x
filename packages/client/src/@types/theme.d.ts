@@ -1,4 +1,3 @@
-import { createTheme } from '@mui/system'
 declare module '@mui/material/styles' {
   interface Palette {
     gray?: Palette['primary']

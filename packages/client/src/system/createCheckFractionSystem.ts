@@ -1,4 +1,4 @@
-import { defineComponentSystem, defineSystem, getComponentValue, Has, HasValue, runQuery, Type } from '@latticexyz/recs'
+import { getComponentValue } from '@latticexyz/recs'
 import { NetworkLayer } from '../layer/network/types'
 
 export interface CreateCheckFractionSystemParam {

@@ -1,7 +1,6 @@
 import { createStore } from 'zustand/vanilla'
 import { HQShip } from '../../layer/phaser/gameobject/HQShip'
 import { Planet } from '../../layer/phaser/gameobject/Planet'
-import { BaseEntityType } from '../../types/entity'
 
 export type Store = {
   teleportAction?: string

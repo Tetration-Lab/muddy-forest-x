@@ -1,10 +1,9 @@
 import { getComponentValue } from '@latticexyz/recs'
 import { useEffect, useState } from 'react'
+import { filter } from 'rxjs'
 import { useStore } from 'zustand'
 import { appStore } from '../store/app'
-import { filter } from 'rxjs'
 import { Planet } from '../types/entity'
-import _ from 'lodash'
 import { useBaseEntity } from './useBaseEntity'
 
 export const usePlanet = (id: string) => {

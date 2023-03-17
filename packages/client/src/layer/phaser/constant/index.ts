@@ -1,6 +1,6 @@
-import * as topic from './topic'
 import * as eventChannel from './eventChannel'
 import * as scene from './scene'
+import * as topic from './topic'
 
 export default {
   topic,
