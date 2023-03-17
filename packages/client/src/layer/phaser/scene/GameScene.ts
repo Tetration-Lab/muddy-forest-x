@@ -206,31 +206,62 @@ class GameScene extends Phaser.Scene {
               }, 100)
             }
           })
-          // ship.registerOnClickPredictCursor((pointer: Phaser.Input.Pointer) => {
-          //   setTimeout(() => {
-          //     if (this.gameUIState !== GAME_UI_STATE.NONE) {
-          //       return
-          //     }
-          //     this.gameUIState = GAME_UI_STATE.SELECTED_HQ_SHIP
-          //     this.targetHQMoverShip = ship
-          //   }, 100)
-          // })
           ship.setDepth(1000)
           dataStore.setState((state) => {
             state.ownedSpaceships.push(id)
             return state
           })
+        } else {
+          ship.registerOnClick((p: Phaser.Input.Pointer) => {
+            if (!p.leftButtonReleased()) {
+              return
+            }
+            if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
+              // change to attack
+              this.gameUIState = GAME_UI_STATE.SELECTED_ATTACK_BY_SHIP
+              this.targetAttack = ship
+              return
+            }
+            if (this.gameUIState === GAME_UI_STATE.SELECTED_PLANET) {
+              // change to attack
+              this.gameUIState = GAME_UI_STATE.SELECTED_ATTACK_BY_PLANET
+              this.targetAttack = ship
+              return
+            }
+            if (this.gameUIState === GAME_UI_STATE.SELECTED_ATTACK_BY_PLANET) {
+              openAttackModal(this.targetPlanet.entityID, this.targetAttack.entityID, new Phaser.Math.Vector2(p.x, p.y))
+              if (this.targetPlanet) {
+                this.targetPlanet.clearPredictCursor()
+                this.targetPlanet.drawLine(COLOR_RED, this.targetAttack.x, this.targetAttack.y)
+              }
+              this.clearGameUIState()
+              return
+            }
+            if (this.gameUIState === GAME_UI_STATE.SELECTED_ATTACK_BY_SHIP) {
+              openAttackModal(
+                this.targetHQMoverShip.entityID,
+                this.targetAttack.entityID,
+                new Phaser.Math.Vector2(p.x, p.y),
+              )
+              if (this.targetHQMoverShip) {
+                this.targetHQMoverShip.clearPredictCursor()
+                this.targetHQMoverShip.drawLine(COLOR_RED, this.targetAttack.x, this.targetAttack.y)
+              }
+              this.clearGameUIState()
+              return
+            }
+          })
+          createTeleportSystem(networkLayer, (entityID: string, x: number, y: number) => {
+            const id = formatEntityID(entityID)
+            const ship = gameStore.getState().spaceships.get(id.toString())
+            const dist = Phaser.Math.Distance.Between(x, y, ship.x, ship.y)
+            if (ship && dist > 0) {
+              ship.teleport(x, y)
+            }
+          })
         }
       },
     )
-    createTeleportSystem(networkLayer, (entityID: string, x: number, y: number) => {
-      const id = formatEntityID(entityID)
-      const ship = gameStore.getState().spaceships.get(id.toString())
-      const dist = Phaser.Math.Distance.Between(x, y, ship.x, ship.y)
-      if (ship && dist > 0) {
-        ship.teleport(x, y)
-      }
-    })
   }
 
   clearGameUIState() {
