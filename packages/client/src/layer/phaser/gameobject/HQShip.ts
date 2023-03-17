@@ -1,6 +1,6 @@
 import { FACTION } from '../../../const/faction'
 import { TILE_SIZE } from '../config/chunk'
-import constant, { COLOR_GREEN } from '../constant'
+import { COLOR_GREEN } from '../constant'
 import { IMAGE, SPRITE } from '../constant/resource'
 
 export class HQShip extends Phaser.GameObjects.Container {
@@ -13,7 +13,7 @@ export class HQShip extends Phaser.GameObjects.Container {
   playerIndicator!: Phaser.GameObjects.Image
   energy = 0
   nameText: Phaser.GameObjects.Text
-  fractionID = -1
+  faction = -1
   signFactionImg: Phaser.GameObjects.Image
   laserSprite: Phaser.GameObjects.Rectangle
   bombSprite: Phaser.GameObjects.Sprite
@@ -25,7 +25,7 @@ export class HQShip extends Phaser.GameObjects.Container {
     texture: string,
     entityID: string,
     owner: string,
-    fractionID: number,
+    faction: number,
   ) {
     super(scene, x, y)
     this.scene.add.existing(this)
@@ -61,9 +61,9 @@ export class HQShip extends Phaser.GameObjects.Container {
     this.graphics = this.scene.add.graphics()
     this.playerIndicator.setVisible(false)
     this.nameText.setScale(2)
-    this.nameText.setColor(FACTION[fractionID].color || '#000')
+    this.nameText.setColor(FACTION[faction].color || '#000')
     this.signFactionImg = this.scene.add
-      .image(this.nameText.x - this.nameText.displayWidth, this.nameText.y, FACTION[fractionID].signImg)
+      .image(this.nameText.x - this.nameText.displayWidth, this.nameText.y, FACTION[faction].signImg)
       .setDepth(1000)
     this.add(this.signFactionImg)
   }

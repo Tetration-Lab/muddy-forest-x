@@ -38,6 +38,9 @@ import { openStdin } from 'process'
 import { getAddress } from 'ethers/lib/utils'
 import { COLOR_RED, COLOR_YELLOW } from '../constant'
 import { createAttackSystem } from '../../../system/createAttackSystem'
+import _ from 'lodash'
+import { createOwnerChangeSystem } from '../../../system/createOwnerChangeSystem'
+import { getComponentValue } from '@latticexyz/recs'
 
 const ZOOM_OUT_LIMIT = 0.01
 const ZOOM_IN_LIMIT = 2
@@ -85,13 +88,16 @@ class GameScene extends Phaser.Scene {
   targetHQMoverShip: HQShip | null = null
   targetAttack: HQShip | Planet | null = null
   targetPlanet: Planet | null = null
-  drawPlanetSends = new Map<string, Planet>()
+  drawPlanetSends: Set<string> = new Set()
   constructor() {
     super(GAME_SCENE)
     appStore.setState({ gameScene: this })
   }
 
   handleWorker = async (res: HashTwoRespItem[]) => {
+    const {
+      networkLayer: { components, world },
+    } = appStore.getState()
     for (let i = 0; i < res.length; i++) {
       const hVal = res[i].val
       const tileX = res[i].x
@@ -100,8 +106,10 @@ class GameScene extends Phaser.Scene {
       if (check) {
         const id = formatEntityID(hVal)
         const spriteKey = SPRITE_PLANET[Number(BigInt(hVal) % BigInt(SPRITE_PLANET.length))]
-        const sprite = new Planet(this, 0, 0, spriteKey, id)
-        initPlanetPosition(id, [tileX, tileY])
+        const owner = getComponentValue(components.Owner, world.registerEntity({ id }))?.value
+        const faction = owner
+          ? getComponentValue(components.Faction, world.registerEntity({ id: formatEntityID(owner) }))?.value
+          : undefined
 
         const pos = snapPosToGrid(
           {
@@ -109,16 +117,9 @@ class GameScene extends Phaser.Scene {
             y: tileY * TILE_SIZE,
           },
           TILE_SIZE,
-          sprite.displayWidth,
         )
-        if (debug) {
-          sprite.setPositionWithDebug(pos.x, pos.y, 0x00ff00)
-        } else {
-          sprite.setPosition(pos.x, pos.y)
-        }
-
-        sprite.setDepth(100)
-        sprite.setScale(planetLevel(id) / 2 + 1)
+        const sprite = new Planet(this, pos.x, pos.y, spriteKey, planetLevel(id) / 2 + 1, id, faction)
+        initPlanetPosition(id, [tileX, tileY])
         sprite.play(spriteKey)
         sprite.registerOnClick((p: Phaser.Input.Pointer) => {
           if (!p.leftButtonReleased()) {
@@ -158,6 +159,7 @@ class GameScene extends Phaser.Scene {
 
   onSetUpSystem(networkLayer: NetworkLayer) {
     createAttackSystem(networkLayer, this)
+    createOwnerChangeSystem(networkLayer, this)
     createSpawnCapitalSystem(networkLayer, (x: number, y: number, entityID: number, factionId: number) => {
       const spriteKey = FACTION[factionId].capital
       const p = new Planet(this, x, y, spriteKey, formatEntityID(`0x${entityID.toString(16)}`))
@@ -292,9 +294,7 @@ class GameScene extends Phaser.Scene {
     this.cursorMove.setOrigin(0)
 
     const { networkLayer } = appStore.getState()
-    if (networkLayer) {
-      this.onSetUpSystem(networkLayer)
-    }
+    this.onSetUpSystem(networkLayer)
 
     this.events.on('sendWorker', this.handleWorker)
     this.events.on(Phaser.GameObjects.Events.DESTROY, this.onDestroy)
@@ -445,10 +445,9 @@ class GameScene extends Phaser.Scene {
     }
 
     this.drawPlanetSends.forEach((s) => {
-      if (s) {
-        s.predictMove(Math.floor(this.cursorMove.x / TILE_SIZE), Math.floor(this.cursorMove.y / TILE_SIZE))
-        s.drawPredictLine(COLOR_YELLOW)
-      }
+      const planet = gameStore.getState().planets.get(s)
+      planet.predictMove(Math.floor(this.cursorMove.x / TILE_SIZE), Math.floor(this.cursorMove.y / TILE_SIZE))
+      planet.drawPredictLine(COLOR_YELLOW)
     })
   }
 

@@ -14,6 +14,7 @@ export const FACTION: {
     signSrc: string
     color: string
     signImg: string
+    auraImg: string
     shipSpriteKey: string
   }
 } = {
@@ -28,6 +29,7 @@ export const FACTION: {
     signSrc: '/assets/svg/faction-ape-ape.svg',
     color: '#5076C3',
     signImg: IMAGE.APE_APE_SIGN,
+    auraImg: IMAGE.APE_APE_AURA,
     shipSpriteKey: SPRITE.APE_SHIP,
   },
   11: {
@@ -41,6 +43,7 @@ export const FACTION: {
     signSrc: '/assets/svg/faction-ape-alien.svg',
     color: '#BEF6AF',
     signImg: IMAGE.APE_ALIEN_SIGN,
+    auraImg: IMAGE.APE_ALIEN_AURA,
     shipSpriteKey: SPRITE.ALIEN_SHIP,
   },
   12: {
@@ -54,6 +57,7 @@ export const FACTION: {
     signSrc: '/assets/svg/faction-ape-ai.svg',
     color: '#F091C8',
     signImg: IMAGE.APE_AI_SIGN,
+    auraImg: IMAGE.APE_AI_AURA,
     shipSpriteKey: SPRITE.AI_SHIP,
   },
 }

@@ -37,6 +37,10 @@ class PreloaderScene extends Phaser.Scene {
     this.load.image(IMAGE.APE_ALIEN_SIGN, 'assets/images/ape_alien_sign.png')
     this.load.image(IMAGE.APE_AI_SIGN, 'assets/images/ai_ape_sign.png')
 
+    this.load.image(IMAGE.APE_APE_AURA, 'assets/images/ape_ape_aura.png')
+    this.load.image(IMAGE.APE_ALIEN_AURA, 'assets/images/alien_ape_aura.png')
+    this.load.image(IMAGE.APE_AI_AURA, 'assets/images/ai_ape_aura.png')
+
     this.load.spritesheet(SPRITE.APE_ALINE_CAPITAL, 'assets/sprite/H1_320px.png', { frameWidth: 320, frameHeight: 320 })
     this.load.spritesheet(SPRITE.APE_APE_CAPITAL, 'assets/sprite/H2_320px.png', { frameWidth: 320, frameHeight: 320 })
     this.load.spritesheet(SPRITE.APE_AI_CAPITAL, 'assets/sprite/H3_320px.png', { frameWidth: 320, frameHeight: 320 })

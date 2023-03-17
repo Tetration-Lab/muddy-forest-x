@@ -1,5 +1,6 @@
+import { FACTION } from '../../../const/faction'
 import { TILE_SIZE } from '../config/chunk'
-import { COLOR_GREEN, COLOR_RED } from '../constant'
+import { COLOR_RED } from '../constant'
 import { SPRITE } from '../constant/resource'
 
 export class Planet extends Phaser.GameObjects.Sprite {
@@ -10,8 +11,21 @@ export class Planet extends Phaser.GameObjects.Sprite {
   isOwner = false
   laserSprite: Phaser.GameObjects.Rectangle
   bombSprite: Phaser.GameObjects.Sprite
-  constructor(scene: Phaser.Scene, x: number, y: number, texture: string, entityID: string) {
+  aura?: Phaser.GameObjects.Image
+  faction: number
+
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    texture: string,
+    scale: number,
+    entityID: string,
+    faction?: number,
+  ) {
     super(scene, x, y, texture)
+    this.setScale(scale)
+    this.setDepth(1000)
     this.rect = this.scene.add.rectangle(this.x, this.y, this.displayWidth, this.displayHeight, 0x0000ff)
     this.entityID = entityID
     this.rect.setVisible(false)
@@ -19,12 +33,23 @@ export class Planet extends Phaser.GameObjects.Sprite {
     this.setInteractive()
     this.graphics = this.scene.add.graphics()
     this.predictCursor = this.scene.add.rectangle(this.x, this.y, 0, 0, 0x00ff00).setAlpha(0.5)
-
     this.laserSprite = this.scene.add.rectangle(x, y, 48 + 16, 12, 0xff0000).setDepth(1000 + this.depth + 1)
     this.bombSprite = this.scene.add.sprite(x, y, SPRITE.BOMB).setDepth(this.laserSprite.depth + 1)
     this.bombSprite.play(SPRITE.BOMB)
     this.bombSprite.setVisible(false)
     this.laserSprite.setVisible(false)
+    this.changeFaction(faction)
+  }
+
+  changeFaction(faction: number) {
+    if (!faction || this.faction === faction) return
+    this.faction = faction
+    this.aura?.destroy()
+    this.aura = this.scene.add
+      .image(this.x, this.y, FACTION[faction].auraImg)
+      .setDepth(this.depth - 1)
+      .setAlpha(0.5)
+      .setDisplaySize(this.displayWidth * 1.5, this.displayHeight * 1.5)
   }
 
   registerOnClick(callback: (pointer?: Phaser.Input.Pointer) => void): this {
