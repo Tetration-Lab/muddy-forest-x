@@ -3,6 +3,9 @@ module.exports = {
   content: ['src/**/*.{vue,html,jsx,tsx}'],
   theme: {
     extend: {
+      animation: {
+        'spin-slow': 'spin 5s linear infinite',
+      },
       colors: {
         custom: {
           DEFAULT: '#10B981',
