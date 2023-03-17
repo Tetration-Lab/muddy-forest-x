@@ -39,7 +39,7 @@ export const moveEnergyCost = (distance: number) => {
  * @returns energy cost
  **/
 export const sendEnergyCost = (distance: number, weight: number) => {
-  return 100 + 10 * distance + (weight * distance) / (50 + 0)
+  return Math.floor(100 + 10 * distance + (weight * distance) / (50 + 0))
 }
 
 export const attackEnergyCost = (distance: number) => {

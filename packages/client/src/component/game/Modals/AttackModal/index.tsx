@@ -18,6 +18,7 @@ import { CloseModalButton } from '../../common/CloseModalButton'
 import { GameItem } from '../../common/GameItem'
 import { GameItemEntry } from '../PlanetModal/GameItemEntry'
 import { EnergyInfoTab, InfoTab } from '../PlanetModal/InfoTab'
+import { GameItemSlider } from './GameItemSlider'
 import { SpriteEntry } from './SpriteEntry'
 
 export const AttackModal = ({
@@ -199,15 +200,10 @@ export const AttackModal = ({
             </Stack>
             <Stack p={1} sx={{ backgroundColor: theme.palette.grayScale.darkGray, borderRadius: '8px' }} spacing={1}>
               <Typography sx={{ fontSize: 14, fontWeight: 400 }}>Energy Used</Typography>
-              <Stack
-                direction="row"
-                spacing={1}
-                p={0.5}
-                sx={{ backgroundColor: theme.palette.grayScale.black, borderRadius: '8px' }}
-              >
-                <GameItem imageUrl="/assets/svg/item-energy-icon.svg" />
-                <Stack flex={1} justifyContent="center" alignItems="end">
-                  <Typography sx={{ fontSize: 14 }}>
+              <GameItemSlider
+                imageUrl="/assets/svg/item-energy-icon.svg"
+                value={
+                  <>
                     {attackerEnergy}{' '}
                     <span
                       style={{
@@ -217,23 +213,11 @@ export const AttackModal = ({
                       (-{Math.floor((energyUsedPercent * attackerEnergy) / 100)})
                     </span>{' '}
                     / {attacker?.entity?.energy?.cap}
-                  </Typography>
-                  <Stack direction="row" spacing={1} alignItems="center" width="100%">
-                    <Typography sx={{ fontSize: 14, color: theme.palette.grayScale.almostGray }}>0%</Typography>
-                    <Slider
-                      aria-label="energy-used"
-                      value={energyUsedPercent}
-                      valueLabelDisplay="auto"
-                      onChange={(_, value) => {
-                        setEnergyUsedPercent(value as number)
-                      }}
-                      size="small"
-                      sx={{ color: theme.palette.grayScale.white, p: 0 }}
-                    />
-                    <Typography sx={{ fontSize: 14, color: theme.palette.grayScale.almostGray }}>100%</Typography>
-                  </Stack>
-                </Stack>
-              </Stack>
+                  </>
+                }
+                percent={energyUsedPercent}
+                onChangePercent={setEnergyUsedPercent}
+              />
               <Typography sx={{ fontSize: 14 }}>Final Damage</Typography>
               <Typography sx={{ fontSize: 12, color: theme.palette.grayScale.almostGray }}>
                 The target will be{' '}
@@ -268,7 +252,7 @@ export const AttackModal = ({
                 </Stack>
               </Stack>
               <Stack alignItems="center">
-                <MainButton color="error" sx={{ width: 'fit-content' }} onClick={attack} disabled={isAttacking}>
+                <MainButton color="error" onClick={attack} disabled={isAttacking || effectiveEnergy <= 0}>
                   Attack
                 </MainButton>
               </Stack>

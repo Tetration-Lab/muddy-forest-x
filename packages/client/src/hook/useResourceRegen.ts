@@ -2,6 +2,36 @@ import { useEffect, useState } from 'react'
 import { Components } from '../layer/network/components'
 import { ComponentV } from '../types/entity'
 
+export const useResourcesRegen = (
+  resources: Map<string, ComponentV<Components['Resource']>>,
+  enableRegen: boolean = true,
+) => {
+  const [value, setValue] = useState<{ [key in string]: number }>({})
+  useEffect(() => {
+    setValue(
+      !resources || resources.size === 0
+        ? {}
+        : Object.fromEntries(
+            [...resources.entries()].map(([k, v]) => [
+              k,
+              Math.min(v?.cap, v?.value + (enableRegen ? v?.rpb * (Math.floor(Date.now() / 1000) - v?.lrt) : 0)),
+            ]),
+          ),
+    )
+    if (!enableRegen) return () => {}
+    const interval = setInterval(
+      () =>
+        setValue((e) =>
+          Object.fromEntries([...resources.entries()].map(([k, v]) => [k, Math.min(v?.cap, e[k] + v?.rpb)])),
+        ),
+      1000,
+    )
+    return () => clearInterval(interval)
+  }, [resources, enableRegen])
+
+  return value
+}
+
 export const useResourceRegen = (resource: ComponentV<Components['Resource']>, enableRegen: boolean = true) => {
   const [value, setValue] = useState(0)
   useEffect(() => {

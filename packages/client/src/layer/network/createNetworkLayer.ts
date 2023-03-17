@@ -122,6 +122,30 @@ export async function createNetworkLayer(config: SetupContractConfig) {
     )
   }
 
+  const send = async (
+    entity: string,
+    targetEntity: string,
+    distance: number,
+    resources: { amount: number; id: string }[],
+  ) => {
+    try {
+      console.log(resources)
+      const tx = await systems['system.Send'].executeTyped({
+        entity,
+        targetEntity,
+        range: distance,
+        resources,
+      })
+      enqueueSnackbar(`Send Queued`)
+      await tx.wait()
+      enqueueSnackbar(`Send successfully`)
+      return tx
+    } catch (err) {
+      enqueueSnackbar(parseEtherError(err), { variant: 'error' })
+      throw err
+    }
+  }
+
   const debug = async () => {}
   // FOR DEV
   const w = window as any
@@ -150,6 +174,7 @@ export async function createNetworkLayer(config: SetupContractConfig) {
       move,
       attack,
       initResources,
+      send,
     },
     singletonIndex,
     playerIndex,
