@@ -68,7 +68,7 @@ contract AttackSystem is System {
       if (energy.value == 0) {
         if (targetTy == uint32(EType.SPACESHIP)) {
           // If spaceship = destroy
-          DestroyedComponent(getAddressById(components, DID)).set(args.targetEntity);
+          // DestroyedComponent(getAddressById(components, DID)).set(args.targetEntity);
         } else if (targetTy == uint32(EType.PLANET)) {
           // If planet = capture
           OwnerComponent(getAddressById(components, OID)).set(args.targetEntity, addressToEntity(msg.sender));
