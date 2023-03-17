@@ -60,7 +60,6 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
   }
 
   useEffect(() => {
-    console.log(planet?.owner, 'owner')
     planetSprite.setOwner(false)
     if (planet?.owner) {
       planetSprite.setOwner(true)

@@ -128,14 +128,14 @@ export const UILayer = () => {
           </div>
         </div>
       </div>
-      {/* <div className="absolute top-1/2 right-0" ref={teleportContainerRef}>
+      <div className="absolute top-1/2 right-0" ref={teleportContainerRef}>
         <div className="p-4">
           <ToolButton title="Teleport" iconSrc="./assets/svg/teleport-icon.svg" onClick={handleOnClickTeleport} />
           <Popper open={!!openTeleportBox} anchorEl={teleportContainerRef.current} placement="left">
             <TeleportActionBox id={openTeleportBox} />
           </Popper>
         </div>
-      </div> */}
+      </div>
       <div className="absolute top-50 left-0">
         <div className="p-4">
           <Profile />

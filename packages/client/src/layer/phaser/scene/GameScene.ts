@@ -247,6 +247,11 @@ class GameScene extends Phaser.Scene {
     this.clearGameUIState()
   }
 
+  clearAllUI() {
+    this.clearAllDrawLine()
+    closeTeleport()
+  }
+
   async onCreate() {
     initConfigAnim(this)
     this.input.setPollAlways()
@@ -295,7 +300,7 @@ class GameScene extends Phaser.Scene {
 
     this.input.on('pointerup', async (p) => {
       if (this.input.activePointer.rightButtonReleased()) {
-        this.clearAllDrawLine()
+        this.clearAllUI()
         this.gameUIState = GAME_UI_STATE.NONE
       }
       if (this.gameUIState === GAME_UI_STATE.SELECTED_ATTACK_BY_PLANET) {
