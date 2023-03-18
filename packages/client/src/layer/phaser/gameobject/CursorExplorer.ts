@@ -124,9 +124,17 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
       return
     }
     this.currentChunk = this.miningPattern.nextChunk(this.currentChunk)
-    this.setPosition(
-      this.currentChunk.x * TILE_SIZE * CHUNK_WIDTH_SIZE,
-      this.currentChunk.y * TILE_SIZE * CHUNK_HEIGHT_SIZE,
-    )
+    this.scene.tweens.add({
+      targets: this,
+      props: {
+        x: {
+          value: this.currentChunk.x * TILE_SIZE * CHUNK_WIDTH_SIZE,
+        },
+        y: {
+          value: this.currentChunk.y * TILE_SIZE * CHUNK_HEIGHT_SIZE,
+        },
+      },
+      duration: 100,
+    }).updateTo
   }
 }
