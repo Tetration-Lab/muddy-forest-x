@@ -48,9 +48,12 @@ export class HQShip extends Phaser.GameObjects.Container {
     this.entityID = entityID
     this.owner = owner
     this.nameText = this.scene.add
-      .text(0, 0 + 50, '')
-      .setDepth(1000)
+      .text(0, 50, '')
       .setOrigin(0.5, 0.5)
+      .setDepth(1000)
+      .setFontSize(18)
+      .setFontStyle('bold')
+      .setStroke('#FFFFFF', 3)
     this.teleportEffect = this.scene.add.sprite(0, 0, SPRITE.TELEPORT).setDepth(1000)
     this.playerIndicator = this.scene.add.image(0, 0 + -48, IMAGE.PLAYER_INDICATOR).setDepth(1000)
     this.playerIndicator.setDisplaySize(32, 32)
@@ -61,9 +64,7 @@ export class HQShip extends Phaser.GameObjects.Container {
     this.playerIndicator.setVisible(false)
     this.nameText.setScale(2)
     this.nameText.setColor(FACTION[faction].color || '#000')
-    this.signFactionImg = this.scene.add
-      .image(this.nameText.x - this.nameText.displayWidth, this.nameText.y, FACTION[faction].signImg)
-      .setDepth(1000)
+    this.signFactionImg = this.scene.add.image(0, 50, FACTION[faction].signImg).setDepth(1000)
     this.add(this.signFactionImg)
   }
 
@@ -104,7 +105,7 @@ export class HQShip extends Phaser.GameObjects.Container {
 
   setPlayerName(name: string) {
     this.nameText.setText(name)
-    this.signFactionImg.setPosition(this.nameText.x - this.nameText.displayWidth, this.nameText.y)
+    this.signFactionImg.setPosition(this.nameText.x - (this.nameText.displayWidth * 2) / 3, this.nameText.y)
   }
 
   setPlayerIndicatorVisible(visible: boolean) {

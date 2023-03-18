@@ -1,18 +1,14 @@
+import { formatEntityID } from '@latticexyz/network'
 import { Perlin } from '@latticexyz/noise'
+import { getComponentValue } from '@latticexyz/recs'
+import { Hasher } from 'circuits'
 import Phaser from 'phaser'
 import { Pane } from 'tweakpane'
-import { Chunk } from '../utils/Chunk'
-import { ChunkLoader } from '../utils/ChunkLoader'
-import { CHUNK_HEIGHT_SIZE, CHUNK_WIDTH_SIZE, TILE_SIZE } from '../config/chunk'
-import { GAME_HEIGHT, GAME_WIDTH } from '../config/game'
-import { GAME_SCENE } from '../constant/scene'
-import { Tile } from '../utils/Tile'
+import { FACTION } from '../../../const/faction'
+import { planetLevel, PLANET_RARITY } from '../../../const/planet'
+import { HashTwoRespItem } from '../../../miner/hasher.worker'
 import { appStore } from '../../../store/app'
-import { snapPosToGrid, snapToGrid, snapValToGrid } from '../../../utils/snapToGrid'
-import { Hasher } from 'circuits'
-import { initConfigAnim } from '../anim'
-import { CursorExplorer } from '../gameobject/CursorExplorer'
-import { Planet } from '../gameobject/Planet'
+import { dataStore, initPlanetPosition } from '../../../store/data'
 import {
   addPlanet,
   addSpaceship,
@@ -23,24 +19,25 @@ import {
   openSendModal,
   openTeleport,
 } from '../../../store/game'
+import { createAttackSystem } from '../../../system/createAttackSystem'
+import { createOwnerChangeSystem } from '../../../system/createOwnerChangeSystem'
 import { createSpawnCapitalSystem } from '../../../system/createSpawnCapitalSystem'
-import { NetworkLayer } from '../../network/types'
-import { IMAGE, SPRITE, SPRITE_PLANET } from '../constant/resource'
-import { HashTwoRespItem } from '../../../miner/hasher.worker'
 import { createSpawnHQShipSystem } from '../../../system/createSpawnHQShipSystem'
 import { createTeleportSystem } from '../../../system/createTeleportSystem'
-import { planetLevel, PLANET_RARITY } from '../../../const/planet'
-import { HQShip } from '../gameobject/HQShip'
-import { formatEntityID } from '@latticexyz/network'
-import { dataStore, initPlanetPosition } from '../../../store/data'
-import { FACTION } from '../../../const/faction'
-import { openStdin } from 'process'
-import { getAddress } from 'ethers/lib/utils'
+import { snapPosToGrid, snapToGrid, snapValToGrid } from '../../../utils/snapToGrid'
+import { NetworkLayer } from '../../network/types'
+import { initConfigAnim } from '../anim'
+import { CHUNK_HEIGHT_SIZE, CHUNK_WIDTH_SIZE, TILE_SIZE } from '../config/chunk'
+import { GAME_HEIGHT, GAME_WIDTH } from '../config/game'
 import { COLOR_RED, COLOR_YELLOW } from '../constant'
-import { createAttackSystem } from '../../../system/createAttackSystem'
-import _ from 'lodash'
-import { createOwnerChangeSystem } from '../../../system/createOwnerChangeSystem'
-import { getComponentValue } from '@latticexyz/recs'
+import { IMAGE, SPRITE, SPRITE_PLANET } from '../constant/resource'
+import { GAME_SCENE } from '../constant/scene'
+import { CursorExplorer } from '../gameobject/CursorExplorer'
+import { HQShip } from '../gameobject/HQShip'
+import { Planet } from '../gameobject/Planet'
+import { Chunk } from '../utils/Chunk'
+import { ChunkLoader } from '../utils/ChunkLoader'
+import { Tile } from '../utils/Tile'
 
 const ZOOM_OUT_LIMIT = 0.01
 const ZOOM_IN_LIMIT = 2
@@ -162,7 +159,7 @@ class GameScene extends Phaser.Scene {
     createOwnerChangeSystem(networkLayer, this)
     createSpawnCapitalSystem(networkLayer, (x: number, y: number, entityID: number, factionId: number) => {
       const spriteKey = FACTION[factionId].capital
-      const p = new Planet(this, x, y, spriteKey, formatEntityID(`0x${entityID.toString(16)}`))
+      const p = new Planet(this, x, y, spriteKey, 1, formatEntityID(`0x${entityID.toString(16)}`), factionId)
       p.setDisplaySize(4 * TILE_SIZE ** 2, 4 * TILE_SIZE ** 2)
       p.play(spriteKey)
     })
