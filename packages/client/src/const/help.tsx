@@ -10,13 +10,13 @@ export const BASIC_HELP: {
 }[] = [
   {
     title: 'Spaceship Action',
-    logo: 'assets/sprite/ai-ship.png',
+    logo: 'assets/sprite/ai_ship.png',
     description: {
       image: 'assets/images/help.png',
       text: [
         <>
           Every player owned a spaceship. The first actions that a player can do are to{' '}
-          <span style={{ color: '#4BB543' }}>"move"</span> and <span style={{ color: '#D6432F' }}>"attack"</span>
+          <span style={{ color: '#4BB543' }}>"move"</span> and <span style={{ color: '#D6432F' }}>"attack"</span>{' '}
           entities. The player can move to their desired position and is also able to attack entities to expand their
           fractions and be the first on the leaderboard.
         </>,

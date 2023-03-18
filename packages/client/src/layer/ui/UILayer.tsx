@@ -4,6 +4,7 @@ import { useStore } from 'zustand'
 import { ChatBoxWrapper } from '../../component/ChatBox'
 import { GameActionBox, GameActionBoxMode } from '../../component/game/GameActionBox'
 import { AttackModal } from '../../component/game/Modals/AttackModal'
+import { HelpModal } from '../../component/game/Modals/HelpModal'
 import { PlanetModal } from '../../component/game/Modals/PlanetModal'
 import { SendModal } from '../../component/game/Modals/SendModal'
 import { Profile } from '../../component/game/Profile'
@@ -11,7 +12,7 @@ import { SettingActionBox } from '../../component/game/SettingActionBox'
 import { TeleportActionBox } from '../../component/game/TeleportActionBox'
 import { ToolButton } from '../../component/ToolButton'
 import { dataStore } from '../../store/data'
-import { closeTeleport, gameStore, openTeleport } from '../../store/game'
+import { closeTeleport, gameStore, openHelpModal, openTeleport } from '../../store/game'
 
 export const UILayer = () => {
   const toolsContainerRef = useRef()
@@ -89,7 +90,7 @@ export const UILayer = () => {
             <div ref={settingContainerRef}>
               <ToolButton iconSrc="./assets/svg/setting-icon.svg" onClick={handleSettingClick} />
             </div>
-            <ToolButton iconSrc="./assets/svg/lightbulb-icon.svg" />
+            <ToolButton iconSrc="./assets/svg/lightbulb-icon.svg" onClick={() => openHelpModal(0)} />
             <Popper open={openSettingBox} anchorEl={settingContainerRef.current} placement="bottom-end">
               <Box sx={{ mt: 2 }}>
                 <SettingActionBox />
@@ -154,6 +155,7 @@ export const UILayer = () => {
       <AttackModals />
       <PlanetModals />
       <SendModals />
+      <HelpModal />
     </div>
   )
 }

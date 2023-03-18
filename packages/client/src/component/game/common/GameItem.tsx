@@ -29,6 +29,7 @@ export const GameItem = ({
     <Box
       onClick={onClick}
       sx={{
+        flexShrink: 0,
         width: small ? 24 : 48,
         height: small ? 24 : 48,
         display: 'flex',
@@ -37,7 +38,7 @@ export const GameItem = ({
         backgroundColor: active ? theme.palette.grayScale.black : theme.palette.grayScale.almostBlack,
         border: `2px solid ${active ? theme.palette.grayScale.white : theme.palette.grayScale.black}`,
         borderRadius: small ? '8px' : '12px',
-        cursor: 'pointer',
+        cursor: onClick ? 'pointer' : 'default',
         opacity: visibility === ItemVisibility.Visible ? 1 : 0.5,
         position: 'relative',
         // boxSizing: 'border-box',

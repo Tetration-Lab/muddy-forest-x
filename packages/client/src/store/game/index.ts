@@ -4,6 +4,7 @@ import { Planet } from '../../layer/phaser/gameobject/Planet'
 import { BaseEntityType } from '../../types/entity'
 
 export type Store = {
+  helpModal?: number
   teleportAction?: string
   planetModals: Map<string, Phaser.Math.Vector2>
   attackModals: Map<string, [string, Phaser.Math.Vector2]>
@@ -103,5 +104,17 @@ export const closeSendModal = (id: string) => {
     const sendModals = new Map(state.sendModals)
     sendModals.delete(id)
     return { sendModals }
+  })
+}
+
+export const openHelpModal = (id?: number) => {
+  gameStore.setState((state) => {
+    return { helpModal: id ?? 0 }
+  })
+}
+
+export const closeHelpModal = () => {
+  gameStore.setState((state) => {
+    return { helpModal: undefined }
   })
 }
