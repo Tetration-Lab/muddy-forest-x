@@ -53,7 +53,7 @@ export class HQShip extends Phaser.GameObjects.Container {
       .setDepth(1000)
       .setFontSize(18)
       .setFontStyle('bold')
-      .setStroke('#FFFFFF', 3)
+      .setStroke('#FFFFFF80', 3)
     this.teleportEffect = this.scene.add.sprite(0, 0, SPRITE.TELEPORT).setDepth(1000)
     this.playerIndicator = this.scene.add.image(0, 0 + -48, IMAGE.PLAYER_INDICATOR).setDepth(1000)
     this.playerIndicator.setDisplaySize(32, 32)
