@@ -1,9 +1,8 @@
 import { getComponentValue } from '@latticexyz/recs'
-import { Box, Slider, Stack, Typography, useTheme } from '@mui/material'
+import { Box, Stack, Typography, useTheme } from '@mui/material'
 import { useCallback, useMemo, useState } from 'react'
 import Draggable from 'react-draggable'
 import { useStore } from 'zustand'
-import { FACTION } from '../../../../const/faction'
 import { attackEnergyCost } from '../../../../const/resources'
 import { EntityType } from '../../../../const/types'
 import { useBaseEntity } from '../../../../hook/useBaseEntity'
@@ -14,9 +13,9 @@ import { appStore } from '../../../../store/app'
 import { closeAttackModal, gameStore } from '../../../../store/game'
 import { generatePlanetName } from '../../../../utils/random'
 import { MainButton } from '../../../common/MainButton'
+import { WarningBox } from '../../../common/WarningBox'
 import { CloseModalButton } from '../../common/CloseModalButton'
 import { GameItem } from '../../common/GameItem'
-import { GameItemEntry } from '../PlanetModal/GameItemEntry'
 import { EnergyInfoTab, InfoTab } from '../PlanetModal/InfoTab'
 import { GameItemSlider } from './GameItemSlider'
 import { SpriteEntry } from './SpriteEntry'
@@ -198,65 +197,69 @@ export const AttackModal = ({
               <InfoTab iconSrc="/assets/svg/distance-icon.svg" title={`${distance} m`} />
               <InfoTab iconSrc="/assets/svg/attack-icon.svg" title={`${attacker?.entity?.attack}%`} />
             </Stack>
-            <Stack p={1} sx={{ backgroundColor: theme.palette.grayScale.darkGray, borderRadius: '8px' }} spacing={1}>
-              <Typography sx={{ fontSize: 14, fontWeight: 400 }}>Energy Used</Typography>
-              <GameItemSlider
-                imageUrl="/assets/svg/item-energy-icon.svg"
-                value={
-                  <>
-                    {attackerEnergy}{' '}
-                    <span
-                      style={{
-                        color: theme.palette.error.main,
-                      }}
-                    >
-                      (-{Math.floor((energyUsedPercent * attackerEnergy) / 100)})
-                    </span>{' '}
-                    / {attacker?.entity?.energy?.cap}
-                  </>
-                }
-                percent={energyUsedPercent}
-                onChangePercent={setEnergyUsedPercent}
-              />
-              <Typography sx={{ fontSize: 14 }}>Final Damage</Typography>
-              <Typography sx={{ fontSize: 12, color: theme.palette.grayScale.almostGray }}>
-                The target will be{' '}
-                <span
-                  style={{
-                    color: theme.palette.error.main,
-                  }}
+            {attackerOwner?.faction === targetOwner?.faction ? (
+              <WarningBox label="Cannot attack your own faciton!" />
+            ) : (
+              <Stack p={1} sx={{ backgroundColor: theme.palette.grayScale.darkGray, borderRadius: '8px' }} spacing={1}>
+                <Typography sx={{ fontSize: 14, fontWeight: 400 }}>Energy Used</Typography>
+                <GameItemSlider
+                  imageUrl="/assets/svg/item-energy-icon.svg"
+                  value={
+                    <>
+                      {attackerEnergy}{' '}
+                      <span
+                        style={{
+                          color: theme.palette.error.main,
+                        }}
+                      >
+                        (-{Math.floor((energyUsedPercent * attackerEnergy) / 100)})
+                      </span>{' '}
+                      / {attacker?.entity?.energy?.cap}
+                    </>
+                  }
+                  percent={energyUsedPercent}
+                  onChangePercent={setEnergyUsedPercent}
+                />
+                <Typography sx={{ fontSize: 14 }}>Final Damage</Typography>
+                <Typography sx={{ fontSize: 12, color: theme.palette.grayScale.almostGray }}>
+                  The target will be{' '}
+                  <span
+                    style={{
+                      color: theme.palette.error.main,
+                    }}
+                  >
+                    defeated{' '}
+                  </span>{' '}
+                  if use more than current target's energy
+                </Typography>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  p={0.5}
+                  sx={{ backgroundColor: theme.palette.grayScale.black, borderRadius: '8px' }}
                 >
-                  defeated{' '}
-                </span>{' '}
-                if use more than current target's energy
-              </Typography>
-              <Stack
-                direction="row"
-                spacing={1}
-                p={0.5}
-                sx={{ backgroundColor: theme.palette.grayScale.black, borderRadius: '8px' }}
-              >
-                <GameItem imageUrl="/assets/svg/item-minus-energy-icon.svg" />
-                <Stack flex={1} justifyContent="center" alignItems="end">
-                  <Typography sx={{ fontSize: 14 }}>
-                    {targetEnergy}{' '}
-                    <span
-                      style={{
-                        color: theme.palette.error.main,
-                      }}
-                    >
-                      (-{effectiveEnergy}){' '}
-                    </span>
-                    / {target?.entity?.energy?.cap}
-                  </Typography>
+                  <GameItem imageUrl="/assets/svg/item-minus-energy-icon.svg" />
+                  <Stack flex={1} justifyContent="center" alignItems="end">
+                    <Typography sx={{ fontSize: 14 }}>
+                      {targetEnergy}{' '}
+                      <span
+                        style={{
+                          color: theme.palette.error.main,
+                        }}
+                      >
+                        (-{effectiveEnergy}){' '}
+                      </span>
+                      / {target?.entity?.energy?.cap}
+                    </Typography>
+                  </Stack>
+                </Stack>
+                <Stack alignItems="center">
+                  <MainButton color="error" onClick={attack} disabled={isAttacking || effectiveEnergy <= 0}>
+                    Attack
+                  </MainButton>
                 </Stack>
               </Stack>
-              <Stack alignItems="center">
-                <MainButton color="error" onClick={attack} disabled={isAttacking || effectiveEnergy <= 0}>
-                  Attack
-                </MainButton>
-              </Stack>
-            </Stack>
+            )}
           </Stack>
         </Stack>
       </Box>
