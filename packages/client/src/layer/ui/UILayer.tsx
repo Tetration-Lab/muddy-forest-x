@@ -1,7 +1,7 @@
 import { Box, Popper } from '@mui/material'
 import { useRef, useState } from 'react'
 import { useStore } from 'zustand'
-import { ChatBoxWrapper } from '../../component/Chatbox'
+import { ChatBoxWrapper } from '../../component/ChatBox'
 import { GameActionBox, GameActionBoxMode } from '../../component/game/GameActionBox'
 import { AttackModal } from '../../component/game/Modals/AttackModal'
 import { PlanetModal } from '../../component/game/Modals/PlanetModal'

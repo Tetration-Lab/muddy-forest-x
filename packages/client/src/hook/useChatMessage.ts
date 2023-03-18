@@ -5,19 +5,19 @@ import socketio, { Socket } from 'socket.io-client'
 export interface ChatMessage {
   message: string
   username: string
-  id: string
+  timestamp: number
   playerColor: string
 }
 
 type SocketEventCallbackFunction = (...args: unknown[]) => void
-export default function useSocketIO(url, username: string, roomID = '') {
+export default function useSocketIO(url: string, username: string, roomID = '') {
   const socket = useRef<Socket | null>()
   const [connected, setConnected] = useState(false)
 
   useEffect(() => {
     socket.current = socketio(url, {
       auth: {
-        username: username,
+        username: `${username}`,
       },
     })
     socket.current.connect()
@@ -33,17 +33,14 @@ export default function useSocketIO(url, username: string, roomID = '') {
     })
 
     socket.current.on('disconnect', () => {
-      console.log('disconnected-------')
       setConnected(false)
     })
     return () => {
-      console.log('call disconnect')
       if (socket.current) socket.current.disconnect()
     }
-  }, [])
+  }, [roomID])
 
   const emit = (event: string, ...args: unknown[]) => {
-    // console.log(event, args, socket.current)
     if (socket.current) socket.current.emit(event, ...args)
   }
 
