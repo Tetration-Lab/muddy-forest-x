@@ -1,5 +1,5 @@
-import { ButtonBase, Typography } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
+import { ButtonBase, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import { ResearchAndDiscoveryTabType } from './types'
 

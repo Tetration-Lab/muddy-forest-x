@@ -2,6 +2,7 @@ import { defineSystem, getComponentValue, Has, HasValue } from '@latticexyz/recs
 import { EntityType } from '../const/types'
 import { NetworkLayer } from '../layer/network/types'
 import { TILE_SIZE } from '../layer/phaser/config/chunk'
+import { Planet } from '../layer/phaser/gameobject/Planet'
 import { snapPosToGrid } from '../utils/snapToGrid'
 import { hexToInt } from '../utils/utils'
 

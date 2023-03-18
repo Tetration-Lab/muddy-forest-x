@@ -1,5 +1,5 @@
-import { Box, Slide, Stack, Tooltip, Typography, useTheme } from '@mui/material'
-import { forwardRef } from 'react'
+import { Box, Slide, Stack, styled, Tooltip, Typography, useTheme } from '@mui/material'
+import { forwardRef, useEffect, useState } from 'react'
 import { useCooldown } from '../../../hook/useCooldown'
 
 export interface CooldownStatusBadgeProps {

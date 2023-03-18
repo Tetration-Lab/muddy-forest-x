@@ -1,9 +1,12 @@
-import { Box, useTheme } from '@mui/material'
+import { Badge, Box, Typography, useTheme } from '@mui/material'
+import { Stack } from '@mui/system'
 import { useMemo } from 'react'
 import { MATERIALS } from '../../../../const/materials'
 import { useResourceRegen } from '../../../../hook/useResourceRegen'
 import { Components } from '../../../../layer/network/components'
 import { ComponentV } from '../../../../types/entity'
+import { GameItem } from '../../common/GameItem'
+import { GenericTag, TypeTag } from '../../common/LabelTag'
 import { GameItemEntry } from './GameItemEntry'
 
 export interface MaterialEntryProps {

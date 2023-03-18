@@ -1,7 +1,7 @@
-import { GAME_HEIGHT, GAME_WIDTH } from './config/game'
-import GameScene from './scene/GameScene'
-import GameUIScene from './scene/GameUIScene'
 import MainScene from './scene/MainScene'
+import GameScene from './scene/GameScene'
+import { GAME_HEIGHT, GAME_WIDTH } from './config/game'
+import GameUIScene from './scene/GameUIScene'
 import PreloaderScene from './scene/PreloaderScene'
 
 const phaserConfig = {

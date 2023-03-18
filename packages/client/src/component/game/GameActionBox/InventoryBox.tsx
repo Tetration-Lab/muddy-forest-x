@@ -4,11 +4,11 @@ import { Box, Stack } from '@mui/system'
 import { useMemo, useState } from 'react'
 import { FaMinus, FaPlus } from 'react-icons/fa'
 import { MOCK_INVENTORY_ITEMS } from '../../../const/mocks'
-import { GameItem } from '../common/GameItem'
-import { TypeTag } from '../common/LabelTag'
 import { ActionButton } from './ActionButton'
 import { FilterButton } from './FilterButton'
+import { GameItem } from '../common/GameItem'
 import { IInventoryItem, InventoryTabType, InventoryType, ItemVisibility } from './types'
+import { TypeTag } from '../common/LabelTag'
 
 const InventoryTabs = ({
   activeTab,

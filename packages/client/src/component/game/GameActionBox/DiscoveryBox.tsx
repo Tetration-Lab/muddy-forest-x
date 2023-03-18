@@ -1,9 +1,9 @@
-import { useTheme } from '@mui/material/styles'
 import { Stack } from '@mui/system'
+import { useTheme } from '@mui/material/styles'
 import { useState } from 'react'
-import { ResearchAndDiscoverInventoryFilters } from './ResearchAndDiscoverInventoryFilters'
+import { ResearchAndDiscoveryTabType, InventoryType } from './types'
 import { ResearchAndDiscoveryTabs } from './ResearchAndDiscoveryTabs'
-import { InventoryType, ResearchAndDiscoveryTabType } from './types'
+import { ResearchAndDiscoverInventoryFilters } from './ResearchAndDiscoverInventoryFilters'
 
 export const DiscoveryBox = () => {
   const theme = useTheme()

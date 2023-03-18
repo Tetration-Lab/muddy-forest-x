@@ -1,12 +1,12 @@
 import { IconButton, NativeSelect, Stack, Typography, useTheme } from '@mui/material'
 import { useState } from 'react'
-import { FaMinus, FaPause, FaPlay, FaPlus } from 'react-icons/fa'
-import { MAX_MINER_INSTANCE } from '../../../const/miner'
-import { MiningPatternType } from '../../../miner/MiningPatterns'
+import { FaExclamationCircle, FaMinus, FaPause, FaPlay, FaPlus } from 'react-icons/fa'
+import { ToolButton } from '../../ToolButton'
 import { minerStore } from '../../../store/miner'
 import { MainButton } from '../../common/MainButton'
+import { MiningPatternType } from '../../../miner/MiningPatterns'
+import { MAX_MINER_INSTANCE } from '../../../const/miner'
 import { WarningBox } from '../../common/WarningBox'
-import { ToolButton } from '../../ToolButton'
 
 export const SettingActionBox = () => {
   const theme = useTheme()
