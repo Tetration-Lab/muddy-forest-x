@@ -1,6 +1,6 @@
 import { Collapse, Grid, IconButton, Typography, useTheme } from '@mui/material'
 import { Box, Stack } from '@mui/system'
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import Draggable from 'react-draggable'
 import { FaAngleDown } from 'react-icons/fa'
 import { useBoolean } from 'usehooks-ts'
@@ -56,13 +56,6 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
       gameScene.gameUIState = GAME_UI_STATE.SELECTED_PLANET_SEND
     }, 100)
   }
-
-  useEffect(() => {
-    planetSprite.setOwner(false)
-    if (planet?.owner) {
-      planetSprite.setOwner(true)
-    }
-  }, [planet?.owner])
 
   if (!planet || !planetSprite) return <></>
 

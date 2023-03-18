@@ -17,7 +17,6 @@ export class HQShip extends Phaser.GameObjects.Container {
   signFactionImg: Phaser.GameObjects.Image
   laserSprite: Phaser.GameObjects.Rectangle
   bombSprite: Phaser.GameObjects.Sprite
-  isOwner = false
   constructor(
     scene: Phaser.Scene,
     x: number,
@@ -66,10 +65,6 @@ export class HQShip extends Phaser.GameObjects.Container {
       .image(this.nameText.x - this.nameText.displayWidth, this.nameText.y, FACTION[faction].signImg)
       .setDepth(1000)
     this.add(this.signFactionImg)
-  }
-
-  setOwner(isOwner: boolean) {
-    this.isOwner = isOwner
   }
 
   attackTo(targetPos: Phaser.Math.Vector2) {

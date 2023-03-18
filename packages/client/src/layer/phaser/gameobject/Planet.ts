@@ -8,7 +8,6 @@ export class Planet extends Phaser.GameObjects.Sprite {
   entityID: string
   predictCursor!: Phaser.GameObjects.Rectangle
   graphics!: Phaser.GameObjects.Graphics
-  isOwner = false
   laserSprite: Phaser.GameObjects.Rectangle
   bombSprite: Phaser.GameObjects.Sprite
   aura?: Phaser.GameObjects.Image
@@ -55,10 +54,6 @@ export class Planet extends Phaser.GameObjects.Sprite {
   registerOnClick(callback: (pointer?: Phaser.Input.Pointer) => void): this {
     this.on('pointerup', callback)
     return this
-  }
-
-  setOwner(isOwner: boolean) {
-    this.isOwner = isOwner
   }
 
   attackTo(targetPos: Phaser.Math.Vector2) {
