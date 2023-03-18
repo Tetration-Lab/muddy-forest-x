@@ -7,7 +7,7 @@ export const PhaserLayer = () => {
   const store = useStore(appStore, (state) => state)
 
   const onClickPhaserLayer = () => {
-    store.setFocusUI(false)
+    appStore.setState({ isFocusUI: false })
     const chatInputDom = document.getElementById('chat-input')
     if (chatInputDom) {
       chatInputDom.blur()

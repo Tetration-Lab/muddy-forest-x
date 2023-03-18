@@ -12,22 +12,10 @@ import { MainButton } from './common/MainButton'
 export const ChatBoxWrapper = () => {
   const {
     networkLayer: { playerIndex, components },
-    setFocusUI,
   } = useStore(appStore, (state) => state)
   const name = getComponentValue(components.Name, playerIndex)?.value
   const faction = getComponentValue(components.Faction, playerIndex)?.value
-  return (
-    <>
-      {name && faction && (
-        <ChatBox
-          faction={faction}
-          name={name}
-          focusInputCallback={() => setFocusUI(true)}
-          focusOutInputCallback={() => setFocusUI(false)}
-        />
-      )}
-    </>
-  )
+  return <>{name && faction && <ChatBox faction={faction} name={name} />}</>
 }
 
 enum ChatBoxTab {
@@ -36,13 +24,11 @@ enum ChatBoxTab {
 }
 
 export interface ChatBoxProps {
-  focusInputCallback?: () => void
-  focusOutInputCallback?: () => void
   name?: string
   faction?: number
 }
 
-export const ChatBox: React.FC<ChatBoxProps> = ({ focusInputCallback, focusOutInputCallback, name, faction }) => {
+export const ChatBox: React.FC<ChatBoxProps> = ({ name, faction }) => {
   const theme = useTheme()
 
   const globalRoomID = 'muddy-lobby'
@@ -103,10 +89,10 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ focusInputCallback, focusOutIn
   }
 
   const onFocusInput = () => {
-    if (focusInputCallback) focusInputCallback()
+    appStore.setState({ isFocusUI: true })
   }
   const onFocusOutInput = () => {
-    if (focusOutInputCallback) focusOutInputCallback()
+    appStore.setState({ isFocusUI: false })
   }
 
   useEffect(() => {

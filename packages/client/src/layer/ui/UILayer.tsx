@@ -83,13 +83,15 @@ export const UILayer = () => {
         </div>
       </div>
       {/*<ClickAwayListener onClickAway={handleSettingClose}>*/}
-      <div className="absolute top-50 right-0" ref={settingContainerRef}>
+      <div className="absolute top-50 right-0">
         <div className="p-4">
           <div className="flex space-x-2">
-            <ToolButton iconSrc="./assets/svg/magnifying-glass-icon.svg"></ToolButton>
-            <ToolButton iconSrc="./assets/svg/setting-icon.svg" onClick={handleSettingClick}></ToolButton>
+            <div ref={settingContainerRef}>
+              <ToolButton iconSrc="./assets/svg/setting-icon.svg" onClick={handleSettingClick} />
+            </div>
+            <ToolButton iconSrc="./assets/svg/lightbulb-icon.svg" />
             <Popper open={openSettingBox} anchorEl={settingContainerRef.current} placement="bottom-end">
-              <Box sx={{ mr: 2 }}>
+              <Box sx={{ mt: 2 }}>
                 <SettingActionBox />
               </Box>
             </Popper>

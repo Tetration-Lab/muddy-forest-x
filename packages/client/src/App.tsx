@@ -28,7 +28,7 @@ function App() {
     })
     const networkLayer = await createNetworkLayer(config)
     networkLayer.startSync()
-    store.setNetworkLayer(networkLayer)
+    appStore.setState({ networkLayer })
     createLoadingStateSystem(networkLayer, (stage, msg, percentage) => {
       setLoaded(stage === SyncState.LIVE)
       setLoadingMsg({
