@@ -15,7 +15,7 @@ export class HQShip extends Phaser.GameObjects.Container {
   nameText: Phaser.GameObjects.Text
   faction = -1
   signFactionImg: Phaser.GameObjects.Image
-  laserSprite: Phaser.GameObjects.Rectangle
+  laserSprite: Phaser.GameObjects.Sprite
   bombSprite: Phaser.GameObjects.Sprite
   constructor(
     scene: Phaser.Scene,
@@ -29,7 +29,8 @@ export class HQShip extends Phaser.GameObjects.Container {
     super(scene, x, y)
     this.scene.add.existing(this)
     //TODO: replace with sprite sheet
-    this.laserSprite = this.scene.add.rectangle(x, y, 48 + 16, 12, 0xff0000).setDepth(1000 + this.depth + 1)
+    this.laserSprite = this.scene.add.sprite(x, y, SPRITE.LASER).setDepth(1000 + this.depth + 1)
+    this.laserSprite.play(SPRITE.LASER)
     this.bombSprite = this.scene.add.sprite(x, y, SPRITE.BOMB).setDepth(this.laserSprite.depth + 1)
     this.bombSprite.play(SPRITE.BOMB)
     this.bombSprite.setVisible(false)

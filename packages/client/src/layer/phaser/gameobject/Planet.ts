@@ -8,7 +8,7 @@ export class Planet extends Phaser.GameObjects.Sprite {
   entityID: string
   predictCursor!: Phaser.GameObjects.Rectangle
   graphics!: Phaser.GameObjects.Graphics
-  laserSprite: Phaser.GameObjects.Rectangle
+  laserSprite: Phaser.GameObjects.Sprite
   bombSprite: Phaser.GameObjects.Sprite
   aura?: Phaser.GameObjects.Image
   faction: number
@@ -32,7 +32,8 @@ export class Planet extends Phaser.GameObjects.Sprite {
     this.setInteractive()
     this.graphics = this.scene.add.graphics()
     this.predictCursor = this.scene.add.rectangle(this.x, this.y, 0, 0, 0x00ff00).setAlpha(0.5)
-    this.laserSprite = this.scene.add.rectangle(x, y, 48 + 16, 12, 0xff0000).setDepth(1000 + this.depth + 1)
+    this.laserSprite = this.scene.add.sprite(x, y, SPRITE.LASER).setDepth(1000 + this.depth + 1)
+    this.laserSprite.play(SPRITE.LASER)
     this.bombSprite = this.scene.add.sprite(x, y, SPRITE.BOMB).setDepth(this.laserSprite.depth + 1)
     this.bombSprite.play(SPRITE.BOMB)
     this.bombSprite.setVisible(false)

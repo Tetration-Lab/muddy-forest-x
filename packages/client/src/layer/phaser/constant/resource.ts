@@ -26,6 +26,7 @@ export const SPRITE = {
   AI_SHIP: 'AI_SHIP',
   ALIEN_SHIP: 'ALIEN_SHIP',
   APE_SHIP: 'APE_SHIP',
+  LASER: 'laser',
 }
 
 export const SPRITE_PLANET = [

@@ -50,6 +50,7 @@ class PreloaderScene extends Phaser.Scene {
     this.load.spritesheet(SPRITE.AI_SHIP, 'assets/sprite/AI_Ship-Sheet.png', { frameWidth: 64, frameHeight: 64 })
     this.load.spritesheet(SPRITE.ALIEN_SHIP, 'assets/sprite/Alien_Ship-Sheet.png', { frameWidth: 64, frameHeight: 64 })
     this.load.spritesheet(SPRITE.APE_SHIP, 'assets/sprite/Ape_Ship-Sheet.png', { frameWidth: 64, frameHeight: 64 })
+    this.load.spritesheet(SPRITE.LASER, 'assets/sprite/laser_96x32.png', { frameWidth: 32, frameHeight: 32 })
   }
 
   create() {

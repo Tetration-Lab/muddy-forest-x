@@ -24,6 +24,7 @@ export const initConfigAnim = (scene: Phaser.Scene) => {
   createAnimIdle(SPRITE.APE_SHIP, SPRITE.APE_SHIP, 0, 9, scene)
   createAnimIdle(SPRITE.AI_SHIP, SPRITE.AI_SHIP, 0, 9, scene)
   createAnimIdle(SPRITE.ALIEN_SHIP, SPRITE.ALIEN_SHIP, 0, 9, scene)
+  createAnimIdle(SPRITE.LASER, SPRITE.LASER, 0, 2, scene)
 }
 
 function createAnimIdle(

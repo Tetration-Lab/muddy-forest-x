@@ -40,20 +40,19 @@ function App() {
     })
   }, [])
 
+  const clearAllStorage = async () => {
+    const burnerWallet = localStorage.getItem('burnerWallet')
+    localStorage.clear()
+    await localForage.clear()
+    if (burnerWallet) {
+      localStorage.setItem('burnerWallet', burnerWallet)
+    }
+    localStorage.setItem('version', version)
+  }
+
   useEffect(() => {
-    // checkversion
     if (localStorage.getItem('version') !== version) {
-      // console.log('clear all')
-      //clear all local storage
-      ;(async () => {
-        const burnerWallet = localStorage.getItem('burnerWallet')
-        localStorage.clear()
-        await localForage.clear()
-        if (burnerWallet) {
-          localStorage.setItem('burnerWallet', burnerWallet)
-        }
-        localStorage.setItem('version', version)
-      })()
+      clearAllStorage()
     }
     onInitialSync()
     document.addEventListener('contextmenu', (event) => {
