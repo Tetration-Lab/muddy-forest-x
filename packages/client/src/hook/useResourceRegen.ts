@@ -14,7 +14,9 @@ export const useResourcesRegen = (
         : Object.fromEntries(
             [...resources.entries()].map(([k, v]) => [
               k,
-              Math.min(v?.cap, v?.value + (enableRegen ? v?.rpb * (Math.floor(Date.now() / 1000) - v?.lrt) : 0)),
+              v?.value >= v?.cap
+                ? v?.value
+                : Math.min(v?.cap, v?.value + (enableRegen ? v?.rpb * (Math.floor(Date.now() / 1000) - v?.lrt) : 0)),
             ]),
           ),
     )
@@ -22,7 +24,9 @@ export const useResourcesRegen = (
     const interval = setInterval(
       () =>
         setValue((e) =>
-          Object.fromEntries([...resources.entries()].map(([k, v]) => [k, Math.min(v?.cap, e[k] + v?.rpb)])),
+          Object.fromEntries(
+            [...resources.entries()].map(([k, v]) => [k, e[k] >= v?.cap ? e[k] : Math.min(v?.cap, e[k] + v?.rpb)]),
+          ),
         ),
       1000,
     )
@@ -38,13 +42,18 @@ export const useResourceRegen = (resource: ComponentV<Components['Resource']>, e
     setValue(
       !resource
         ? 0
+        : resource?.value >= resource?.cap
+        ? resource?.value
         : Math.min(
             resource?.cap,
             resource?.value + (enableRegen ? resource?.rpb * (Math.floor(Date.now() / 1000) - resource?.lrt) : 0),
           ),
     )
     if (!enableRegen) return () => {}
-    const interval = setInterval(() => setValue((e) => Math.min(resource?.cap, e + resource?.rpb)), 1000)
+    const interval = setInterval(
+      () => setValue((e) => (e >= resource?.cap ? e : Math.min(resource?.cap, e + resource?.rpb))),
+      1000,
+    )
     return () => clearInterval(interval)
   }, [resource, enableRegen])
 

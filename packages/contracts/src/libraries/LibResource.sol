@@ -95,7 +95,11 @@ library Resource {
     ResourceComponent.Resource memory targetR = r.getValue(targetId);
     require(senderR.value >= amount, "Not enough resource amount");
     senderR.value -= amount;
-    targetR.value = Math64.min(targetR.cap, targetR.value + amount);
+    if (resourceId == BASE_ENERGY) {
+      targetR.value = targetR.value + amount;
+    } else {
+      targetR.value = Math64.min(targetR.cap, targetR.value + amount);
+    }
     r.set(senderId, senderR);
     r.set(targetId, targetR);
   }
