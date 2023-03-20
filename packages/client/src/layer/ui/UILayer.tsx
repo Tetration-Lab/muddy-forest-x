@@ -2,14 +2,15 @@ import { Box, Popper } from '@mui/material'
 import { useRef, useState } from 'react'
 import { useStore } from 'zustand'
 import { ChatBoxWrapper } from '../../component/ChatBox'
-import { GameActionBox, GameActionBoxMode } from '../../component/game/GameActionBox'
+import { GameActionBox, GameActionBoxMode } from '../../component/game/ActionBox/GameActionBox'
+import { LeaderboardActionBox } from '../../component/game/ActionBox/LeaderboardActionBox'
+import { SettingActionBox } from '../../component/game/ActionBox/SettingActionBox'
+import { TeleportActionBox } from '../../component/game/ActionBox/TeleportActionBox'
 import { AttackModal } from '../../component/game/Modals/AttackModal'
 import { HelpModal } from '../../component/game/Modals/HelpModal'
 import { PlanetModal } from '../../component/game/Modals/PlanetModal'
 import { SendModal } from '../../component/game/Modals/SendModal'
 import { Profile } from '../../component/game/Profile'
-import { SettingActionBox } from '../../component/game/SettingActionBox'
-import { TeleportActionBox } from '../../component/game/TeleportActionBox'
 import { ToolButton } from '../../component/ToolButton'
 import { dataStore } from '../../store/data'
 import { closeTeleport, gameStore, openHelpModal, openTeleport } from '../../store/game'
@@ -17,27 +18,16 @@ import { closeTeleport, gameStore, openHelpModal, openTeleport } from '../../sto
 export const UILayer = () => {
   const toolsContainerRef = useRef()
   const settingContainerRef = useRef()
+  const leaderboardContainerRef = useRef()
   const teleportContainerRef = useRef()
 
   const openTeleportBox = useStore(gameStore, (state) => state.teleportAction)
 
   const [openSettingBox, setOpenSettingBox] = useState(false)
-
+  const [openLeaderboardBox, setOpenLeaderboardBox] = useState(false)
   const [openGameActionBox, setOpenGameActionBox] = useState(false)
   const [currentMode, setCurrentMode] = useState<GameActionBoxMode | undefined>()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-
-  const handleSettingClick = () => {
-    if (openSettingBox) {
-      handleSettingClose()
-    } else {
-      setOpenSettingBox(true)
-    }
-  }
-
-  const handleSettingClose = () => {
-    setOpenSettingBox(false)
-  }
 
   const handleOnClickTeleport = () => {
     if (openTeleportBox) {
@@ -88,12 +78,20 @@ export const UILayer = () => {
         <div className="p-4">
           <div className="flex space-x-2">
             <div ref={settingContainerRef}>
-              <ToolButton iconSrc="./assets/svg/setting-icon.svg" onClick={handleSettingClick} />
+              <ToolButton iconSrc="./assets/svg/setting-icon.svg" onClick={() => setOpenSettingBox((e) => !e)} />
+            </div>
+            <div ref={leaderboardContainerRef}>
+              <ToolButton iconSrc="./assets/svg/trophy-icon.svg" onClick={() => setOpenLeaderboardBox((e) => !e)} />
             </div>
             <ToolButton iconSrc="./assets/svg/lightbulb-icon.svg" onClick={() => openHelpModal(0)} />
             <Popper open={openSettingBox} anchorEl={settingContainerRef.current} placement="bottom-end">
               <Box sx={{ mt: 2 }}>
                 <SettingActionBox />
+              </Box>
+            </Popper>
+            <Popper open={openLeaderboardBox} anchorEl={leaderboardContainerRef.current} placement="bottom-end">
+              <Box sx={{ mt: 2 }}>
+                <LeaderboardActionBox />
               </Box>
             </Popper>
           </div>

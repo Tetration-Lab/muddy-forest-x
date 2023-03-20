@@ -2,10 +2,7 @@ import { useEffect, useState } from 'react'
 import { Components } from '../layer/network/components'
 import { ComponentV } from '../types/entity'
 
-export const useResourcesRegen = (
-  resources: Map<string, ComponentV<Components['Resource']>>,
-  enableRegen: boolean = true,
-) => {
+export const useResourcesRegen = (resources: Map<string, ComponentV<Components['Resource']>>, enableRegen = true) => {
   const [value, setValue] = useState<{ [key in string]: number }>({})
   useEffect(() => {
     setValue(
@@ -36,7 +33,7 @@ export const useResourcesRegen = (
   return value
 }
 
-export const useResourceRegen = (resource: ComponentV<Components['Resource']>, enableRegen: boolean = true) => {
+export const useResourceRegen = (resource: ComponentV<Components['Resource']>, enableRegen = true) => {
   const [value, setValue] = useState(0)
   useEffect(() => {
     setValue(

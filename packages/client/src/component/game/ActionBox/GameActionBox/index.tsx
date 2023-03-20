@@ -1,5 +1,5 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material'
-import { ToolButton } from '../../ToolButton'
+import { ToolButton } from '../../../ToolButton'
 import { BuildBox } from './BuildBox'
 import { DiscoveryBox } from './DiscoveryBox'
 import { InventoryBox } from './InventoryBox'
@@ -19,7 +19,7 @@ const ToolButtonWithText = ({
   showText = false,
 }: {
   iconSrc: string
-  onClick?: (event: React.MouseEvent<HTMLElement>) => void
+  onClick?: () => void
   text?: string
   showText?: boolean
 }) => {
