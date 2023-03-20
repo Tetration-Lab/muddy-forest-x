@@ -45,17 +45,6 @@ export const StatusBadge = forwardRef(({ imgSrc, status, hover }: StatusBadgePro
           </Stack>
         ) : null
       }
-      componentsProps={{
-        tooltip: {
-          sx: {
-            backgroundColor: '#171923',
-            '& .MuiTooltip-arrow': {
-              color: '#171923',
-            },
-          },
-        },
-      }}
-      arrow
       placement="bottom-start"
     >
       <Stack spacing={-0.5} alignItems="center">

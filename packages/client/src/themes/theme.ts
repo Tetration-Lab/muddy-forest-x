@@ -46,6 +46,23 @@ export const theme = createTheme({
   typography: {
     fontFamily: ['Fira Mono', 'Roboto', 'sans-serif'].join(','),
   },
+  components: {
+    MuiTooltip: {
+      defaultProps: {
+        arrow: true,
+        componentsProps: {
+          tooltip: {
+            sx: {
+              backgroundColor: '#171923',
+              '& .MuiTooltip-arrow': {
+                color: '#171923',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   // shape: {
   //   borderRadius: 4,
   // },

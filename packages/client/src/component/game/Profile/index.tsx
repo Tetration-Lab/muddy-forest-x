@@ -1,5 +1,5 @@
 import { formatEntityID } from '@latticexyz/network'
-import { Box, Typography, useTheme } from '@mui/material'
+import { Box, Tooltip, Typography, useTheme } from '@mui/material'
 import { Stack } from '@mui/system'
 import { useStore } from 'zustand'
 import { FACTION } from '../../../const/faction'
@@ -8,7 +8,7 @@ import { useSpaceship } from '../../../hook/useSpaceship'
 import { appStore } from '../../../store/app'
 import { dataStore } from '../../../store/data'
 import { gameStore } from '../../../store/game'
-import { EnergyStatBox, PlanetStatBox, StatBox } from './StatBox'
+import { EnergyStatBox, PlanetStatBox } from './StatBox'
 import { CooldownStatusBadge } from './StatusBadge'
 
 export const Profile = () => {
