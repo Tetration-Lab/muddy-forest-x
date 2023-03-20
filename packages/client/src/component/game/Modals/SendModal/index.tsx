@@ -68,7 +68,7 @@ export const SendModal = ({
     if (getComponentValue(components.Type, target?.entity?.index)?.value === EntityType.HQSHIP) {
       targetName = targetOwner?.name
       targetSprite = gameStore.getState().spaceships.get(targetId)?.shipImg
-      targetPosition = gameStore.getState().spaceships.get(id)?.getPosition()
+      targetPosition = gameStore.getState().spaceships.get(targetId)?.getPosition()
     } else {
       targetName = generatePlanetName(BigInt(targetId))
       targetSprite = gameStore.getState().planets.get(targetId)
