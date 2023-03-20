@@ -43,6 +43,19 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
     this.miningPattern = new SpiralPattern(this.currentChunk)
     minerStore.setState({ miner: this })
     this.miners = [workerStore.getState().createWorker()]
+    // for debug
+    if (import.meta.env.DEV) {
+      const w: any = window
+      w.spawnPlanetMap = this.spawnPlanetMap
+    }
+  }
+
+  setCurrentChunkFromPos(position: Position) {
+    console.log('setCurrentChunkFromPos', position)
+    this.currentChunk = {
+      x: Math.floor(position.x / TILE_SIZE / CHUNK_WIDTH_SIZE),
+      y: Math.floor(position.y / TILE_SIZE / CHUNK_HEIGHT_SIZE),
+    }
   }
 
   async setMiningPattern(pattern: MiningPatternType) {

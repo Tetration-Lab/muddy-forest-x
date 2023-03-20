@@ -1,3 +1,4 @@
+import localForage from 'localforage'
 import { formatEntityID } from '@latticexyz/network'
 import { Perlin } from '@latticexyz/noise'
 import { getComponentValue } from '@latticexyz/recs'
@@ -93,7 +94,7 @@ class GameScene extends Phaser.Scene {
 
   handleWorker = async (res: HashTwoRespItem[]) => {
     const {
-      networkLayer: { components, world },
+      networkLayer: { playerIndex },
     } = appStore.getState()
     for (let i = 0; i < res.length; i++) {
       const hVal = res[i].val
@@ -101,51 +102,89 @@ class GameScene extends Phaser.Scene {
       const tileY = res[i].y
       const check = BigInt(hVal) < PLANET_RARITY
       if (check) {
+        type PlanetHashValItemType = {
+          id: string
+          hVal: string
+          tileX: number
+          tileY: number
+        }
         const id = formatEntityID(hVal)
-        const spriteKey = SPRITE_PLANET[Number(BigInt(hVal) % BigInt(SPRITE_PLANET.length))]
-        const owner = getComponentValue(components.Owner, world.registerEntity({ id }))?.value
-        const faction = owner
-          ? getComponentValue(components.Faction, world.registerEntity({ id: formatEntityID(owner) }))?.value
-          : undefined
+        const planetHashValStr: string = (await localForage.getItem(`planetHash:${playerIndex}`)) || 'null'
+        let planetHashVal = {} as Record<string, PlanetHashValItemType>
+        if (planetHashValStr === 'null') {
+          const planetHashVal = {} as Record<string, PlanetHashValItemType>
+          planetHashVal[`${id}`] = {
+            id: `${id}`,
+            hVal,
+            tileX,
+            tileY,
+          }
+        } else {
+          planetHashVal = JSON.parse(planetHashValStr) as Record<string, PlanetHashValItemType>
+          // update
+          planetHashVal[`${id}`] = {
+            id: `${id}`,
+            hVal,
+            tileX,
+            tileY,
+          }
+        }
 
-        const pos = snapPosToGrid(
-          {
-            x: tileX * TILE_SIZE,
-            y: tileY * TILE_SIZE,
-          },
-          TILE_SIZE,
-        )
-        const sprite = new Planet(this, pos.x, pos.y, spriteKey, planetLevel(id) / 2 + 1, id, faction)
-        initPlanetPosition(id, [tileX, tileY])
-        sprite.play(spriteKey)
-        sprite.registerOnClick((p: Phaser.Input.Pointer) => {
-          if (!p.leftButtonReleased()) {
-            return
-          }
-          if (this.gameUIState === GAME_UI_STATE.SELECTED_PLANET_SEND) {
-            openSendModal(this.targetPlanet.entityID, id, new Phaser.Math.Vector2(p.x, p.y))
-            this.drawPlanetSends.delete(this.targetPlanet.entityID)
-            this.gameUIState = GAME_UI_STATE.NONE
-            return
-          }
-          if (this.gameUIState === GAME_UI_STATE.SELECTED_PLANET) {
-            // change to attack
-            this.gameUIState = GAME_UI_STATE.SELECTED_ATTACK_BY_PLANET
-            this.targetAttack = sprite
-            return
-          }
-          if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
-            // change to attack
-            this.gameUIState = GAME_UI_STATE.SELECTED_ATTACK_BY_SHIP
-            this.targetAttack = sprite
-            return
-          }
-          openPlanetModal(id, new Phaser.Math.Vector2(p.x, p.y))
-        })
-
-        addPlanet(id, sprite)
+        const newPlanetHashValStr = JSON.stringify(planetHashVal)
+        await localForage.setItem(`planetHash:${playerIndex}`, newPlanetHashValStr)
+        localStorage.setItem(`lastPlanetID:${playerIndex}`, `${id}`)
+        this.createPlanet(hVal, tileX, tileY)
       }
     }
+  }
+
+  createPlanet = (hVal: string, tileX: number, tileY: number) => {
+    const {
+      networkLayer: { components, world },
+    } = appStore.getState()
+    const id = formatEntityID(hVal)
+    const spriteKey = SPRITE_PLANET[Number(BigInt(hVal) % BigInt(SPRITE_PLANET.length))]
+    const owner = getComponentValue(components.Owner, world.registerEntity({ id }))?.value
+    const faction = owner
+      ? getComponentValue(components.Faction, world.registerEntity({ id: formatEntityID(owner) }))?.value
+      : undefined
+
+    const pos = snapPosToGrid(
+      {
+        x: tileX * TILE_SIZE,
+        y: tileY * TILE_SIZE,
+      },
+      TILE_SIZE,
+    )
+    const sprite = new Planet(this, pos.x, pos.y, spriteKey, planetLevel(id) / 2 + 1, id, faction)
+    initPlanetPosition(id, [tileX, tileY])
+    sprite.play(spriteKey)
+    sprite.registerOnClick((p: Phaser.Input.Pointer) => {
+      if (!p.leftButtonReleased()) {
+        return
+      }
+      if (this.gameUIState === GAME_UI_STATE.SELECTED_PLANET_SEND) {
+        openSendModal(this.targetPlanet.entityID, id, new Phaser.Math.Vector2(p.x, p.y))
+        this.drawPlanetSends.delete(this.targetPlanet.entityID)
+        this.gameUIState = GAME_UI_STATE.NONE
+        return
+      }
+      if (this.gameUIState === GAME_UI_STATE.SELECTED_PLANET) {
+        // change to attack
+        this.gameUIState = GAME_UI_STATE.SELECTED_ATTACK_BY_PLANET
+        this.targetAttack = sprite
+        return
+      }
+      if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
+        // change to attack
+        this.gameUIState = GAME_UI_STATE.SELECTED_ATTACK_BY_SHIP
+        this.targetAttack = sprite
+        return
+      }
+      openPlanetModal(id, new Phaser.Math.Vector2(p.x, p.y))
+    })
+
+    addPlanet(id, sprite)
   }
 
   handleUIEventPosition = (e: any) => {
@@ -270,6 +309,7 @@ class GameScene extends Phaser.Scene {
         createTeleportSystem(networkLayer, (entityID: string, x: number, y: number) => {
           const id = formatEntityID(entityID)
           const ship = gameStore.getState().spaceships.get(id.toString())
+          if (!ship) return
           const dist = Phaser.Math.Distance.Between(x, y, ship.x, ship.y)
           if (ship && dist > 0) {
             ship.teleport(x, y)
@@ -316,6 +356,7 @@ class GameScene extends Phaser.Scene {
     this.cursorMove.setOrigin(0)
 
     const { networkLayer } = appStore.getState()
+    const playerIndex = networkLayer.playerIndex
     this.onSetUpSystem(networkLayer)
 
     this.events.on('sendWorker', this.handleWorker)
@@ -323,6 +364,26 @@ class GameScene extends Phaser.Scene {
 
     this.rt = this.add.renderTexture(0, 0, GAME_WIDTH, GAME_HEIGHT)
     this.cursorExplorer = new CursorExplorer(this, this.followPoint, SPRITE.EXPLORER, this.handleWorker)
+    const lastPlanetID = localStorage.getItem(`lastPlanetID:${playerIndex}`)
+    if (lastPlanetID) {
+      const planetHashStr = (await localForage.getItem(`planetHash:${playerIndex}`)) as string
+      const planetHash = planetHashStr ? JSON.parse(planetHashStr) : {}
+      if (planetHash[lastPlanetID]) {
+        this.cursorExplorer.setCurrentChunkFromPos({
+          x: planetHash[lastPlanetID].tileX * TILE_SIZE,
+          y: planetHash[lastPlanetID].tileY * TILE_SIZE,
+        })
+      }
+
+      if (planetHash) {
+        Object.keys(planetHash).forEach((key) => {
+          const planet = planetHash[key]
+          if (planet) {
+            this.createPlanet(planet.hVal, planet.tileX, planet.tileY)
+          }
+        })
+      }
+    }
     this.cursorExplorer.run()
     this.cursorExplorer.play(SPRITE.EXPLORER)
 

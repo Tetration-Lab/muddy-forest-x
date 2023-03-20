@@ -12,6 +12,8 @@ import { theme } from './themes/theme'
 import { config } from './config'
 import { SnackbarProvider } from 'notistack'
 import { Loading } from './component/Loading'
+import { version } from '../package.json'
+import localForage from 'localforage'
 
 function App() {
   const store = useStore(appStore, (state) => state)
@@ -39,6 +41,20 @@ function App() {
   }, [])
 
   useEffect(() => {
+    // checkversion
+    if (localStorage.getItem('version') !== version) {
+      // console.log('clear all')
+      //clear all local storage
+      ;(async () => {
+        const burnerWallet = localStorage.getItem('burnerWallet')
+        localStorage.clear()
+        await localForage.clear()
+        if (burnerWallet) {
+          localStorage.setItem('burnerWallet', burnerWallet)
+        }
+        localStorage.setItem('version', version)
+      })()
+    }
     onInitialSync()
     document.addEventListener('contextmenu', (event) => {
       event.preventDefault()
