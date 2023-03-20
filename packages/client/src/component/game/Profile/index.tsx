@@ -8,7 +8,7 @@ import { useSpaceship } from '../../../hook/useSpaceship'
 import { appStore } from '../../../store/app'
 import { dataStore } from '../../../store/data'
 import { gameStore } from '../../../store/game'
-import { EnergyStatBox, StatBox } from './StatBox'
+import { EnergyStatBox, PlanetStatBox, StatBox } from './StatBox'
 import { CooldownStatusBadge } from './StatusBadge'
 
 export const Profile = () => {
@@ -82,7 +82,7 @@ export const Profile = () => {
               }}
             >
               <EnergyStatBox key={ship.energy.value} {...ship.energy} />
-              <StatBox title="Planets" value="0" iconSrc="/assets/svg/planet-icon.svg" />
+              <PlanetStatBox />
             </Stack>
           </Box>
         </Stack>

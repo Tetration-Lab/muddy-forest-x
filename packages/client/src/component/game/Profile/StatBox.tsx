@@ -1,8 +1,22 @@
+import { HasValue } from '@latticexyz/recs'
+import { useQuery } from '@latticexyz/std-client'
 import { Box, Typography, useTheme } from '@mui/material'
 import { Stack } from '@mui/system'
+import { useStore } from 'zustand'
+import { EntityType } from '../../../const/types'
 import { useResourceRegen } from '../../../hook/useResourceRegen'
 import { Components } from '../../../layer/network/components'
+import { appStore } from '../../../store/app'
 import { ComponentV } from '../../../types/entity'
+
+export const PlanetStatBox = () => {
+  const { components, network } = useStore(appStore, (state) => state.networkLayer)
+  const value = useQuery([
+    HasValue(components.Type, { value: EntityType.PLANET }),
+    HasValue(components.Owner, { value: network.connectedAddress.get() }),
+  ])
+  return <StatBox title="Planets" value={`${value?.size}`} iconSrc="/assets/svg/planet-icon.svg" />
+}
 
 export const EnergyStatBox = (props: ComponentV<Components['Resource']>) => {
   const value = useResourceRegen(props)
