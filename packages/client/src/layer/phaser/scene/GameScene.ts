@@ -189,8 +189,8 @@ class GameScene extends Phaser.Scene {
           this.navigation.setPosition(this.followPoint.x, this.followPoint.y)
           ship.predictCursor.setVisible(true)
           ship.setPlayerIndicatorVisible(true)
-          ship.registerOnClick((pointer: Phaser.Input.Pointer) => {
-            if (!pointer.leftButtonReleased()) {
+          ship.registerOnClick((p: Phaser.Input.Pointer) => {
+            if (!p.leftButtonReleased()) {
               return
             }
             if (this.gameUIState === GAME_UI_STATE.NONE) {
@@ -198,6 +198,21 @@ class GameScene extends Phaser.Scene {
                 this.gameUIState = GAME_UI_STATE.SELECTED_HQ_SHIP
                 this.targetHQMoverShip = ship
               }, 100)
+            }
+            if (this.gameUIState === GAME_UI_STATE.SELECTED_ATTACK_BY_PLANET) {
+              openAttackModal(this.targetPlanet.entityID, this.targetAttack.entityID, new Phaser.Math.Vector2(p.x, p.y))
+              if (this.targetPlanet) {
+                this.targetPlanet.clearPredictCursor()
+                this.targetPlanet.drawLine(COLOR_RED, this.targetAttack.x, this.targetAttack.y)
+              }
+              this.clearGameUIState()
+              return
+            }
+            if (this.gameUIState === GAME_UI_STATE.SELECTED_PLANET_SEND) {
+              openSendModal(this.targetPlanet.entityID, id, new Phaser.Math.Vector2(p.x, p.y))
+              this.drawPlanetSends.delete(this.targetPlanet.entityID)
+              this.gameUIState = GAME_UI_STATE.NONE
+              return
             }
           })
           ship.setDepth(1000)
@@ -220,6 +235,12 @@ class GameScene extends Phaser.Scene {
               // change to attack
               this.gameUIState = GAME_UI_STATE.SELECTED_ATTACK_BY_PLANET
               this.targetAttack = ship
+              return
+            }
+            if (this.gameUIState === GAME_UI_STATE.SELECTED_PLANET_SEND) {
+              openSendModal(this.targetPlanet.entityID, id, new Phaser.Math.Vector2(p.x, p.y))
+              this.drawPlanetSends.delete(this.targetPlanet.entityID)
+              this.gameUIState = GAME_UI_STATE.NONE
               return
             }
             if (this.gameUIState === GAME_UI_STATE.SELECTED_ATTACK_BY_PLANET) {
@@ -265,6 +286,10 @@ class GameScene extends Phaser.Scene {
   }
 
   clearAllDrawLine() {
+    this.drawPlanetSends.forEach((planetID) => {
+      const planet = gameStore.getState().planets.get(planetID)
+      if (planet) planet.clearLine()
+    })
     this.drawPlanetSends.clear()
     if (this.targetHQMoverShip) {
       this.targetHQMoverShip.resetPredictMovePosition()

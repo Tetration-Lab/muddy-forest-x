@@ -53,6 +53,7 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
     const gameScene = appStore.getState().gameScene
     setTimeout(() => {
       gameScene.drawPlanetSends.add(planetSprite.entityID)
+      gameScene.targetPlanet = planetSprite
       gameScene.gameUIState = GAME_UI_STATE.SELECTED_PLANET_SEND
     }, 100)
   }
