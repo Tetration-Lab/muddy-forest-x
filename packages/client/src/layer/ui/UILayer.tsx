@@ -89,7 +89,12 @@ export const UILayer = () => {
                 <SettingActionBox />
               </Box>
             </Popper>
-            <Popper open={openLeaderboardBox} anchorEl={leaderboardContainerRef.current} placement="bottom-end">
+            <Popper
+              open={openLeaderboardBox}
+              anchorEl={leaderboardContainerRef.current}
+              placement="bottom-end"
+              keepMounted={true}
+            >
               <Box sx={{ mt: 2 }}>
                 <LeaderboardActionBox />
               </Box>
