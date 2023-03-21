@@ -18,14 +18,14 @@ yarn dev
 ## Repo structure
 ```
 └── packages
-    ├── circuits - ZK part
+    ├── circuits - ZK circuits
     │ ├── pkg
     │ └── src
-    ├── client
+    ├── client - Front end
     │ ├── nginx
     │ ├── public
     │ └── src
-    └── contracts
+    └── contracts - Core game logic
         ├── src
         ├── cache
         ├── out
@@ -88,4 +88,4 @@ ideally longer term we want this project to be open, composable, and permissionl
 - change to front end that effect every user will subject to some common sense check.
 - Bug, Doc, Chore will be treat like others open source project.
  
-follow [conventional commit specification](https://www.conventionalcommits.org/en/v1.0.0/) is recommended but not require. 
+follow [conventional commit specification](https://www.conventionalcommits.org/en/v1.0.0/) is recommended but not require.
