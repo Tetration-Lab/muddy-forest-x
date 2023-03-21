@@ -5,13 +5,14 @@ import { useEffect } from 'react'
 import { useMap } from 'react-hanger'
 import { filter } from 'rxjs'
 import { useStore } from 'zustand'
+import { FACTION } from '../const/faction'
 import { EntityType } from '../const/types'
 import { appStore } from '../store/app'
 
 export const useLeaderboard = () => {
   const { world, components } = useStore(appStore, (state) => state.networkLayer)
   const playerPlanets = useMap<string, number>()
-  const factionPlanets = useMap<number, number>()
+  const factionPlanets = useMap<number, number>(Object.keys(FACTION).map((e) => [+e, 0]))
 
   useEffect(() => {
     const planets = runQuery([HasValue(components.Type, { value: EntityType.PLANET }), Has(components.Owner)])

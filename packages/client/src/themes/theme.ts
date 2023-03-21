@@ -42,6 +42,11 @@ export const theme = createTheme({
     success: {
       main: '#4BB543',
     },
+    ranking: {
+      first: '#AF9500',
+      second: '#B4B4B4',
+      third: '#6A3805',
+    },
   },
   typography: {
     fontFamily: ['Fira Mono', 'Roboto', 'sans-serif'].join(','),

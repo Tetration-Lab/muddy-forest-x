@@ -11,6 +11,11 @@ declare module '@mui/material/styles' {
       almostGray: string
       white: string
     }
+    ranking?: {
+      first: string
+      second: string
+      third: string
+    }
   }
 
   interface PaletteOptions {
@@ -23,6 +28,11 @@ declare module '@mui/material/styles' {
       almostDarkGray: string
       almostGray: string
       white: string
+    }
+    ranking?: {
+      first: string
+      second: string
+      third: string
     }
   }
 
