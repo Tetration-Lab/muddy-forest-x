@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, useTheme } from '@mui/material'
+import { Badge, Box, Stack, Typography, useTheme } from '@mui/material'
 import { useMemo } from 'react'
 import { FACTION } from '../../../../const/faction'
 import { useLeaderboard } from '../../../../hook/useLeaderboard'
@@ -37,19 +37,42 @@ export const LeaderboardActionBox = () => {
               sx={{
                 borderRadius: '4px',
                 justifyContent: 'space-between',
-                backgroundColor:
-                  i === 0
-                    ? theme.palette.ranking.first
-                    : i === 1
-                    ? theme.palette.ranking.second
-                    : i === 2
-                    ? theme.palette.ranking.third
-                    : null,
+                backgroundColor: theme.palette.grayScale.black,
                 alignItems: 'center',
                 flex: 1,
               }}
             >
-              <Box component="img" src={FACTION[faction].signSrc} sx={{ height: 32 }} />
+              <Badge
+                badgeContent={
+                  <Box
+                    component="img"
+                    src={
+                      i === 0
+                        ? '/assets/svg/medal/gold-medal-icon.svg'
+                        : i === 1
+                        ? '/assets/svg/medal/silver-medal-icon.svg'
+                        : '/assets/svg/medal/bronze-medal-icon.svg'
+                    }
+                    sx={{
+                      width: 28,
+                      height: 28,
+                    }}
+                  />
+                }
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right',
+                }}
+                sx={{
+                  '& .MuiBadge-badge': {
+                    width: 28,
+                    height: 28,
+                    bottom: 12,
+                  },
+                }}
+              >
+                <Box component="img" src={FACTION[faction].signSrc} sx={{ height: 32 }} />
+              </Badge>
               <Stack direction="row" alignItems="center" justifyContent="center" flex={1}>
                 <Box component="img" src="/assets/svg/planet-icon.svg" sx={{ height: 24 }} />
                 <Typography variant="body2">{planets}</Typography>

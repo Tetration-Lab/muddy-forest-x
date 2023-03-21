@@ -1,6 +1,5 @@
 import { formatEntityID } from '@latticexyz/network'
 import { getComponentValue, Has, HasValue, runQuery } from '@latticexyz/recs'
-import { useQuery } from '@latticexyz/std-client'
 import { useEffect } from 'react'
 import { useMap } from 'react-hanger'
 import { filter } from 'rxjs'
@@ -12,20 +11,20 @@ import { appStore } from '../store/app'
 export const useLeaderboard = () => {
   const { world, components } = useStore(appStore, (state) => state.networkLayer)
   const playerPlanets = useMap<string, number>()
-  const factionPlanets = useMap<number, number>(Object.keys(FACTION).map((e) => [+e, 0]))
+  const factionPlanets = useMap<number, number>(new Map(Object.keys(FACTION).map((e) => [+e, 0])))
 
   useEffect(() => {
-    const planets = runQuery([HasValue(components.Type, { value: EntityType.PLANET }), Has(components.Owner)])
+    const players = runQuery([HasValue(components.Type, { value: EntityType.PLAYER })])
 
-    planets.forEach((planet) => {
-      const id = getComponentValue(components.Owner, planet)?.value
-      playerPlanets.set(id, playerPlanets.value.get(id) + 1 || 1)
-    })
-
-    playerPlanets.value.forEach((p, player) => {
-      const index = world.registerEntity({ id: formatEntityID(player) })
-      const faction = getComponentValue(components.Faction, index)?.value
-      factionPlanets.set(faction, factionPlanets.value.get(faction) + p || p)
+    players.forEach((player) => {
+      const playerAddress = world.entities[player]
+      const planets = runQuery([
+        HasValue(components.Type, { value: EntityType.PLANET }),
+        HasValue(components.Owner, { value: playerAddress }),
+      ])
+      playerPlanets.set(playerAddress, planets.size)
+      const faction = getComponentValue(components.Faction, player)?.value
+      factionPlanets.set(faction, factionPlanets.value.get(faction) + planets.size || planets.size)
     })
 
     const subscription = components.Owner.update$
