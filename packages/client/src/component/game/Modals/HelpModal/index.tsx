@@ -68,7 +68,14 @@ export const HelpModal = () => {
           <Stack flex={2.5} spacing={1}>
             {BASIC_HELP[h] && (
               <>
-                <Box component="img" src={BASIC_HELP[h].description.image} />
+                <Box
+                  component="img"
+                  src={BASIC_HELP[h].description.src}
+                  sx={{
+                    width: 570,
+                    height: 260,
+                  }}
+                />
                 <Stack spacing={1} p={2} sx={{ backgroundColor: theme.palette.grayScale.black, borderRadius: '8px' }}>
                   <Typography sx={{ fontFamily: 'VT323', fontSize: 22, lineHeight: 1 }}>
                     {BASIC_HELP[h].title}
