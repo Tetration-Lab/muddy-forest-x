@@ -57,6 +57,16 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ name, faction }) => {
     }
   }
 
+  const changeTabToGlobal = () => {
+    setCurrentTab(ChatBoxTab.Global)
+    globalChatNotification.setValue(0)
+  }
+
+  const changeTabToFaction = () => {
+    setCurrentTab(ChatBoxTab.Faction)
+    factionChatNotification.setValue(0)
+  }
+
   const onMessageGlobal = (_msg: string, data: any) => {
     if (globalMsgList.value.length > MAX_SHOWN_CHAT) globalMsgList.removeIndex(0)
     if (currentTab !== ChatBoxTab.Global) globalChatNotification.increase(1)
@@ -136,6 +146,29 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ name, faction }) => {
 
   return (
     <Stack spacing={0.5} sx={{ width: 350 }}>
+      <div className="flex space-x-2">
+        <MainButton
+          sx={{
+            color: currentTab === ChatBoxTab.Global ? theme.palette.grayScale.white : theme.palette.grayScale.black,
+            backgroundColor:
+              currentTab === ChatBoxTab.Global ? theme.palette.grayScale.black : theme.palette.grayScale.almostGray,
+          }}
+          onClick={() => changeTabToGlobal()}
+          type="button"
+        >
+          All
+        </MainButton>
+        <MainButton
+          onClick={() => changeTabToFaction()}
+          sx={{
+            backgroundColor:
+              currentTab === ChatBoxTab.Faction ? theme.palette.grayScale.black : theme.palette.grayScale.almostGray,
+          }}
+          type="button"
+        >
+          Faction
+        </MainButton>
+      </div>
       <Stack
         ref={scrollRef}
         p={1}
@@ -146,14 +179,24 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ name, faction }) => {
           borderRadius: '4px',
         }}
       >
-        {globalMsgList.value.map((msg) => (
-          <Stack key={msg.timestamp} spacing={1} direction="row">
-            <Typography variant="body2" sx={{ color: msg.playerColor }}>
-              {msg.username}
-            </Typography>
-            <Typography variant="body2">{msg.message}</Typography>
-          </Stack>
-        ))}
+        {currentTab === ChatBoxTab.Global &&
+          globalMsgList.value.map((msg) => (
+            <Stack key={msg.timestamp} spacing={1} direction="row">
+              <Typography variant="body2" sx={{ color: msg.playerColor }}>
+                {msg.username}
+              </Typography>
+              <Typography variant="body2">{msg.message}</Typography>
+            </Stack>
+          ))}
+        {currentTab === ChatBoxTab.Faction &&
+          factionMsgList.value.map((msg) => (
+            <Stack key={msg.timestamp} spacing={1} direction="row">
+              <Typography variant="body2" sx={{ color: msg.playerColor }}>
+                {msg.username}
+              </Typography>
+              <Typography variant="body2">{msg.message}</Typography>
+            </Stack>
+          ))}
       </Stack>
       <form
         onSubmit={(e) => {
