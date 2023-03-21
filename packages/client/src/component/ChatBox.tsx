@@ -10,7 +10,6 @@ import { Input, Stack, Typography, useTheme } from '@mui/material'
 import { MainButton } from './common/MainButton'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons'
-import { useAutoAnimate } from '@formkit/auto-animate/react'
 
 export const ChatBoxWrapper = () => {
   const {
@@ -107,6 +106,20 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ name, faction }) => {
     }
   }
 
+  useEffect(() => {
+    scrollChatDown()
+    if (!isMinimize) {
+      switch (currentTab) {
+        case ChatBoxTab.Global:
+          globalChatNotification.setValue(0)
+          break
+        case ChatBoxTab.Faction:
+          factionChatNotification.setValue(0)
+          break
+      }
+    }
+  }, [isMinimize, currentTab])
+
   const onFocusInput = () => {
     appStore.setState({ isFocusUI: true })
   }
@@ -153,36 +166,61 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ name, faction }) => {
     inputChat.current.value = ''
   }
 
+  const formatNotification = (num: number) => {
+    if (num > 99) return '99+'
+    return `${num}`
+  }
+
   return (
     <Stack spacing={0.5} sx={{ width: 350 }}>
       <div className="flex space-x-2 justify-between">
         <div className="flex space-x-2">
-          <MainButton
-            size="small"
-            sx={{
-              color: currentTab === ChatBoxTab.Global ? theme.palette.grayScale.white : theme.palette.grayScale.black,
-              backgroundColor:
-                currentTab === ChatBoxTab.Global ? theme.palette.grayScale.black : theme.palette.grayScale.almostGray,
-            }}
-            onClick={() => changeTabToGlobal()}
-            type="button"
-          >
-            All
-          </MainButton>
-          <MainButton
-            size="small"
-            onClick={() => changeTabToFaction()}
-            sx={{
-              backgroundColor:
-                currentTab === ChatBoxTab.Faction ? theme.palette.grayScale.black : theme.palette.grayScale.almostGray,
-            }}
-            type="button"
-          >
-            Faction
-          </MainButton>
+          <div className="relative">
+            <MainButton
+              size="small"
+              sx={{
+                color: currentTab === ChatBoxTab.Global ? theme.palette.grayScale.white : theme.palette.grayScale.black,
+                backgroundColor:
+                  currentTab === ChatBoxTab.Global ? theme.palette.grayScale.black : theme.palette.grayScale.almostGray,
+              }}
+              onClick={() => changeTabToGlobal()}
+              type="button"
+            >
+              All
+            </MainButton>
+            {globalChatNotification.value > 0 && (
+              <div className="absolute -top-2 -right-2">
+                <div className="bg-red-500 rounded-full w-2 text-xs text-[0.5rem] h-2 p-3 flex items-center justify-center">
+                  {formatNotification(globalChatNotification.value)}
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="relative">
+            <MainButton
+              size="small"
+              onClick={() => changeTabToFaction()}
+              sx={{
+                backgroundColor:
+                  currentTab === ChatBoxTab.Faction
+                    ? theme.palette.grayScale.black
+                    : theme.palette.grayScale.almostGray,
+              }}
+              type="button"
+            >
+              Faction
+            </MainButton>
+            {factionChatNotification.value > 0 && (
+              <div className="absolute -top-2 -right-2">
+                <div className="bg-red-500 rounded-full w-2 text-xs text-[0.5rem] h-2 p-3 flex items-center justify-center">
+                  {formatNotification(factionChatNotification.value)}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
         <div className="flex">
-          <MainButton onClick={() => toggleMinimize()} size="small">
+          <MainButton size="small" onClick={() => toggleMinimize()}>
             {isMinimize ? <FontAwesomeIcon icon={faCaretUp} /> : <FontAwesomeIcon icon={faCaretDown} />}
           </MainButton>
         </div>
@@ -192,7 +230,8 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ name, faction }) => {
         p={1}
         sx={{
           transition: 'all 0.3s ease',
-          height: isMinimize ? 60 : 130,
+          height: isMinimize ? 0 : 130,
+          padding: isMinimize ? 0 : 1,
           overflowY: 'auto',
           backgroundColor: `${theme.palette.grayScale.black}B3`,
           borderRadius: '4px',
@@ -243,7 +282,7 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ name, faction }) => {
             autoCorrect="off"
             placeholder="Enter text here..."
           />
-          <MainButton type="submit">Send</MainButton>
+          <MainButton size="small" type="submit">Send</MainButton>
         </Stack>
       </form>
     </Stack>
