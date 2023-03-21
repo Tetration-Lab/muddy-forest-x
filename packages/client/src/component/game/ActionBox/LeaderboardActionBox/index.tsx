@@ -1,5 +1,6 @@
 import { Badge, Box, Stack, Typography, useTheme } from '@mui/material'
-import { useMemo } from 'react'
+import _ from 'lodash'
+import { useEffect, useMemo } from 'react'
 import { FACTION } from '../../../../const/faction'
 import { useLeaderboard } from '../../../../hook/useLeaderboard'
 import { ToolButton } from '../../../ToolButton'
@@ -7,7 +8,6 @@ import { ToolButton } from '../../../ToolButton'
 export const LeaderboardActionBox = () => {
   const theme = useTheme()
   const { factions } = useLeaderboard()
-  const factionSorted = useMemo(() => [...factions.entries()].sort((a, b) => b[1] - a[1]), [factions])
 
   return (
     <Stack
@@ -27,7 +27,7 @@ export const LeaderboardActionBox = () => {
         </Typography>
       </Stack>
       <Stack direction="row" spacing={1}>
-        {factionSorted.map(([faction, planets], i) => {
+        {_.sortBy([...factions.entries()], (o) => o[1]).map(([faction, planets], i) => {
           return (
             <Stack
               key={faction}
