@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useStore } from 'zustand'
 import { FACTION } from '../const/faction'
 import useChatMessage, { ChatMessage } from '../hook/useChatMessage'
@@ -6,8 +6,11 @@ import { appStore } from '../store/app'
 import { useArray, useNumber } from 'react-hanger'
 import { getComponentValue } from '@latticexyz/recs'
 import { CHAT_ENDPOINT, MAX_SHOWN_CHAT } from '../const/chat'
-import { FormControl, Input, Stack, Typography, useTheme } from '@mui/material'
+import { Input, Stack, Typography, useTheme } from '@mui/material'
 import { MainButton } from './common/MainButton'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons'
+import { useAutoAnimate } from '@formkit/auto-animate/react'
 
 export const ChatBoxWrapper = () => {
   const {
@@ -47,6 +50,8 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ name, faction }) => {
   const factionChatNotification = useNumber(0)
   const factionMsgList = useArray<ChatMessage>([])
 
+  const [isMinimize, setIsMinimize] = useState(false)
+
   const toggleTab = () => {
     if (currentTab === ChatBoxTab.Global) {
       setCurrentTab(ChatBoxTab.Faction)
@@ -76,6 +81,10 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ name, faction }) => {
       timestamp: Date.now(),
       playerColor: data.playerColor || 'white',
     })
+  }
+
+  const toggleMinimize = () => {
+    setIsMinimize(!isMinimize)
   }
 
   const onMessageFaction = (_msg: string, data: any) => {
@@ -146,34 +155,42 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ name, faction }) => {
 
   return (
     <Stack spacing={0.5} sx={{ width: 350 }}>
-      <div className="flex space-x-2">
-        <MainButton
-          sx={{
-            color: currentTab === ChatBoxTab.Global ? theme.palette.grayScale.white : theme.palette.grayScale.black,
-            backgroundColor:
-              currentTab === ChatBoxTab.Global ? theme.palette.grayScale.black : theme.palette.grayScale.almostGray,
-          }}
-          onClick={() => changeTabToGlobal()}
-          type="button"
-        >
-          All
-        </MainButton>
-        <MainButton
-          onClick={() => changeTabToFaction()}
-          sx={{
-            backgroundColor:
-              currentTab === ChatBoxTab.Faction ? theme.palette.grayScale.black : theme.palette.grayScale.almostGray,
-          }}
-          type="button"
-        >
-          Faction
-        </MainButton>
+      <div className="flex space-x-2 justify-between">
+        <div className="flex space-x-2">
+          <MainButton
+            sx={{
+              color: currentTab === ChatBoxTab.Global ? theme.palette.grayScale.white : theme.palette.grayScale.black,
+              backgroundColor:
+                currentTab === ChatBoxTab.Global ? theme.palette.grayScale.black : theme.palette.grayScale.almostGray,
+            }}
+            onClick={() => changeTabToGlobal()}
+            type="button"
+          >
+            All
+          </MainButton>
+          <MainButton
+            onClick={() => changeTabToFaction()}
+            sx={{
+              backgroundColor:
+                currentTab === ChatBoxTab.Faction ? theme.palette.grayScale.black : theme.palette.grayScale.almostGray,
+            }}
+            type="button"
+          >
+            Faction
+          </MainButton>
+        </div>
+        <div className="flex">
+          <MainButton onClick={() => toggleMinimize()}>
+            {isMinimize ? <FontAwesomeIcon icon={faCaretUp} /> : <FontAwesomeIcon icon={faCaretDown} />}
+          </MainButton>
+        </div>
       </div>
       <Stack
         ref={scrollRef}
         p={1}
         sx={{
-          height: 130,
+          transition: 'all 0.3s ease',
+          height: isMinimize ? 60 : 130,
           overflowY: 'auto',
           backgroundColor: `${theme.palette.grayScale.black}B3`,
           borderRadius: '4px',
