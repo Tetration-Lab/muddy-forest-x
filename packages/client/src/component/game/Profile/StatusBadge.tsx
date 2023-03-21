@@ -1,4 +1,4 @@
-import { Box, Slide, Stack, styled, Tooltip, Typography, useTheme } from '@mui/material'
+import { Box, Slide, Stack, styled, SxProps, Tooltip, Typography, useTheme } from '@mui/material'
 import { forwardRef, useEffect, useState } from 'react'
 import { useCooldown } from '../../../hook/useCooldown'
 
@@ -16,7 +16,14 @@ export const CooldownStatusBadge = ({ finishTimestamp, imgSrc, hover }: Cooldown
 
   return (
     <Slide direction="right" in={left > 0}>
-      <StatusBadge imgSrc={imgSrc} status={`${left} s`} hover={hover} />
+      <StatusBadge
+        imgSrc={imgSrc}
+        status={`${left} s`}
+        hover={hover}
+        sx={{
+          display: left > 0 ? 'block' : 'none',
+        }}
+      />
     </Slide>
   )
 }
@@ -28,9 +35,10 @@ export interface StatusBadgeProps {
     title: string
     description: string
   }
+  sx?: SxProps
 }
 
-export const StatusBadge = forwardRef(({ imgSrc, status, hover }: StatusBadgeProps, ref) => {
+export const StatusBadge = forwardRef(({ imgSrc, status, hover, sx }: StatusBadgeProps, ref) => {
   const theme = useTheme()
   return (
     <Tooltip
@@ -47,7 +55,7 @@ export const StatusBadge = forwardRef(({ imgSrc, status, hover }: StatusBadgePro
       }
       placement="bottom-start"
     >
-      <Stack spacing={-0.5} alignItems="center">
+      <Stack spacing={-0.5} alignItems="center" sx={sx}>
         <Box
           sx={{
             width: 46,
