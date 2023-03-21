@@ -158,6 +158,7 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ name, faction }) => {
       <div className="flex space-x-2 justify-between">
         <div className="flex space-x-2">
           <MainButton
+            size="small"
             sx={{
               color: currentTab === ChatBoxTab.Global ? theme.palette.grayScale.white : theme.palette.grayScale.black,
               backgroundColor:
@@ -169,6 +170,7 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ name, faction }) => {
             All
           </MainButton>
           <MainButton
+            size="small"
             onClick={() => changeTabToFaction()}
             sx={{
               backgroundColor:
@@ -180,7 +182,7 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ name, faction }) => {
           </MainButton>
         </div>
         <div className="flex">
-          <MainButton onClick={() => toggleMinimize()}>
+          <MainButton onClick={() => toggleMinimize()} size="small">
             {isMinimize ? <FontAwesomeIcon icon={faCaretUp} /> : <FontAwesomeIcon icon={faCaretDown} />}
           </MainButton>
         </div>
