@@ -94,6 +94,7 @@ export class HQShip extends Phaser.GameObjects.Container {
       this.laserSprite.setVisible(false)
       this.bombSprite.setPosition(targetPos.x, targetPos.y)
       this.bombSprite.setVisible(true)
+      this.scene.cameras.main.shake(100, 0.01)
       this.bombSprite.play(SPRITE.BOMB).once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
         this.bombSprite.setVisible(false)
       })
