@@ -27,7 +27,7 @@ export const LeaderboardActionBox = () => {
         </Typography>
       </Stack>
       <Stack direction="row" spacing={1}>
-        {_.sortBy([...factions.entries()], (o) => o[1]).map(([faction, planets], i) => {
+        {_.sortBy([...factions.entries()], (o) => -o[1]).map(([faction, planets], i) => {
           return (
             <Stack
               key={faction}

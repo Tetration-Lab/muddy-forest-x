@@ -32,21 +32,22 @@ export const useLeaderboard = () => {
     const subscription = components.Owner.update$
       .pipe(filter((update) => getComponentValue(components.Type, update.entity)?.value === EntityType.PLANET))
       .subscribe((update) => {
-        const newOwner = update.value[0]?.value
-        const oldOwner = update.value[1]?.value
+        const newOwner = formatEntityID(update.value[0]?.value)
         playerPlanets[1]((e) => {
-          return e.set(newOwner, e.get(newOwner) + 1 || 1)
+          return e.set(newOwner, (e.get(newOwner) ?? 0) + 1)
         })
-        const newOwnerIndex = world.registerEntity({ id: formatEntityID(newOwner) })
+        const newOwnerIndex = world.registerEntity({ id: newOwner })
         const newOwnerfaction = getComponentValue(components.Faction, newOwnerIndex)?.value
         factionPlanets[1]((e) => {
-          return e.set(newOwnerfaction, e.get(newOwnerfaction) + 1 || 1)
+          return e.set(newOwnerfaction, e.get(newOwnerfaction) + 1)
         })
-        if (oldOwner) {
+
+        if (update.value[1]?.value) {
+          const oldOwner = formatEntityID(update.value[1]?.value)
           playerPlanets[1]((e) => {
             return e.set(oldOwner, e.get(oldOwner) - 1)
           })
-          const oldOwnerIndex = world.registerEntity({ id: formatEntityID(oldOwner) })
+          const oldOwnerIndex = world.registerEntity({ id: oldOwner })
           const oldOwnerfaction = getComponentValue(components.Faction, oldOwnerIndex)?.value
           factionPlanets[1]((e) => {
             return e.set(oldOwnerfaction, e.get(oldOwnerfaction) - 1)
