@@ -26,11 +26,11 @@ yarn dev
     │ ├── public
     │ └── src
     └── contracts
-    ├── src
-    ├── cache
-    ├── out
-    ├── abi
-    └── types
+        ├── src
+        ├── cache
+        ├── out
+        ├── abi
+        └── types
 ```
 
 ## ECS
@@ -81,11 +81,11 @@ UpgradeShipSystem
 
 ### Contribution
 ideally longer term we want this project to be open, composable, and permissionless (on some level). but in this early stage anyone can open PR into this repo to contribute to any part of the game. We will consider merge request in similar way to if this project is fully on chain with governance system.
-```
+
 - System that doesn't require write access to component that you're not the author will be merge without question. (similar to if you directly compose into the game after there's proper system RBAC)
 - System that require write access to component that you're not the author will require concent from component author. (similar to RBAC too.)
 - change to front end that user can turn on will be merge with out question. (similar to alternative FE or plugin)
 - change to front end that effect every user will subject to some common sense check.
 - Bug, Doc, Chore will be treat like others open source project.
-``` 
+ 
 follow [conventional commit specification](https://www.conventionalcommits.org/en/v1.0.0/) is recommended but not require. 
