@@ -8,6 +8,7 @@ import { ethers, utils } from 'ethers'
 import { enqueueSnackbar } from 'notistack'
 import { Subject } from 'rxjs'
 import { faucetUrl, initialGasPrice } from '../../config'
+import { BASE_BLUEPRINT } from '../../const/blueprint'
 import { FACTION } from '../../const/faction'
 import { parseEtherError } from '../../utils/utils'
 import { setupComponents } from './components'
@@ -58,6 +59,29 @@ export async function createNetworkLayer(config: SetupContractConfig) {
         name: e[1].name,
         id: Number(e[0]),
       })
+    })
+  }
+
+  const setupBuildingBlueprint = async () => {
+    await systems['system.SetupBaseBuildingBlueprint'].executeTyped({
+      ids: Object.keys(BASE_BLUEPRINT).map((e) => +e),
+      blueprints: Object.values(BASE_BLUEPRINT).map((e) => ({
+        level: e.level,
+        attack: e.bonus.attack,
+        defense: e.bonus.defense,
+        resources: Object.entries(e.bonus.resources).map((bonus) => ({
+          resourceId: bonus[0],
+          value: 0,
+          cap: bonus[1].cap,
+          rpb: bonus[1].rpb,
+        })),
+        cost: Object.entries(e.materials).map((mat) => ({
+          resourceId: mat[0],
+          value: mat[1],
+          cap: 0,
+          rpb: 0,
+        })),
+      })),
     })
   }
 
@@ -146,13 +170,12 @@ export async function createNetworkLayer(config: SetupContractConfig) {
     }
   }
 
-  const debug = async () => {}
   // FOR DEV
   const w = window as any
-  w.setupFaction = setupFaction
-  w.debug = debug
-  w.spawn = spawn
-  w.move = move
+  w.setup = () => {
+    setupFaction()
+    setupBuildingBlueprint()
+  }
 
   // --- CONTEXT --------------------------------------------------------------------
   const context = {
