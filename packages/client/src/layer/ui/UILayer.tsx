@@ -13,7 +13,9 @@ import { SendModal } from '../../component/game/Modals/SendModal'
 import { Profile } from '../../component/game/Profile'
 import { ToolButton } from '../../component/ToolButton'
 import { dataStore } from '../../store/data'
+import { Loading } from '../../component/Loading'
 import { closeTeleport, gameStore, openHelpModal, openTeleport } from '../../store/game'
+import { appStore } from '../../store/app'
 
 export const UILayer = () => {
   const toolsContainerRef = useRef()
@@ -22,13 +24,13 @@ export const UILayer = () => {
   const teleportContainerRef = useRef()
 
   const openTeleportBox = useStore(gameStore, (state) => state.teleportAction)
+  const { isLoading } = useStore(appStore, (state) => state)
 
   const [openSettingBox, setOpenSettingBox] = useState(false)
   const [openLeaderboardBox, setOpenLeaderboardBox] = useState(false)
   const [openGameActionBox, setOpenGameActionBox] = useState(false)
   const [currentMode, setCurrentMode] = useState<GameActionBoxMode | undefined>()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-
   const handleOnClickTeleport = () => {
     if (openTeleportBox) {
       closeTeleport()
@@ -159,6 +161,12 @@ export const UILayer = () => {
       <PlanetModals />
       <SendModals />
       <HelpModal />
+      <div className="absolute top-0 bg-white text-black">{`${isLoading}`}</div>
+      {isLoading && (
+        <div className="absolute w-full h-full bg-black z-50">
+          <Loading msg={'preparing resouce...'} />
+        </div>
+      )}
     </div>
   )
 }

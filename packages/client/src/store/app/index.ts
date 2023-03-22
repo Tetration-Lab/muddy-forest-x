@@ -8,6 +8,7 @@ export type Store = {
   phaserLayer: PhaserLayer | null
   isFocusUI: boolean
   gameScene: GameScene | null
+  isLoading: boolean
 }
 
 const initialState = {
@@ -15,6 +16,7 @@ const initialState = {
   phaserLayer: null,
   isFocusUI: false,
   gameScene: null,
+  isLoading: true,
 }
 
 export const appStore = createStore<Store>((set) => ({

@@ -21,7 +21,7 @@ const initialState: Store = {
   sendModals: new Map(),
   planets: new Map(),
   spaceships: new Map(),
-  focusLocation: () => {},
+  focusLocation: () => null,
 }
 
 export const gameStore = createStore<Store>((set) => ({

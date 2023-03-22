@@ -352,7 +352,6 @@ class GameScene extends Phaser.Scene {
   }
 
   async onCreate() {
-    this.sound.unlock()
     initConfigAnim(this)
     this.input.setPollAlways()
     this.cursorMove = this.add.image(0, 0, IMAGE.SELECTED_CURSOR)
@@ -416,6 +415,8 @@ class GameScene extends Phaser.Scene {
         this.followPoint = new Phaser.Math.Vector2(v)
       },
     }))
+
+    appStore.setState({ isLoading: false })
 
     this.input.on('pointerup', async (p) => {
       if (this.input.activePointer.rightButtonReleased()) {
