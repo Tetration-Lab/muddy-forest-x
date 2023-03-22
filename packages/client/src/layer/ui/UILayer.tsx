@@ -31,6 +31,11 @@ export const UILayer = () => {
   const [openGameActionBox, setOpenGameActionBox] = useState(false)
   const [currentMode, setCurrentMode] = useState<GameActionBoxMode | undefined>()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+
+  const closeSetting = () => {
+    setOpenSettingBox(false)
+  }
+
   const handleOnClickTeleport = () => {
     if (openTeleportBox) {
       closeTeleport()
@@ -88,7 +93,7 @@ export const UILayer = () => {
             <ToolButton iconSrc="./assets/svg/lightbulb-icon.svg" onClick={() => openHelpModal(0)} />
             <Popper open={openSettingBox} anchorEl={settingContainerRef.current} placement="bottom-end">
               <Box sx={{ mt: 2 }}>
-                <SettingActionBox />
+                <SettingActionBox onClose={closeSetting} />
               </Box>
             </Popper>
             <Popper
@@ -98,7 +103,11 @@ export const UILayer = () => {
               keepMounted={true}
             >
               <Box sx={{ mt: 2 }}>
-                <LeaderboardActionBox />
+                <LeaderboardActionBox
+                  onClose={() => {
+                    setOpenLeaderboardBox(false)
+                  }}
+                />
               </Box>
             </Popper>
           </div>
@@ -124,39 +133,41 @@ export const UILayer = () => {
       </div>
       {/* tool button */}
       {/*<ClickAwayListener onClickAway={handleToolsClose}>*/}
-      {
-        //<div className="absolute bottom-0 right-0" ref={toolsContainerRef}>
-        //<div className="p-4">
-        //<div className="flex space-x-2">
-        //<ToolButton
-        //title={'Discovery'}
-        //iconSrc="./assets/svg/discovery-icon.svg"
-        //onClick={handleToolsClick(GameActionBoxMode.Discovery)}
-        ///>
-        //<ToolButton
-        //title={'Research'}
-        //iconSrc="./assets/svg/research-icon-2.svg"
-        //onClick={handleToolsClick(GameActionBoxMode.Research)}
-        ///>
-        //<ToolButton
-        //title={'Inventory'}
-        //iconSrc="./assets/svg/inventory-icon-2.svg"
-        //onClick={handleToolsClick(GameActionBoxMode.Inventory)}
-        ///>
-        //<ToolButton
-        //title={'Build'}
-        //iconSrc="./assets/svg/build-icon-2.svg"
-        //onClick={handleToolsClick(GameActionBoxMode.Build)}
-        ///>
-        //<Popper id={toolId} open={openGameActionBox} anchorEl={anchorEl}>
-        //<Box sx={{ mr: 2 }}>
-        //<GameActionBox mode={currentMode} onChangeMode={(mode) => setCurrentMode(mode)} />
-        //</Box>
-        //</Popper>
-        //</div>
-        //</div>
-        //</div>
-      }
+      <div className="absolute bottom-0 right-0" ref={toolsContainerRef}>
+        <div className="p-4">
+          <div className="flex space-x-2">
+            <ToolButton
+              title={'Discovery'}
+              iconSrc="./assets/svg/discovery-icon.svg"
+              onClick={handleToolsClick(GameActionBoxMode.Discovery)}
+            />
+            <ToolButton
+              title={'Research'}
+              iconSrc="./assets/svg/research-icon-2.svg"
+              onClick={handleToolsClick(GameActionBoxMode.Research)}
+            />
+            <ToolButton
+              title={'Inventory'}
+              iconSrc="./assets/svg/inventory-icon-2.svg"
+              onClick={handleToolsClick(GameActionBoxMode.Inventory)}
+            />
+            <ToolButton
+              title={'Build'}
+              iconSrc="./assets/svg/build-icon-2.svg"
+              onClick={handleToolsClick(GameActionBoxMode.Build)}
+            />
+            <Popper id={toolId} open={openGameActionBox} anchorEl={anchorEl}>
+              <Box sx={{ mr: 2 }}>
+                <GameActionBox
+                  mode={currentMode}
+                  onClose={handleToolsClose}
+                  onChangeMode={(mode) => setCurrentMode(mode)}
+                />
+              </Box>
+            </Popper>
+          </div>
+        </div>
+      </div>
       {/*</ClickAwayListener>*/}
       {/* Modals */}
       <AttackModals />

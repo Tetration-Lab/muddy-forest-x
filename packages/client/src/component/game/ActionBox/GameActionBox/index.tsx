@@ -4,6 +4,7 @@ import { BuildBox } from './BuildBox'
 import { DiscoveryBox } from './DiscoveryBox'
 import { InventoryBox } from './InventoryBox'
 import { ResearchBox } from './ResearchBox'
+import { CloseModalButton } from '../../common/CloseModalButton'
 
 export enum GameActionBoxMode {
   Discovery = 'discovery',
@@ -47,9 +48,11 @@ const ToolButtonWithText = ({
 export const GameActionBox = ({
   mode,
   onChangeMode,
+  onClose,
 }: {
   mode: GameActionBoxMode
   onChangeMode: (mode: GameActionBoxMode) => void
+  onClose: () => void
 }) => {
   const theme = useTheme()
 
@@ -64,33 +67,38 @@ export const GameActionBox = ({
         height: 464,
       }}
     >
-      <Stack direction="row" spacing="10px">
-        <ToolButtonWithText
-          iconSrc="./assets/svg/inventory-icon-2.svg"
-          onClick={() => onChangeMode(GameActionBoxMode.Inventory)}
-          text="Inventory"
-          showText={mode === GameActionBoxMode.Inventory}
-        />
-        <ToolButtonWithText
-          iconSrc="./assets/svg/research-icon-2.svg"
-          onClick={() => onChangeMode(GameActionBoxMode.Research)}
-          text="Research"
-          showText={mode === GameActionBoxMode.Research}
-        />
-        <ToolButtonWithText
-          iconSrc="./assets/svg/discovery-icon.svg"
-          onClick={() => onChangeMode(GameActionBoxMode.Discovery)}
-          text="Discovery"
-          showText={mode === GameActionBoxMode.Discovery}
-        />
+      <div className="flex justify-between items-center">
+        <Stack direction="row" spacing="10px">
+          <ToolButtonWithText
+            iconSrc="./assets/svg/inventory-icon-2.svg"
+            onClick={() => onChangeMode(GameActionBoxMode.Inventory)}
+            text="Inventory"
+            showText={mode === GameActionBoxMode.Inventory}
+          />
+          <ToolButtonWithText
+            iconSrc="./assets/svg/research-icon-2.svg"
+            onClick={() => onChangeMode(GameActionBoxMode.Research)}
+            text="Research"
+            showText={mode === GameActionBoxMode.Research}
+          />
+          <ToolButtonWithText
+            iconSrc="./assets/svg/discovery-icon.svg"
+            onClick={() => onChangeMode(GameActionBoxMode.Discovery)}
+            text="Discovery"
+            showText={mode === GameActionBoxMode.Discovery}
+          />
 
-        <ToolButtonWithText
-          iconSrc="./assets/svg/build-icon-2.svg"
-          onClick={() => onChangeMode(GameActionBoxMode.Build)}
-          text="Build"
-          showText={mode === GameActionBoxMode.Build}
-        />
-      </Stack>
+          <ToolButtonWithText
+            iconSrc="./assets/svg/build-icon-2.svg"
+            onClick={() => onChangeMode(GameActionBoxMode.Build)}
+            text="Build"
+            showText={mode === GameActionBoxMode.Build}
+          />
+        </Stack>
+        <div>
+          <CloseModalButton onClick={() => onClose()} />
+        </div>
+      </div>
       <Box mt={1} sx={{ width: '100%', flex: 1 }}>
         {mode === GameActionBoxMode.Inventory && <InventoryBox />}
         {mode === GameActionBoxMode.Research && <ResearchBox />}

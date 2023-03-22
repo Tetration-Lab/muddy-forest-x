@@ -8,8 +8,12 @@ import { minerStore } from '../../../../store/miner'
 import { MainButton } from '../../../common/MainButton'
 import { WarningBox } from '../../../common/WarningBox'
 import { ToolButton } from '../../../ToolButton'
+import { CloseModalButton } from '../../common/CloseModalButton'
 
-export const SettingActionBox = () => {
+export interface Props {
+  onClose: () => void
+}
+export const SettingActionBox: React.FC<Props> = ({ onClose }) => {
   const theme = useTheme()
   const miner = useStore(minerStore, (state) => state.miner)
 
@@ -31,12 +35,15 @@ export const SettingActionBox = () => {
       }}
       spacing={1}
     >
-      <Stack direction="row" alignItems="center">
-        <ToolButton iconSrc="./assets/svg/setting-icon.svg" />
-        <Typography px={2} sx={{ fontFamily: 'VT323', fontSize: 24 }}>
-          Setting
-        </Typography>
-      </Stack>
+      <div className="flex justify-between items-center">
+        <Stack direction="row" alignItems="center">
+          <ToolButton iconSrc="./assets/svg/setting-icon.svg" />
+          <Typography px={2} sx={{ fontFamily: 'VT323', fontSize: 24 }}>
+            Setting
+          </Typography>
+        </Stack>
+        <CloseModalButton onClick={() => onClose()} />
+      </div>
       <Stack
         sx={{
           backgroundColor: theme.palette.grayScale.black,

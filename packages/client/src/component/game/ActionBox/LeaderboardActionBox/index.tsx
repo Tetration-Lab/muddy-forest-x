@@ -4,8 +4,12 @@ import { useEffect, useMemo, useState } from 'react'
 import { FACTION } from '../../../../const/faction'
 import { useLeaderboard } from '../../../../hook/useLeaderboard'
 import { ToolButton } from '../../../ToolButton'
+import { CloseModalButton } from '../../common/CloseModalButton'
 
-export const LeaderboardActionBox = () => {
+export interface Props {
+  onClose: () => void
+}
+export const LeaderboardActionBox: React.FC<Props> = ({ onClose }) => {
   const theme = useTheme()
   const { factions } = useLeaderboard()
 
@@ -20,12 +24,15 @@ export const LeaderboardActionBox = () => {
       }}
       spacing={1}
     >
-      <Stack direction="row" alignItems="center">
-        <ToolButton iconSrc="./assets/svg/trophy-icon.svg" />
-        <Typography px={2} sx={{ fontFamily: 'VT323', fontSize: 24 }}>
-          Leaderboard
-        </Typography>
-      </Stack>
+      <div className="flex items-center justify-between">
+        <Stack direction="row" alignItems="center">
+          <ToolButton iconSrc="./assets/svg/trophy-icon.svg" />
+          <Typography px={2} sx={{ fontFamily: 'VT323', fontSize: 24 }}>
+            Leaderboard
+          </Typography>
+        </Stack>
+        <CloseModalButton onClick={() => onClose()} />
+      </div>
       <Stack direction="row" spacing={1}>
         {_.sortBy([...factions.entries()], (o) => -o[1]).map(([faction, planets], i) => {
           return (
