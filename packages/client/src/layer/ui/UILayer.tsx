@@ -161,7 +161,6 @@ export const UILayer = () => {
       <PlanetModals />
       <SendModals />
       <HelpModal />
-      <div className="absolute top-0 bg-white text-black">{`${isLoading}`}</div>
       {isLoading && (
         <div className="absolute w-full h-full bg-black z-50">
           <Loading msg={'preparing resouce...'} />
