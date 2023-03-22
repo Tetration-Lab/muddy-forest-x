@@ -16,7 +16,8 @@
     "skipLibCheck": true,
     "jsx": "react-jsx",
     "jsxImportSource": "react",
-    "types": ["node", "vite/client"]
+    "types": ["node", "vite/client"],
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src"]
 }

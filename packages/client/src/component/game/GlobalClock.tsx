@@ -25,7 +25,7 @@ export const GlobalClock = () => {
           lineHeight: 1,
         }}
       >
-        {dayjs(time).format('hh:mm:s A')}
+        {dayjs.utc(time).format('hh:mm:ss A')}
       </Typography>
       <Typography
         sx={{
@@ -34,7 +34,7 @@ export const GlobalClock = () => {
           lineHeight: 1,
         }}
       >
-        {dayjs(time).format('ddd D MMM')}{' '}
+        {dayjs.utc(time).format('ddd D MMM')}{' '}
         <span
           style={{
             fontSize: 14,
