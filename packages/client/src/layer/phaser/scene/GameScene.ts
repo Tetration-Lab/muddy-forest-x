@@ -380,6 +380,7 @@ class GameScene extends Phaser.Scene {
       }
 
       if (planetHash) {
+        this.cursorExplorer.spawnPlanetMap = new Set(Object.keys(planetHash))
         Object.keys(planetHash).forEach((key) => {
           const planet = planetHash[key]
           if (planet) {

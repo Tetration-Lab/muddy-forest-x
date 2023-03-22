@@ -22,7 +22,7 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
   miners: HashWorker[] = []
   isMining = false
   miningPattern: MiningPattern
-  spawnPlanetMap = new Map<string, boolean>()
+  spawnPlanetMap = new Set<string>()
   constructor(
     scene: Phaser.Scene,
     position: Position,
@@ -114,7 +114,7 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
 
         if (!this.spawnPlanetMap.has(key)) {
           pos.push(position)
-          this.spawnPlanetMap.set(key, true)
+          this.spawnPlanetMap.add(key)
         }
       }
       const res = await Promise.all(
