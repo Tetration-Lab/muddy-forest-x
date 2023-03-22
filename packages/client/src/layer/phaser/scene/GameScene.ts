@@ -39,6 +39,7 @@ import { Planet } from '../gameobject/Planet'
 import { Chunk } from '../utils/Chunk'
 import { ChunkLoader } from '../utils/ChunkLoader'
 import { Tile } from '../utils/Tile'
+import { AudioManager } from '../AudioManager'
 
 const ZOOM_OUT_LIMIT = 0.01
 const ZOOM_IN_LIMIT = 2
@@ -87,6 +88,7 @@ class GameScene extends Phaser.Scene {
   targetAttack: HQShip | Planet | null = null
   targetPlanet: Planet | null = null
   drawPlanetSends: Set<string> = new Set()
+  audioManager: AudioManager
   constructor() {
     super(GAME_SCENE)
     appStore.setState({ gameScene: this })
@@ -157,6 +159,7 @@ class GameScene extends Phaser.Scene {
       TILE_SIZE,
     )
     const sprite = new Planet(this, pos.x, pos.y, spriteKey, planetLevel(id) / 2 + 1, id, faction)
+    sprite.setAudioMananger(this.audioManager)
     initPlanetPosition(id, [tileX, tileY])
     sprite.play(spriteKey)
     sprite.registerOnClick((p: Phaser.Input.Pointer) => {
@@ -219,6 +222,7 @@ class GameScene extends Phaser.Scene {
         }
         const pos = snapToGrid(x, y, 16)
         const ship = new HQShip(this, pos.x, pos.y, FACTION[fractionID].shipSpriteKey, entityID, owner, fractionID)
+        ship.setAudioMananger(this.audioManager)
         ship.setDepth(100)
         addSpaceship(id, ship)
         ship.setPlayerName(name)
@@ -348,6 +352,7 @@ class GameScene extends Phaser.Scene {
   }
 
   async onCreate() {
+    this.sound.unlock()
     initConfigAnim(this)
     this.input.setPollAlways()
     this.cursorMove = this.add.image(0, 0, IMAGE.SELECTED_CURSOR)
@@ -495,6 +500,7 @@ class GameScene extends Phaser.Scene {
     this.ready = true
   }
   create() {
+    this.audioManager = new AudioManager(this)
     this.followPoint = new Phaser.Math.Vector2(0, 0)
     this.navigation = this.add.rectangle(this.followPoint.y, this.followPoint.x, 1, 1, 0x00ff00)
     this.onCreate()

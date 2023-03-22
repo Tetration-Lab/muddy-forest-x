@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { IMAGE, SPRITE } from '../constant/resource'
+import { AUDIO, IMAGE, SPRITE } from '../constant/resource'
 import { MAIN_SCENE, PRELOADER_SCENE } from '../constant/scene'
 class PreloaderScene extends Phaser.Scene {
   constructor() {
@@ -51,6 +51,8 @@ class PreloaderScene extends Phaser.Scene {
     this.load.spritesheet(SPRITE.ALIEN_SHIP, 'assets/sprite/Alien_Ship-Sheet.png', { frameWidth: 64, frameHeight: 64 })
     this.load.spritesheet(SPRITE.APE_SHIP, 'assets/sprite/Ape_Ship-Sheet.png', { frameWidth: 64, frameHeight: 64 })
     this.load.spritesheet(SPRITE.LASER, 'assets/sprite/laser_96x32.png', { frameWidth: 32, frameHeight: 32 })
+
+    this.load.audio(AUDIO.PEW, 'assets/audio/pewpew.mp3')
   }
 
   create() {

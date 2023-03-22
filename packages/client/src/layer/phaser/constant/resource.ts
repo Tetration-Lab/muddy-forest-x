@@ -29,6 +29,10 @@ export const SPRITE = {
   LASER: 'laser',
 }
 
+export const AUDIO = {
+  PEW: 'PEW',
+}
+
 export const SPRITE_PLANET = [
   SPRITE.P1_1,
   SPRITE.P1_2,
