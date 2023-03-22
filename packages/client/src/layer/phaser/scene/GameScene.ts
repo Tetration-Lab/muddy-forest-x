@@ -374,8 +374,8 @@ class GameScene extends Phaser.Scene {
       const planetHash = planetHashStr ? JSON.parse(planetHashStr) : {}
       if (planetHash[lastPlanetID]) {
         this.cursorExplorer.setCurrentChunkFromPos({
-          x: planetHash[lastPlanetID].tileX * TILE_SIZE,
-          y: planetHash[lastPlanetID].tileY * TILE_SIZE,
+        x: planetHash[lastPlanetID].tileX * TILE_SIZE,
+        y: planetHash[lastPlanetID].tileY * TILE_SIZE,
         })
       }
 

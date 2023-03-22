@@ -14,16 +14,26 @@ import { Profile } from '../../component/game/Profile'
 import { ToolButton } from '../../component/ToolButton'
 import { dataStore } from '../../store/data'
 import { Loading } from '../../component/Loading'
-import { closeTeleport, gameStore, openHelpModal, openTeleport } from '../../store/game'
+import {
+  closeBuildModal,
+  closeTeleport,
+  gameStore,
+  openBuildModal,
+  openHelpModal,
+  openTeleport,
+} from '../../store/game'
 import { appStore } from '../../store/app'
+import { BuildActionBox } from '../../component/game/ActionBox/BuildActionBox'
 
 export const UILayer = () => {
   const toolsContainerRef = useRef()
   const settingContainerRef = useRef()
   const leaderboardContainerRef = useRef()
   const teleportContainerRef = useRef()
+  const buildContainerRef = useRef()
 
   const openTeleportBox = useStore(gameStore, (state) => state.teleportAction)
+  const openBuildBox = useStore(gameStore, (state) => state.buildAction)
   const { isLoading } = useStore(appStore, (state) => state)
 
   const [openSettingBox, setOpenSettingBox] = useState(false)
@@ -32,8 +42,12 @@ export const UILayer = () => {
   const [currentMode, setCurrentMode] = useState<GameActionBoxMode | undefined>()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
-  const closeSetting = () => {
-    setOpenSettingBox(false)
+  const handleOnClickBuild = () => {
+    if (openBuildBox !== undefined) {
+      closeBuildModal()
+    } else {
+      openBuildModal('')
+    }
   }
 
   const handleOnClickTeleport = () => {
@@ -93,7 +107,7 @@ export const UILayer = () => {
             <ToolButton iconSrc="./assets/svg/lightbulb-icon.svg" onClick={() => openHelpModal(0)} />
             <Popper open={openSettingBox} anchorEl={settingContainerRef.current} placement="bottom-end">
               <Box sx={{ mt: 2 }}>
-                <SettingActionBox onClose={closeSetting} />
+                <SettingActionBox onClose={() => setOpenSettingBox(false)} />
               </Box>
             </Popper>
             <Popper
@@ -113,12 +127,26 @@ export const UILayer = () => {
           </div>
         </div>
       </div>
-      <div className="absolute top-1/2 right-0" ref={teleportContainerRef}>
+      <div className="absolute top-1/2 right-0">
         <div className="p-4">
-          <ToolButton title="Teleport" iconSrc="./assets/svg/teleport-icon.svg" onClick={handleOnClickTeleport} />
-          <Popper open={!!openTeleportBox} anchorEl={teleportContainerRef.current} placement="left">
-            <TeleportActionBox id={openTeleportBox} />
-          </Popper>
+          <div className="flex flex-col space-y-2">
+            <div ref={buildContainerRef}>
+              <ToolButton iconSrc="./assets/svg/planet-flag-icon.svg" onClick={handleOnClickBuild} />
+            </div>
+            <div ref={teleportContainerRef}>
+              <ToolButton iconSrc="./assets/svg/teleport-icon.svg" onClick={handleOnClickTeleport} />
+            </div>
+            <Popper open={openBuildBox !== undefined} anchorEl={buildContainerRef.current} placement="left">
+              <Box sx={{ mr: 2 }}>
+                <BuildActionBox id={openTeleportBox} />
+              </Box>
+            </Popper>
+            <Popper open={!!openTeleportBox} anchorEl={teleportContainerRef.current} placement="left">
+              <Box sx={{ mr: 2 }}>
+                <TeleportActionBox id={openTeleportBox} />
+              </Box>
+            </Popper>
+          </div>
         </div>
       </div>
       <div className="absolute top-50 left-0">
