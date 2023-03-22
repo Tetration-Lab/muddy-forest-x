@@ -52,6 +52,7 @@
     "buffer": "^6.0.3",
     "circomlibjs": "^0.1.7",
     "comlink": "^4.4.1",
+    "dayjs": "^1.11.7",
     "ethers": "^5.7.2",
     "formik": "^2.2.9",
     "localforage": "^1.10.0",
