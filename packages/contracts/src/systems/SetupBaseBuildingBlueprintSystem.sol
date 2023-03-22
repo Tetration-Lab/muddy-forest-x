@@ -9,12 +9,13 @@ import { ResearchComponent, ID as RID } from "components/ResearchComponent.sol";
 import { BlueprintComponent, ID as BID } from "components/BlueprintComponent.sol";
 import { OwnerComponent, ID as OID } from "components/OwnerComponent.sol";
 import { EType } from "../constants/type.sol";
-import { BlueprintType } from "../constants/blueprint.sol";
+import { BlueprintType, BLUEPRINT_ID_START, BLUEPRINT_ID_END } from "../constants/blueprint.sol";
 
 uint256 constant ID = uint256(keccak256("system.SetupBaseBuildingBlueprint"));
 
 contract SetupBaseBuildingBlueprintSystem is System {
   struct Args {
+    uint256[] ids;
     BaseBlueprintComponent.Blueprint[] blueprints;
   }
 
@@ -30,8 +31,11 @@ contract SetupBaseBuildingBlueprintSystem is System {
     BlueprintComponent b = BlueprintComponent(getAddressById(components, BID));
     OwnerComponent o = OwnerComponent(getAddressById(components, OID));
 
+    require(args.ids.length == args.blueprints.length, "Invalid id and blueprint length");
+
     for (uint256 i = 0; i < args.blueprints.length; ++i) {
-      uint256 id = uint256(keccak256(abi.encode(BlueprintType.BUILDING, args.blueprints[i])));
+      uint256 id = args.ids[i];
+      require(id > BLUEPRINT_ID_START && id <= BLUEPRINT_ID_END, "Invalid blueprint id");
       require(!bb.has(id), "Duplicate blueprint");
       bb.set(id, args.blueprints[i]);
       t.set(id, uint32(EType.BLUEPRINT));
