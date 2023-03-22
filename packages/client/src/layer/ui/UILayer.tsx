@@ -124,37 +124,39 @@ export const UILayer = () => {
       </div>
       {/* tool button */}
       {/*<ClickAwayListener onClickAway={handleToolsClose}>*/}
-      <div className="absolute bottom-0 right-0" ref={toolsContainerRef}>
-        <div className="p-4">
-          <div className="flex space-x-2">
-            <ToolButton
-              title={'Discovery'}
-              iconSrc="./assets/svg/discovery-icon.svg"
-              onClick={handleToolsClick(GameActionBoxMode.Discovery)}
-            />
-            <ToolButton
-              title={'Research'}
-              iconSrc="./assets/svg/research-icon-2.svg"
-              onClick={handleToolsClick(GameActionBoxMode.Research)}
-            />
-            <ToolButton
-              title={'Inventory'}
-              iconSrc="./assets/svg/inventory-icon-2.svg"
-              onClick={handleToolsClick(GameActionBoxMode.Inventory)}
-            />
-            <ToolButton
-              title={'Build'}
-              iconSrc="./assets/svg/build-icon-2.svg"
-              onClick={handleToolsClick(GameActionBoxMode.Build)}
-            />
-            <Popper id={toolId} open={openGameActionBox} anchorEl={anchorEl}>
-              <Box sx={{ mr: 2 }}>
-                <GameActionBox mode={currentMode} onChangeMode={(mode) => setCurrentMode(mode)} />
-              </Box>
-            </Popper>
-          </div>
-        </div>
-      </div>
+      {
+        //<div className="absolute bottom-0 right-0" ref={toolsContainerRef}>
+        //<div className="p-4">
+        //<div className="flex space-x-2">
+        //<ToolButton
+        //title={'Discovery'}
+        //iconSrc="./assets/svg/discovery-icon.svg"
+        //onClick={handleToolsClick(GameActionBoxMode.Discovery)}
+        ///>
+        //<ToolButton
+        //title={'Research'}
+        //iconSrc="./assets/svg/research-icon-2.svg"
+        //onClick={handleToolsClick(GameActionBoxMode.Research)}
+        ///>
+        //<ToolButton
+        //title={'Inventory'}
+        //iconSrc="./assets/svg/inventory-icon-2.svg"
+        //onClick={handleToolsClick(GameActionBoxMode.Inventory)}
+        ///>
+        //<ToolButton
+        //title={'Build'}
+        //iconSrc="./assets/svg/build-icon-2.svg"
+        //onClick={handleToolsClick(GameActionBoxMode.Build)}
+        ///>
+        //<Popper id={toolId} open={openGameActionBox} anchorEl={anchorEl}>
+        //<Box sx={{ mr: 2 }}>
+        //<GameActionBox mode={currentMode} onChangeMode={(mode) => setCurrentMode(mode)} />
+        //</Box>
+        //</Popper>
+        //</div>
+        //</div>
+        //</div>
+      }
       {/*</ClickAwayListener>*/}
       {/* Modals */}
       <AttackModals />
