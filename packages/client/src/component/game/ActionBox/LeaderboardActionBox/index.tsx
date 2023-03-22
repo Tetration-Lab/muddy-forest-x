@@ -1,6 +1,6 @@
 import { Badge, Box, Stack, Typography, useTheme } from '@mui/material'
 import _ from 'lodash'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { FACTION } from '../../../../const/faction'
 import { useLeaderboard } from '../../../../hook/useLeaderboard'
 import { ToolButton } from '../../../ToolButton'

@@ -9,8 +9,10 @@ import { appStore } from '../store/app'
 
 export const useLeaderboard = () => {
   const { world, components } = useStore(appStore, (state) => state.networkLayer)
-  const playerPlanets = useState<Map<string, number>>(new Map())
-  const factionPlanets = useState<Map<number, number>>(new Map(Object.keys(FACTION).map((e) => [+e, 0])))
+  const [playerPlanets, setPlayerPlanets] = useState<Map<string, number>>(new Map())
+  const [factionPlanets, setFactionPlanets] = useState<Map<number, number>>(
+    new Map(Object.keys(FACTION).map((e) => [+e, 0])),
+  )
 
   useEffect(() => {
     const players = runQuery([HasValue(components.Type, { value: EntityType.PLAYER })])
@@ -22,10 +24,10 @@ export const useLeaderboard = () => {
         HasValue(components.Owner, { value: playerAddress }),
       ])
       if (planets.size === 0) return
-      playerPlanets[1]((e) => e.set(playerAddress, planets.size))
+      setPlayerPlanets((e) => new Map(e.set(playerAddress, planets.size)))
       const faction = getComponentValue(components.Faction, player)?.value
-      factionPlanets[1]((e) => {
-        return e.set(faction, e.get(faction) + planets.size)
+      setFactionPlanets((e) => {
+        return new Map(e.set(faction, e.get(faction) + planets.size))
       })
     })
 
@@ -33,24 +35,24 @@ export const useLeaderboard = () => {
       .pipe(filter((update) => getComponentValue(components.Type, update.entity)?.value === EntityType.PLANET))
       .subscribe((update) => {
         const newOwner = formatEntityID(update.value[0]?.value)
-        playerPlanets[1]((e) => {
-          return e.set(newOwner, (e.get(newOwner) ?? 0) + 1)
+        setPlayerPlanets((e) => {
+          return new Map(e.set(newOwner, (e.get(newOwner) ?? 0) + 1))
         })
         const newOwnerIndex = world.registerEntity({ id: newOwner })
         const newOwnerfaction = getComponentValue(components.Faction, newOwnerIndex)?.value
-        factionPlanets[1]((e) => {
-          return e.set(newOwnerfaction, e.get(newOwnerfaction) + 1)
+        setFactionPlanets((e) => {
+          return new Map(e.set(newOwnerfaction, e.get(newOwnerfaction) + 1))
         })
 
         if (update.value[1]?.value) {
           const oldOwner = formatEntityID(update.value[1]?.value)
-          playerPlanets[1]((e) => {
-            return e.set(oldOwner, e.get(oldOwner) - 1)
+          setPlayerPlanets((e) => {
+            return new Map(e.set(oldOwner, e.get(oldOwner) - 1))
           })
           const oldOwnerIndex = world.registerEntity({ id: oldOwner })
           const oldOwnerfaction = getComponentValue(components.Faction, oldOwnerIndex)?.value
-          factionPlanets[1]((e) => {
-            return e.set(oldOwnerfaction, e.get(oldOwnerfaction) - 1)
+          setFactionPlanets((e) => {
+            return new Map(e.set(oldOwnerfaction, e.get(oldOwnerfaction) - 1))
           })
         }
       })
@@ -61,7 +63,7 @@ export const useLeaderboard = () => {
   }, [])
 
   return {
-    players: playerPlanets[0],
-    factions: factionPlanets[0],
+    players: playerPlanets,
+    factions: factionPlanets,
   }
 }
