@@ -45,4 +45,44 @@ export const BASE_BLUEPRINT: {
       },
     },
   },
+  0x103: {
+    name: 'Missile Launcher',
+    description: 'A normal missile launcher',
+    imageUrl: '/assets/svg/buildings/build-item3.svg',
+    level: 2,
+    materials: {
+      [ENERGY_ID]: 10000,
+      [MATERIALS_BY_NAME['Stellar Prism']]: 300,
+      [MATERIALS_BY_NAME['Astral Nebula']]: 300,
+    },
+    bonus: {
+      attack: 0,
+      defense: 0,
+      resources: {
+        [MATERIALS_BY_NAME['Stellar Prism']]: {
+          cap: 500,
+          rpb: 0,
+        },
+        [MATERIALS_BY_NAME['Astral Nebula']]: {
+          cap: 500,
+          rpb: 0,
+        },
+      },
+    },
+  },
+  0x104: {
+    name: 'Spaceship Platform',
+    description: 'A normal spaceship platform',
+    imageUrl: '/assets/svg/buildings/build-item4.svg',
+    level: 0,
+    materials: {
+      [ENERGY_ID]: 5000,
+      [MATERIALS_BY_NAME['Stellar Prism']]: 100,
+    },
+    bonus: {
+      attack: 250,
+      defense: 0,
+      resources: {},
+    },
+  },
 }

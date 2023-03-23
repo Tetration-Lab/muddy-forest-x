@@ -6,6 +6,8 @@ import { BlueprintTypeComponent, ID as BTID } from "components/BlueprintTypeComp
 
 library Blueprint {
   function getBlueprintType(IUint256Component components, uint256 entity) public view returns (uint32) {
-    return BlueprintTypeComponent(getAddressById(components, BTID)).getValue(entity);
+    BlueprintTypeComponent bt = BlueprintTypeComponent(getAddressById(components, BTID));
+    require(bt.has(entity), "Blueprint type not found");
+    return bt.getValue(entity);
   }
 }

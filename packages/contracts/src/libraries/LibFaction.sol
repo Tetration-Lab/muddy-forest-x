@@ -7,7 +7,9 @@ import { PositionComponent, ID as PID } from "components/PositionComponent.sol";
 
 library Faction {
   function getFaction(IUint256Component components, address player) public returns (uint32) {
-    return FactionComponent(getAddressById(components, FID)).getValue(addressToEntity(player));
+    FactionComponent f = FactionComponent(getAddressById(components, FID));
+    require(f.has(addressToEntity(player)), "Invalid player faction");
+    return f.getValue(addressToEntity(player));
   }
 
   function getFaction(IUint256Component components, uint256 entity) public returns (uint32) {

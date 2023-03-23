@@ -26,7 +26,7 @@ contract SetupBaseBuildingBlueprintSystem is System {
 
     BaseBlueprintComponent bb = BaseBlueprintComponent(getAddressById(components, BBID));
     TypeComponent t = TypeComponent(getAddressById(components, TID));
-    BlueprintTypeComponent bt = BlueprintTypeComponent(getAddressById(components, TID));
+    BlueprintTypeComponent bt = BlueprintTypeComponent(getAddressById(components, BTID));
     ResearchComponent r = ResearchComponent(getAddressById(components, RID));
     BlueprintComponent b = BlueprintComponent(getAddressById(components, BID));
     OwnerComponent o = OwnerComponent(getAddressById(components, OID));

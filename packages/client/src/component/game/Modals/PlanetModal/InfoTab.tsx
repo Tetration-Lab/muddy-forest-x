@@ -1,5 +1,5 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material'
-import { ReactNode, useMemo } from 'react'
+import React, { ReactNode, useMemo } from 'react'
 import { FACTION } from '../../../../const/faction'
 import { useResourceRegen } from '../../../../hook/useResourceRegen'
 import { Components } from '../../../../layer/network/components'
@@ -37,7 +37,7 @@ export const FactionInfoTab = ({ faction, name, isYou }: FactionInfoTabProps) =>
 export interface StatInfoTabProps {
   iconSrc: string
   title: string
-  value: number
+  value: number | ReactNode
 }
 
 export const StatInfoTab = ({ iconSrc, title, value }: StatInfoTabProps) => {
@@ -57,7 +57,11 @@ export const StatInfoTab = ({ iconSrc, title, value }: StatInfoTabProps) => {
       <Typography flex={1} sx={{ fontSize: 14 }}>
         {title}
       </Typography>
-      <Typography sx={{ fontSize: 20, lineHeight: 1, fontFamily: 'VT323' }}>{`${value}%`}</Typography>
+      <pre>
+        <Typography sx={{ fontSize: 20, lineHeight: 0.8, fontFamily: 'VT323', textAlign: 'end' }}>
+          {typeof value === 'number' ? `${value}%` : value}
+        </Typography>
+      </pre>
     </Stack>
   )
 }

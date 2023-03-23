@@ -153,7 +153,6 @@ export async function createNetworkLayer(config: SetupContractConfig) {
     resources: { amount: number; id: string }[],
   ) => {
     try {
-      console.log(resources)
       const tx = await systems['system.Send'].executeTyped({
         entity,
         targetEntity,
@@ -162,7 +161,24 @@ export async function createNetworkLayer(config: SetupContractConfig) {
       })
       enqueueSnackbar(`Send Queued`)
       await tx.wait()
-      enqueueSnackbar(`Send successfully`)
+      enqueueSnackbar(`Send Successfully`)
+      return tx
+    } catch (err) {
+      enqueueSnackbar(parseEtherError(err), { variant: 'error' })
+      throw err
+    }
+  }
+
+  const build = async (entity: string, researchId: string | number) => {
+    try {
+      console.log(entity, researchId)
+      const tx = await systems['system.BuildBuilding'].executeTyped({
+        planetEntity: entity,
+        researchId,
+      })
+      enqueueSnackbar(`Build Queued`)
+      await tx.wait()
+      enqueueSnackbar(`Build Successfully`)
       return tx
     } catch (err) {
       enqueueSnackbar(parseEtherError(err), { variant: 'error' })
@@ -198,6 +214,7 @@ export async function createNetworkLayer(config: SetupContractConfig) {
       attack,
       initResources,
       send,
+      build,
     },
     singletonIndex,
     playerIndex,

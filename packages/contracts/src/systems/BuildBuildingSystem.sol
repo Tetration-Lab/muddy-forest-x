@@ -42,19 +42,19 @@ contract BuildBuildingSystem is System {
 
     // Check for valid research
     ResearchComponent rs = ResearchComponent(getAddressById(components, RSID));
-    require(rs.has(args.researchId), "Research not found");
     uint256 owner = OwnerComponent(getAddressById(components, OID)).getValue(args.researchId);
     require(owner == 0 || Faction.getFaction(components, msg.sender) == owner, "Invalid research faction");
+    require(rs.has(args.researchId), "Research not found");
     ResearchComponent.Research memory research = rs.getValue(args.researchId);
 
     // Check for valid blueprint
     BaseBlueprintComponent bb = BaseBlueprintComponent(getAddressById(components, BBID));
     uint256 blueprintId = BlueprintComponent(getAddressById(components, BPID)).getValue(args.researchId);
-    require(bb.has(blueprintId), "Blueprint not found");
     require(
       Blueprint.getBlueprintType(components, blueprintId) == uint32(BlueprintType.BUILDING),
       "Invalid blueprint type"
     );
+    require(bb.has(blueprintId), "Blueprint not found");
     BaseBlueprintComponent.Blueprint memory blueprint = bb.getValue(blueprintId);
 
     // Deduct resources cost, multiply by research's negative multiplier
@@ -103,7 +103,7 @@ contract BuildBuildingSystem is System {
       }
       newBuildings[buildings.length] = args.researchId;
 
-      b.set(args.planetEntity, buildings);
+      b.set(args.planetEntity, newBuildings);
     }
   }
 

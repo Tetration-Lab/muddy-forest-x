@@ -131,14 +131,14 @@ export const UILayer = () => {
         <div className="p-4">
           <div className="flex flex-col space-y-2">
             <div ref={buildContainerRef}>
-              <ToolButton iconSrc="./assets/svg/planet-flag-icon.svg" onClick={handleOnClickBuild} />
+              <ToolButton iconSrc="./assets/svg/build-icon-2.svg" onClick={handleOnClickBuild} />
             </div>
             <div ref={teleportContainerRef}>
               <ToolButton iconSrc="./assets/svg/teleport-icon.svg" onClick={handleOnClickTeleport} />
             </div>
             <Popper open={openBuildBox !== undefined} anchorEl={buildContainerRef.current} placement="left">
               <Box sx={{ mr: 2 }}>
-                <BuildActionBox id={openTeleportBox} />
+                <BuildActionBox id={openBuildBox} />
               </Box>
             </Popper>
             <Popper open={!!openTeleportBox} anchorEl={teleportContainerRef.current} placement="left">
