@@ -55,6 +55,8 @@ export const TeleportActionBox = ({ id }: { id: string }) => {
     }
   }
 
+  if (!ship) return <></>
+
   return (
     <Stack
       p={1}
