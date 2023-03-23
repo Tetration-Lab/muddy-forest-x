@@ -10,7 +10,6 @@ export enum GameActionBoxMode {
   Discovery = 'discovery',
   Research = 'research',
   Inventory = 'inventory',
-  Build = 'build',
 }
 
 const ToolButtonWithText = ({
@@ -87,23 +86,37 @@ export const GameActionBox = ({
             text="Discovery"
             showText={mode === GameActionBoxMode.Discovery}
           />
-
-          <ToolButtonWithText
-            iconSrc="./assets/svg/build-icon-2.svg"
-            onClick={() => onChangeMode(GameActionBoxMode.Build)}
-            text="Build"
-            showText={mode === GameActionBoxMode.Build}
-          />
         </Stack>
         <div>
           <CloseModalButton onClick={() => onClose()} />
         </div>
       </div>
-      <Box mt={1} sx={{ width: '100%', flex: 1 }}>
+      <Box mt={1} sx={{ width: '100%', flex: 1, position: 'relative' }}>
         {mode === GameActionBoxMode.Inventory && <InventoryBox />}
         {mode === GameActionBoxMode.Research && <ResearchBox />}
         {mode === GameActionBoxMode.Discovery && <DiscoveryBox />}
-        {mode === GameActionBoxMode.Build && <BuildBox />}
+        <Stack
+          sx={{
+            width: '100%',
+            height: '100%',
+            top: 0,
+            left: 0,
+            position: 'absolute',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Box
+            sx={{
+              width: '100%',
+              height: '100%',
+              position: 'absolute',
+              backgroundColor: theme.palette.grayScale.black,
+              opacity: 0.7,
+            }}
+          />
+          <Typography sx={{ position: 'absolute', fontSize: 22 }}>Coming Soon...</Typography>
+        </Stack>
       </Box>
     </Stack>
   )

@@ -9,6 +9,7 @@ import { FilterButton } from './FilterButton'
 import { GameItem } from '../../common/GameItem'
 import { IInventoryItem, InventoryTabType, InventoryType, ItemVisibility } from './types'
 import { TypeTag } from '../../common/LabelTag'
+import { MATERIALS } from '../../../../const/materials'
 
 const InventoryTabs = ({
   activeTab,
@@ -169,7 +170,15 @@ export const InventoryBox = () => {
   const [activeFilters, setActiveFilters] = useState<InventoryType[]>([InventoryType.Material])
   const [selectedItemId, setSelectedItemId] = useState<string>()
   // TODO: fetch items
-  const [items] = useState<IInventoryItem[]>(MOCK_INVENTORY_ITEMS)
+  const [items] = useState<IInventoryItem[]>(
+    Object.entries(MATERIALS).map((e) => ({
+      id: e[0],
+      description: e[1].description,
+      imageUrl: e[1].imageUrl,
+      name: e[1].name,
+      type: InventoryType.Material,
+    })),
+  )
   const [craftCounterNumber, setCraftCounterNumber] = useState(1)
 
   const selectedItem = useMemo(() => items.find((item) => item.id === selectedItemId), [selectedItemId, items])
@@ -188,7 +197,7 @@ export const InventoryBox = () => {
         <InventoryTabs activeTab={activeTab} onChangeTab={(tab) => setActiveTab(tab)} items={items} />
         <InventoryFilters activeFilters={activeFilters} onFilterChange={(filters) => setActiveFilters(filters)} />
         <InventoryItemList
-          items={MOCK_INVENTORY_ITEMS}
+          items={items}
           selectedItemId={selectedItemId}
           onClickItem={(itemId) => setSelectedItemId(itemId)}
           activeFilters={activeFilters}

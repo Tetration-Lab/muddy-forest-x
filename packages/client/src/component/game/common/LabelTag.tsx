@@ -25,7 +25,7 @@ export const GenericTag = ({
 export const TypeTag = ({ type }: { type: string }) => {
   const theme = useTheme()
   return (
-    <Box sx={{ borderRadius: '4px', backgroundColor: theme.palette.common.green }}>
+    <Box sx={{ borderRadius: '4px', backgroundColor: theme.palette.common.green, width: 'fit-content' }}>
       <Typography sx={{ fontSize: '12px', fontWeight: 500, px: '3px', py: '1px' }}>{type.toUpperCase()}</Typography>
     </Box>
   )

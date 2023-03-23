@@ -179,11 +179,6 @@ export const UILayer = () => {
               iconSrc="./assets/svg/inventory-icon-2.svg"
               onClick={handleToolsClick(GameActionBoxMode.Inventory)}
             />
-            <ToolButton
-              title={'Build'}
-              iconSrc="./assets/svg/build-icon-2.svg"
-              onClick={handleToolsClick(GameActionBoxMode.Build)}
-            />
             <Popper id={toolId} open={openGameActionBox} anchorEl={anchorEl}>
               <Box sx={{ mr: 2 }}>
                 <GameActionBox
