@@ -41,7 +41,7 @@ import { ChunkLoader } from '../utils/ChunkLoader'
 import { Tile } from '../utils/Tile'
 import { AudioManager } from '../AudioManager'
 
-const ZOOM_OUT_LIMIT = 0.01
+const ZOOM_OUT_LIMIT = 0.1
 const ZOOM_IN_LIMIT = 2
 
 const debug = import.meta.env.DEV && false
@@ -398,7 +398,7 @@ class GameScene extends Phaser.Scene {
     }
     if (lastPlanetID) {
       const planetHashStr = (await localForage.getItem(`planetHash:${playerIndex}`)) as string
-      const planetHash = planetHashStr ? JSON.parse(planetHashStr) : {}
+      const planetHash = planetHashStr ? JSON.parse(planetHashStr) : {} 
 
       if (planetHash) {
         this.cursorExplorer.spawnPlanetMap = new Set(Object.keys(planetHash))
