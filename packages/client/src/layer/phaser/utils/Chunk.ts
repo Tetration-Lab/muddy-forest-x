@@ -61,9 +61,9 @@ export class Chunk extends Phaser.GameObjects.Container {
     if (!this.isLoaded) {
       this.loadTile()
       this.killAll()
-      // if (debug) {
-      //   this.drawBounceRect()
-      // }
+      if (debug) {
+        this.drawBounceRect()
+      }
       this.isLoaded = true
     }
   }
@@ -76,14 +76,14 @@ export class Chunk extends Phaser.GameObjects.Container {
     if (!debug) {
       return
     }
-    // this.graphics.clear()
-    // this.graphics.strokeRect(
-    //   this.chunkX * (CHUNK_WIDTH_SIZE * this.tileSize),
-    //   this.chunkY * (CHUNK_HEIGHT_SIZE * this.tileSize),
-    //   TILE_SIZE * CHUNK_WIDTH_SIZE,
-    //   TILE_SIZE * CHUNK_HEIGHT_SIZE,
-    // )
-    // this.graphics.setDepth(101)
+    this.graphics.clear()
+    this.graphics.strokeRect(
+      this.chunkX * (CHUNK_WIDTH_SIZE * this.tileSize),
+      this.chunkY * (CHUNK_HEIGHT_SIZE * this.tileSize),
+      TILE_SIZE * CHUNK_WIDTH_SIZE,
+      TILE_SIZE * CHUNK_HEIGHT_SIZE,
+    )
+    this.graphics.setDepth(101)
   }
 
   killAll() {
@@ -123,7 +123,7 @@ export class Chunk extends Phaser.GameObjects.Container {
     }
 
     this.killAll()
-    // this.drawBounceRect()
+    this.drawBounceRect()
     this.draw(taListTable)
   }
 

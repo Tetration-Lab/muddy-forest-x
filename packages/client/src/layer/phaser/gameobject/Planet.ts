@@ -14,6 +14,7 @@ export class Planet extends Phaser.GameObjects.Sprite {
   aura?: Phaser.GameObjects.Image
   faction: number
   audioMananger: AudioManager | null = null
+  isOwner = false
 
   constructor(
     scene: Phaser.Scene,
@@ -67,7 +68,7 @@ export class Planet extends Phaser.GameObjects.Sprite {
     this.laserSprite.setVisible(true)
     this.laserSprite.setPosition(this.x, this.y)
     this.laserSprite.setRotation(Phaser.Math.Angle.Between(this.x, this.y, targetPos.x, targetPos.y))
-    if (this.audioMananger) {
+    if (this.audioMananger && this.isOwner) {
       this.audioMananger.playPew()
     }
     const tweenMove = this.scene.tweens.add({

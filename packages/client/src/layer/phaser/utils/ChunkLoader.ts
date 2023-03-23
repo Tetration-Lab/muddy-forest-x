@@ -1,6 +1,7 @@
 import { Chunk } from './Chunk'
 import { CHUNK_HEIGHT_SIZE, CHUNK_WIDTH_SIZE, LOAD_RADIUS, TILE_SIZE } from '../config/chunk'
 import { Tile } from './Tile'
+import { Planet } from '../gameobject/Planet'
 export interface ChunkLoaderConfig {
   tileSize: number
 }
@@ -11,6 +12,7 @@ export class ChunkLoader {
   rt: Phaser.GameObjects.RenderTexture
   chunkGroup: Phaser.GameObjects.Group
   alivePosition: Map<string, boolean> = new Map()
+  viewport: Phaser.Geom.Rectangle
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   updateCb = (t: Tile) => {}
   constructor(scene: Phaser.Scene, config: ChunkLoaderConfig, rt: Phaser.GameObjects.RenderTexture) {
@@ -19,9 +21,17 @@ export class ChunkLoader {
     this.trackObjects = this.scene.add.group()
     this.chunkGroup = this.scene.add.group()
     this.rt = rt
+
+    const offset = 50
+    this.viewport = new Phaser.Geom.Rectangle(
+      this.scene.cameras.main.worldView.x - offset,
+      this.scene.cameras.main.worldView.y - offset,
+      this.scene.cameras.main.worldView.width + offset,
+      this.scene.cameras.main.worldView.height + offset,
+    )
   }
 
-  addObject(trackObject: Phaser.GameObjects.Rectangle) {
+  addObject(trackObject: Phaser.GameObjects.GameObject) {
     this.trackObjects.add(trackObject)
   }
 
@@ -32,11 +42,11 @@ export class ChunkLoader {
   getChunk(x: number, y: number) {
     let chunk
     for (let i = 0; i < this.chunks.length; i++) {
-      if (this.chunks[i].x === x && this.chunks[i].y === y) {
+      if (this.chunks[i].chunkX === x && this.chunks[i].chunkY === y) {
         chunk = this.chunks[i]
+        return chunk
       }
     }
-    return chunk
   }
 
   chunkCount() {
@@ -111,17 +121,21 @@ export class ChunkLoader {
       }
     }
 
-    for (const _obj of this.trackObjects.getChildren()) {
-      const obj = _obj as Phaser.GameObjects.Rectangle
-      const chunkX = Math.floor(obj.x / (CHUNK_WIDTH_SIZE * TILE_SIZE))
-      const chunkY = Math.floor(obj.y / (CHUNK_HEIGHT_SIZE * TILE_SIZE))
-      if (this.getChunk(chunkX, chunkY)) {
+    this.viewport.setSize(this.scene.cameras.main.worldView.width, this.scene.cameras.main.worldView.height)
+    this.viewport.setPosition(
+      x - this.scene.cameras.main.worldView.width / 2,
+      y - this.scene.cameras.main.worldView.height / 2,
+    )
+
+    this.trackObjects.getChildren().forEach((_obj) => {
+      const obj = _obj as Phaser.GameObjects.Sprite | Phaser.GameObjects.Container | Planet
+      if (Phaser.Geom.Rectangle.Contains(this.viewport, obj.x, obj.y)) {
         obj.setVisible(true)
         obj.setActive(true)
       } else {
         obj.setVisible(false)
         obj.setActive(false)
       }
-    }
+    })
   }
 }

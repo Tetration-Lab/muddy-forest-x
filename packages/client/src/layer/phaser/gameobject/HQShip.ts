@@ -19,6 +19,7 @@ export class HQShip extends Phaser.GameObjects.Container {
   laserSprite: Phaser.GameObjects.Sprite
   bombSprite: Phaser.GameObjects.Sprite
   audioMananger: AudioManager | null = null
+  isOwner = false
   constructor(
     scene: Phaser.Scene,
     x: number,
@@ -78,7 +79,7 @@ export class HQShip extends Phaser.GameObjects.Container {
   attackTo(targetPos: Phaser.Math.Vector2) {
     this.laserSprite.setVisible(true)
     this.laserSprite.setPosition(this.x, this.y)
-    if (this.audioMananger) {
+    if (this.audioMananger && this.isOwner) {
       this.audioMananger.playPew()
     }
     this.laserSprite.setRotation(Phaser.Math.Angle.Between(this.x, this.y, targetPos.x, targetPos.y))
@@ -103,7 +104,9 @@ export class HQShip extends Phaser.GameObjects.Container {
       this.laserSprite.setVisible(false)
       this.bombSprite.setPosition(targetPos.x, targetPos.y)
       this.bombSprite.setVisible(true)
-      this.scene.cameras.main.shake(100, 0.01)
+      if (this.isOwner) {
+        this.scene.cameras.main.shake(100, 0.05)
+      }
       this.bombSprite.play(SPRITE.BOMB).once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
         this.bombSprite.setVisible(false)
       })
