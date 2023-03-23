@@ -31,6 +31,13 @@ export const SPRITE = {
 
 export const AUDIO = {
   PEW: 'PEW',
+  PEW_2: 'PEW_2',
+  PEW_3: 'PEW_3',
+  PEW_4: 'PEW_4',
+  HUH_1: 'HUH_1',
+  HUH_2: 'HUH_2',
+  HUH_3: 'HUH_3',
+  OH: 'OH',
 }
 
 export const SPRITE_PLANET = [

@@ -53,6 +53,15 @@ class PreloaderScene extends Phaser.Scene {
     this.load.spritesheet(SPRITE.LASER, 'assets/sprite/laser_96x32.png', { frameWidth: 32, frameHeight: 32 })
 
     this.load.audio(AUDIO.PEW, 'assets/audio/pewpew.mp3')
+    this.load.audio(AUDIO.PEW_2, 'assets/audio/pewpew2.mp3')
+    this.load.audio(AUDIO.PEW_3, 'assets/audio/pewpew3.mp3')
+    this.load.audio(AUDIO.PEW_4, 'assets/audio/pewpew4.mp3')
+
+    this.load.audio(AUDIO.HUH_1, 'assets/audio/huh_1.mp3')
+    this.load.audio(AUDIO.HUH_2, 'assets/audio/huh_2.mp3')
+    this.load.audio(AUDIO.HUH_3, 'assets/audio/huh_3.mp3')
+
+    this.load.audio(AUDIO.OH, 'assets/audio/oh.mp3')
   }
 
   create() {
