@@ -7,3 +7,6 @@ staging:
 
 deploy-staging:
 	 git pull && rm -rf ./dist && yarn build:staging && docker compose -f ./docker-compose.staging.yml up --build --force-recreate -d
+
+deploy-prod:
+	 git pull && rm -rf ./dist && yarn build:prod && docker compose -f ./docker-compose.yml up --build --force-recreate -d
