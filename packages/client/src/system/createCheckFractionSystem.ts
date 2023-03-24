@@ -13,7 +13,6 @@ export function createCheckFractionSystem({ network, gotoGame, gotoIntroPage }: 
   } = network
 
   const fraction = getComponentValue(Faction, network.playerIndex)
-  console.log('fraction', fraction, fraction != null)
   if (fraction) {
     gotoGame()
   } else {

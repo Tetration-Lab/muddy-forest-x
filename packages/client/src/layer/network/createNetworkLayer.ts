@@ -172,7 +172,6 @@ export async function createNetworkLayer(config: SetupContractConfig) {
 
   const build = async (entity: string, researchId: string | number) => {
     try {
-      console.log(entity, researchId)
       const tx = await systems['system.BuildBuilding'].executeTyped({
         planetEntity: entity,
         researchId,

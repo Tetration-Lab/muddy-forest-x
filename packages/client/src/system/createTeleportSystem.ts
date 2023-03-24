@@ -12,7 +12,6 @@ export function createTeleportSystem(network: NetworkLayer, cb: CreateTeleportSy
     world,
     components: { Type, Position },
   } = network
-  console.log('createTeleportSystem')
   const query = [HasValue(Type, { value: EntityType.HQSHIP }), Has(Position)]
   defineSystem(world, query, (update) => {
     const position = getComponentValue(Position, update.entity)

@@ -51,7 +51,6 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
   }
 
   setCurrentChunkFromPos(position: Position) {
-    console.log('setCurrentChunkFromPos', position)
     this.currentChunk = {
       x: Math.floor(position.x / TILE_SIZE / CHUNK_WIDTH_SIZE),
       y: Math.floor(position.y / TILE_SIZE / CHUNK_HEIGHT_SIZE),

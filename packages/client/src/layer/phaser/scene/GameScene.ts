@@ -369,7 +369,6 @@ class GameScene extends Phaser.Scene {
     let startAt = 0
     for (let i = -1; i <= LOAD_RADIUS; i++) {
       for (let j = -1; j <= LOAD_RADIUS; j++) {
-        console.log('updateChunksEvent', i, j)
         this.time.addEvent({
           startAt,
           delay: 50,
