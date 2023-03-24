@@ -24,6 +24,9 @@ import {
 } from '../../store/game'
 import { appStore } from '../../store/app'
 import { BuildActionBox } from '../../component/game/ActionBox/BuildActionBox'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FaDiscord, FaTwitter } from 'react-icons/fa'
+import { faComment } from '@fortawesome/free-solid-svg-icons'
 
 export const UILayer = () => {
   const toolsContainerRef = useRef()
@@ -152,6 +155,25 @@ export const UILayer = () => {
       <div className="absolute top-50 left-0">
         <div className="p-4">
           <Profile />
+        </div>
+      </div>
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div className="flex space-x-2">
+          <a href="https://discord.gg/9MJ4Y6qCtf" target="_blank" rel="noopener noreferrer">
+            <button className="bg-[#353A40] p-1 w-8 h-8 flex items-center justify-center border rounded-md border-[#222428]">
+              <FaDiscord />
+            </button>
+          </a>
+          <a href="https://twitter.com/muddyforest_eth" target="_blank" rel="noopener noreferrer">
+            <button className="bg-[#353A40] p-1 w-8 h-8 flex items-center justify-center border rounded-md border-[#222428]">
+              <FaTwitter />
+            </button>
+          </a>
+          <a href="https://discord.gg/9MJ4Y6qCtf" target="_blank" rel="noopener noreferrer">
+            <button className="bg-[#353A40] p-1 w-8 h-8 flex items-center justify-center border rounded-md border-[#222428]">
+              <FontAwesomeIcon icon={faComment} />
+            </button>
+          </a>
         </div>
       </div>
       {/*</ClickAwayListener>*/}
