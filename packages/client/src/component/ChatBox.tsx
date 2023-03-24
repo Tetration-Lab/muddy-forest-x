@@ -3,10 +3,10 @@ import { useStore } from 'zustand'
 import { FACTION } from '../const/faction'
 import useChatMessage, { ChatMessage } from '../hook/useChatMessage'
 import { appStore } from '../store/app'
-import { useArray, useNumber } from 'react-hanger'
+import { useNumber } from 'react-hanger'
 import { getComponentValue } from '@latticexyz/recs'
 import { CHAT_ENDPOINT, MAX_SHOWN_CHAT } from '../const/chat'
-import { Input, Stack, Typography, useTheme } from '@mui/material'
+import { Badge, Input, Stack, Typography, useTheme } from '@mui/material'
 import { MainButton } from './common/MainButton'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons'
@@ -43,23 +43,13 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ name, faction }) => {
 
   const globalChat = useChatMessage(CHAT_ENDPOINT, name, globalRoomID)
   const globalChatNotification = useNumber(0)
-  const globalMsgList = useArray<ChatMessage>([])
+  const [globalMsgList, setGlobalMsgList] = useState<ChatMessage[]>([])
 
   const factionChat = useChatMessage(CHAT_ENDPOINT, name, factionRoomID)
   const factionChatNotification = useNumber(0)
-  const factionMsgList = useArray<ChatMessage>([])
+  const [factionMsgList, setFactionMsgList] = useState<ChatMessage[]>([])
 
   const [isMinimize, setIsMinimize] = useState(false)
-
-  const toggleTab = () => {
-    if (currentTab === ChatBoxTab.Global) {
-      setCurrentTab(ChatBoxTab.Faction)
-      factionChatNotification.setValue(0)
-    } else {
-      setCurrentTab(ChatBoxTab.Global)
-      globalChatNotification.setValue(0)
-    }
-  }
 
   const changeTabToGlobal = () => {
     setCurrentTab(ChatBoxTab.Global)
@@ -72,14 +62,23 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ name, faction }) => {
   }
 
   const onMessageGlobal = (_msg: string, data: any) => {
-    if (globalMsgList.value.length > MAX_SHOWN_CHAT) globalMsgList.removeIndex(0)
-    if (currentTab !== ChatBoxTab.Global) globalChatNotification.increase(1)
-    globalMsgList.push({
-      message: data.text,
-      username: data.username,
-      timestamp: Date.now(),
-      playerColor: data.playerColor || 'white',
+    setCurrentTab((e) => {
+      if (e !== ChatBoxTab.Global) globalChatNotification.increase(1)
+      return e
     })
+    setGlobalMsgList((e) => {
+      if (e.length > MAX_SHOWN_CHAT) e.shift()
+      return [
+        ...e,
+        {
+          message: data.text,
+          username: data.username,
+          timestamp: Date.now(),
+          playerColor: data.playerColor || 'white',
+        },
+      ]
+    })
+    scrollChatDown()
   }
 
   const toggleMinimize = () => {
@@ -87,14 +86,23 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ name, faction }) => {
   }
 
   const onMessageFaction = (_msg: string, data: any) => {
-    if (factionMsgList.value.length > MAX_SHOWN_CHAT) factionMsgList.removeIndex(0)
-    if (currentTab !== ChatBoxTab.Faction) factionChatNotification.increase(1)
-    factionMsgList.push({
-      message: data.text,
-      username: data.username,
-      timestamp: Date.now(),
-      playerColor: data.playerColor || 'white',
+    setCurrentTab((e) => {
+      if (e !== ChatBoxTab.Faction) factionChatNotification.increase(1)
+      return e
     })
+    setFactionMsgList((e) => {
+      if (e.length > MAX_SHOWN_CHAT) e.shift()
+      return [
+        ...e,
+        {
+          message: data.text,
+          username: data.username,
+          timestamp: Date.now(),
+          playerColor: data.playerColor || 'white',
+        },
+      ]
+    })
+    scrollChatDown()
   }
 
   const scrollChatDown = () => {
@@ -166,16 +174,11 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ name, faction }) => {
     inputChat.current.value = ''
   }
 
-  const formatNotification = (num: number) => {
-    if (num > 99) return '99+'
-    return `${num}`
-  }
-
   return (
     <Stack spacing={0.5} sx={{ width: 350 }}>
       <div className="flex space-x-2 justify-between">
         <div className="flex space-x-2">
-          <div className="relative">
+          <Badge badgeContent={globalChatNotification.value} color="secondary" max={99}>
             <MainButton
               size="small"
               sx={{
@@ -188,15 +191,8 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ name, faction }) => {
             >
               All
             </MainButton>
-            {globalChatNotification.value > 0 && (
-              <div className="absolute -top-2 -right-2">
-                <div className="bg-red-500 rounded-full w-2 text-xs text-[0.5rem] h-2 p-3 flex items-center justify-center">
-                  {formatNotification(globalChatNotification.value)}
-                </div>
-              </div>
-            )}
-          </div>
-          <div className="relative">
+          </Badge>
+          <Badge badgeContent={factionChatNotification.value} color="secondary" max={99}>
             <MainButton
               size="small"
               onClick={() => changeTabToFaction()}
@@ -210,14 +206,7 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ name, faction }) => {
             >
               Faction
             </MainButton>
-            {factionChatNotification.value > 0 && (
-              <div className="absolute -top-2 -right-2">
-                <div className="bg-red-500 rounded-full w-2 text-xs text-[0.5rem] h-2 p-3 flex items-center justify-center">
-                  {formatNotification(factionChatNotification.value)}
-                </div>
-              </div>
-            )}
-          </div>
+          </Badge>
         </div>
         <div className="flex">
           <MainButton size="small" onClick={() => toggleMinimize()}>
@@ -238,7 +227,7 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ name, faction }) => {
         }}
       >
         {currentTab === ChatBoxTab.Global &&
-          globalMsgList.value.map((msg) => (
+          globalMsgList.map((msg) => (
             <Stack key={msg.timestamp} spacing={1} direction="row">
               <Typography variant="body2" sx={{ color: msg.playerColor }}>
                 {msg.username}
@@ -247,7 +236,7 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ name, faction }) => {
             </Stack>
           ))}
         {currentTab === ChatBoxTab.Faction &&
-          factionMsgList.value.map((msg) => (
+          factionMsgList.map((msg) => (
             <Stack key={msg.timestamp} spacing={1} direction="row">
               <Typography variant="body2" sx={{ color: msg.playerColor }}>
                 {msg.username}
@@ -282,67 +271,11 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ name, faction }) => {
             autoCorrect="off"
             placeholder="Enter text here..."
           />
-          <MainButton size="small" type="submit">Send</MainButton>
+          <MainButton size="small" type="submit">
+            Send
+          </MainButton>
         </Stack>
       </form>
     </Stack>
-  )
-
-  return (
-    <>
-      <div
-        className="h-[10rem] w-[15rem] sm:w-[20rem] md:w-[30rem] bg-black bg-opacity-50 rounded-md p-2 overflow-y-auto
-        chatbox-scroll"
-        ref={scrollRef}
-      >
-        <div className="space-y-1 text-white">
-          {globalMsgList.value.map((e) => (
-            <div key={e.timestamp}>
-              <span
-                className="mr-2"
-                style={{
-                  color: e.playerColor,
-                }}
-              >
-                {e.username}:
-              </span>
-              <span className="break-words">{e.message}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          onSubmit()
-        }}
-      >
-        <div className="mt-2">
-          <div className="flex space-x-2">
-            <input
-              id="chat-input"
-              tabIndex={-1}
-              ref={inputChat}
-              placeholder="Enter text here..."
-              className="appearance-none bg-black  bg-opacity-50 w-full rounded-md text-white p-2 focus:outline-none"
-              onFocus={onFocusInput}
-              onBlur={onFocusOutInput}
-              autoComplete="off"
-              autoCorrect="off"
-            />
-            <button
-              tabIndex={-1}
-              className="bg-[#343A40] p-1 px-2 rounded-sm text-white"
-              onClick={(e) => {
-                e.preventDefault()
-                onSubmit()
-              }}
-            >
-              send
-            </button>
-          </div>
-        </div>
-      </form>
-    </>
   )
 }
