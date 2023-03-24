@@ -523,7 +523,7 @@ class GameScene extends Phaser.Scene {
   }
   create() {
     this.audioManager = new AudioManager(this)
-    this.audioManager.playBmg()
+    this.audioManager.playBgm()
     this.followPoint = new Phaser.Math.Vector2(0, 0)
     this.navigator = this.add.rectangle(this.followPoint.y, this.followPoint.x, 1, 1, 0x00ff00)
     this.onCreate()

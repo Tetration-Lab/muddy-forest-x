@@ -10,7 +10,7 @@ export class AudioManager {
   huh2: Phaser.Sound.BaseSound
   huh3: Phaser.Sound.BaseSound
   oh: Phaser.Sound.BaseSound
-  bmg: Phaser.Sound.BaseSound
+  bgm: Phaser.Sound.BaseSound
   constructor(scene: Phaser.Scene) {
     this.scene = scene
     this.pew = this.scene.sound.add(AUDIO.PEW, { volume: 1 })
@@ -22,17 +22,17 @@ export class AudioManager {
     this.huh2 = this.scene.sound.add(AUDIO.HUH_2, { volume: 2 })
     this.huh3 = this.scene.sound.add(AUDIO.HUH_3, { volume: 2.5 })
 
-    this.oh = this.scene.sound.add(AUDIO.OH, { volume: 2 })
+    this.oh = this.scene.sound.add(AUDIO.OH, { volume: 1 })
 
-    this.bmg = this.scene.sound.add(AUDIO.BMG, { volume: 0.5, loop: true })
+    this.bgm = this.scene.sound.add(AUDIO.BGM, { volume: 2, loop: true })
   }
 
-  playBmg() {
+  playBgm() {
     if (!this.scene.sound.locked) {
-      this.bmg.play()
+      this.bgm.play()
     } else {
       this.scene.sound.once(Phaser.Sound.Events.UNLOCKED, () => {
-        this.bmg.play()
+        this.bgm.play()
       })
     }
   }
