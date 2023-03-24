@@ -24,7 +24,7 @@ export class AudioManager {
 
     this.oh = this.scene.sound.add(AUDIO.OH, { volume: 1 })
 
-    this.bgm = this.scene.sound.add(AUDIO.BGM, { volume: 2, loop: true })
+    this.bgm = this.scene.sound.add(AUDIO.BGM, { volume: 1, loop: true })
   }
 
   playBgm() {

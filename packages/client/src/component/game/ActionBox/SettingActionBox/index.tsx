@@ -1,9 +1,10 @@
-import { IconButton, NativeSelect, Stack, Typography, useTheme } from '@mui/material'
+import { IconButton, NativeSelect, Slider, Stack, Typography, useTheme } from '@mui/material'
 import { useState } from 'react'
-import { FaMinus, FaPause, FaPlay, FaPlus } from 'react-icons/fa'
+import { FaMinus, FaPause, FaPlay, FaPlus, FaVolumeMute, FaVolumeUp } from 'react-icons/fa'
 import { useStore } from 'zustand'
 import { MAX_MINER_INSTANCE } from '../../../../const/miner'
 import { MiningPatternType } from '../../../../miner/MiningPatterns'
+import { appStore } from '../../../../store/app'
 import { minerStore } from '../../../../store/miner'
 import { MainButton } from '../../../common/MainButton'
 import { WarningBox } from '../../../common/WarningBox'
@@ -15,8 +16,13 @@ export interface Props {
 }
 export const SettingActionBox: React.FC<Props> = ({ onClose }) => {
   const theme = useTheme()
+
   const miner = useStore(minerStore, (state) => state.miner)
   const [miningTmp, setMiningTmp] = useState(0)
+
+  const audioManager = useStore(appStore, (state) => state.gameScene.audioManager)
+  const [muted, setMuted] = useState(audioManager?.scene?.sound?.mute)
+  const [audio, setAudio] = useState(audioManager?.scene?.sound?.volume)
 
   const [isSettingMiner, setSettingMiner] = useState(false)
   const setMinerCall = async (m: number) => {
@@ -187,6 +193,46 @@ export const SettingActionBox: React.FC<Props> = ({ onClose }) => {
             )
           })}
         </NativeSelect>
+      </Stack>
+      <Typography variant="body2">Background & SFX</Typography>
+      <Stack
+        sx={{
+          backgroundColor: theme.palette.grayScale.black,
+          borderRadius: '4px',
+        }}
+        p={1}
+        spacing={1}
+      >
+        <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
+          <Typography variant="body2">Master Volume</Typography>
+          <MainButton
+            onClick={() =>
+              setMuted((e) => {
+                audioManager.scene.sound.mute = !e
+                return !e
+              })
+            }
+          >
+            {muted ? <FaVolumeMute /> : <FaVolumeUp />}
+          </MainButton>
+        </Stack>
+        <Stack direction="row" spacing={1} alignItems="center">
+          <Typography sx={{ fontSize: 14, color: theme.palette.grayScale.almostGray }}>0%</Typography>
+          <Slider
+            min={0}
+            max={2}
+            step={0.01}
+            aria-label="sfx"
+            value={audio}
+            onChange={(_, value) => {
+              setAudio(+value)
+              audioManager.scene.sound.volume = +value
+            }}
+            size="small"
+            sx={{ color: theme.palette.grayScale.white, p: 0 }}
+          />
+          <Typography sx={{ fontSize: 14, color: theme.palette.grayScale.almostGray }}>200%</Typography>
+        </Stack>
       </Stack>
     </Stack>
   )
