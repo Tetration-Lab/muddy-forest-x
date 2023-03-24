@@ -16,6 +16,7 @@ export interface Props {
 export const SettingActionBox: React.FC<Props> = ({ onClose }) => {
   const theme = useTheme()
   const miner = useStore(minerStore, (state) => state.miner)
+  const [miningTmp, setMiningTmp] = useState(0)
 
   const [isSettingMiner, setSettingMiner] = useState(false)
   const setMinerCall = async (m: number) => {
@@ -51,6 +52,7 @@ export const SettingActionBox: React.FC<Props> = ({ onClose }) => {
         }}
         p={1}
         spacing={1}
+        key={miningTmp}
       >
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Typography>Hashing</Typography>
@@ -80,7 +82,14 @@ export const SettingActionBox: React.FC<Props> = ({ onClose }) => {
             </>
           )}
         </Stack>
-        <MainButton disableElevation sx={{ gap: 1 }} onClick={() => miner.toggle()}>
+        <MainButton
+          disableElevation
+          sx={{ gap: 1 }}
+          onClick={() => {
+            miner.toggle()
+            setMiningTmp((e) => e + 1)
+          }}
+        >
           {miner.isExploring ? (
             <>
               <FaPause size={12} />
@@ -179,6 +188,13 @@ export const SettingActionBox: React.FC<Props> = ({ onClose }) => {
           })}
         </NativeSelect>
       </Stack>
+      <MainButton
+        onClick={() => {
+          console.log(miner.isExploring)
+        }}
+      >
+        Clik
+      </MainButton>
     </Stack>
   )
 }
