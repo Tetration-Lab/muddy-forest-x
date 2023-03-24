@@ -11,7 +11,7 @@ export class ChunkLoader {
   chunks: Chunk[]
   rt: Phaser.GameObjects.RenderTexture
   chunkGroup: Phaser.GameObjects.Group
-  alivePosition: Map<string, boolean> = new Map()
+  alivePosition: Set<[number, number]> = new Set()
   viewport: Phaser.Geom.Rectangle
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   updateCb = (t: Tile) => {}
@@ -65,7 +65,7 @@ export class ChunkLoader {
         chunk.update(i, j)
         this.chunks.push(chunk)
         this.chunkGroup.add(chunk)
-        this.alivePosition.set(this.makeChunkPositionKey(i, j), true)
+        this.alivePosition.add(this.makeChunkPositionKey(i, j))
       }
     }
   }
@@ -77,10 +77,10 @@ export class ChunkLoader {
       for (let j = chunkY - LOAD_RADIUS; j <= chunkY + LOAD_RADIUS; j++) {
         const c = this.chunkGroup.getFirstDead() as Chunk
 
-        if (c && !this.alivePosition.has(`${i},${j}`)) {
+        if (c && !this.alivePosition.has(this.makeChunkPositionKey(x, y))) {
           c.setActive(true)
           c.setVisible(true)
-          this.alivePosition.set(`${i},${j}`, true)
+          this.alivePosition.add(this.makeChunkPositionKey(x, y))
           c.update(i, j)
         }
       }
@@ -97,14 +97,14 @@ export class ChunkLoader {
     if (c && !this.alivePosition.has(this.makeChunkPositionKey(i, j))) {
       c.setActive(true)
       c.setVisible(true)
-      this.alivePosition.set(this.makeChunkPositionKey(i, j), true)
+      this.alivePosition.add(this.makeChunkPositionKey(i, j))
       c.update(i, j)
     }
     return c
   }
 
-  makeChunkPositionKey(x: number, y: number) {
-    return `${+x},${+y}`
+  makeChunkPositionKey(x: number, y: number): [number, number] {
+    return [x, y]
   }
 
   updateChunks(x: number, y: number) {
