@@ -141,7 +141,7 @@ export const UILayer = () => {
                 <BuildActionBox id={openBuildBox} />
               </Box>
             </Popper>
-            <Popper open={!!openTeleportBox} anchorEl={teleportContainerRef.current} placement="left">
+            <Popper open={!!openTeleportBox} anchorEl={teleportContainerRef.current} placement="left-end">
               <Box sx={{ mr: 2 }}>
                 <TeleportActionBox id={openTeleportBox} />
               </Box>
@@ -199,7 +199,7 @@ export const UILayer = () => {
       <HelpModal />
       {isLoading && (
         <div className="absolute w-full h-full bg-black z-50">
-          <Loading msg={'preparing resouce...'} />
+          <Loading msg={'Preparing Resouce...'} />
         </div>
       )}
     </div>
