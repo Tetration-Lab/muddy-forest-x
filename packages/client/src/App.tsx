@@ -2,7 +2,6 @@ import { SyncState } from '@latticexyz/network'
 import { ThemeProvider } from '@mui/material'
 import { useCallback, useEffect, useState } from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import { useStore } from 'zustand'
 import { createNetworkLayer } from './layer/network/createNetworkLayer'
 import { createLoadingStateSystem } from './system/createLoadingStateSystem'
 import { AppRoutes } from './router'
@@ -14,10 +13,8 @@ import { SnackbarProvider } from 'notistack'
 import { Loading } from './component/Loading'
 import { version } from '../package.json'
 import localForage from 'localforage'
-import { Helmet } from 'react-helmet'
 
 function App() {
-  const GOOGLE_ANALYTICS = import.meta.env.VITE_APP_GTAG
   const [loaded, setLoaded] = useState(false)
   const [loadingMsg, setLoadingMsg] = useState<{ msg: string; percentage: number }>({
     msg: '',
@@ -63,22 +60,6 @@ function App() {
 
   return (
     <>
-      <Helmet>
-        {/* Global Site Tag (gtag.js) - Google Analytics */}
-        <script async src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ANALYTICS}`} />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${GOOGLE_ANALYTICS}', {
-              page_path: window.location.pathname,
-            });
-          `,
-          }}
-        />
-      </Helmet>
       <ThemeProvider theme={theme}>
         <SnackbarProvider
           maxSnack={2}

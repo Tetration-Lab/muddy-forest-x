@@ -1,28 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Muddy Forest</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&family=Roboto:wght@300;400;500;700&family=VT323&display=swap"
-      rel="stylesheet"
-    />
-  </head>
 
-  <body>
-    <div id="root"></div>
-    <script>
-      window.global = window
-    </script>
-    <script type="module">
-      import process from 'process'
-      import { Buffer } from 'buffer'
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Muddy Forest</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&family=Roboto:wght@300;400;500;700&family=VT323&display=swap"
+    rel="stylesheet" />
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SE6XWMM7HT"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
 
-      window.Buffer = Buffer
-      window.process = process
-    </script>
-    <script type="module" src="/src/index.tsx"></script>
-  </body>
+    gtag('config', 'G-SE6XWMM7HT');
+  </script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script>
+    window.global = window
+  </script>
+  <script type="module">
+    import process from 'process'
+    import { Buffer } from 'buffer'
+
+    window.Buffer = Buffer
+    window.process = process
+  </script>
+  <script type="module" src="/src/index.tsx"></script>
+</body>
+
 </html>
