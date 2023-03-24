@@ -55,7 +55,7 @@ export const SettingActionBox: React.FC<Props> = ({ onClose }) => {
         key={miningTmp}
       >
         <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Typography>Hashing</Typography>
+          <Typography variant="body2">Hashing</Typography>
           {miner.isExploring ? (
             <>
               <Typography
@@ -111,9 +111,9 @@ export const SettingActionBox: React.FC<Props> = ({ onClose }) => {
         p={1}
         spacing={1}
       >
-        <Typography>Hashing Speed</Typography>
+        <Typography variant="body2">Hashing Speed</Typography>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Typography>Miner: </Typography>
+          <Typography variant="body2">Miner: </Typography>
           <Stack direction="row" alignItems="center">
             <IconButton
               sx={{
@@ -162,7 +162,7 @@ export const SettingActionBox: React.FC<Props> = ({ onClose }) => {
         p={1}
         spacing={1}
       >
-        <Typography>Patterns</Typography>
+        <Typography variant="body2">Patterns</Typography>
         <NativeSelect
           defaultValue={0}
           inputProps={{
@@ -188,13 +188,6 @@ export const SettingActionBox: React.FC<Props> = ({ onClose }) => {
           })}
         </NativeSelect>
       </Stack>
-      <MainButton
-        onClick={() => {
-          console.log(miner.isExploring)
-        }}
-      >
-        Clik
-      </MainButton>
     </Stack>
   )
 }
