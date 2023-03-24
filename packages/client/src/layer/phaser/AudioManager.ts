@@ -13,16 +13,16 @@ export class AudioManager {
   bgm: Phaser.Sound.BaseSound
   constructor(scene: Phaser.Scene) {
     this.scene = scene
-    this.pew = this.scene.sound.add(AUDIO.PEW, { volume: 1 })
-    this.pew2 = this.scene.sound.add(AUDIO.PEW_2, { volume: 1 })
-    this.pew3 = this.scene.sound.add(AUDIO.PEW_3, { volume: 1 })
-    this.pew4 = this.scene.sound.add(AUDIO.PEW_4, { volume: 1 })
+    this.pew = this.scene.sound.add(AUDIO.PEW, { volume: 0.5 })
+    this.pew2 = this.scene.sound.add(AUDIO.PEW_2, { volume: 0.5 })
+    this.pew3 = this.scene.sound.add(AUDIO.PEW_3, { volume: 0.5 })
+    this.pew4 = this.scene.sound.add(AUDIO.PEW_4, { volume: 0.5 })
 
-    this.huh1 = this.scene.sound.add(AUDIO.HUH_1, { volume: 2 })
-    this.huh2 = this.scene.sound.add(AUDIO.HUH_2, { volume: 2 })
-    this.huh3 = this.scene.sound.add(AUDIO.HUH_3, { volume: 2.5 })
+    this.huh1 = this.scene.sound.add(AUDIO.HUH_1, { volume: 1 })
+    this.huh2 = this.scene.sound.add(AUDIO.HUH_2, { volume: 1 })
+    this.huh3 = this.scene.sound.add(AUDIO.HUH_3, { volume: 1.25 })
 
-    this.oh = this.scene.sound.add(AUDIO.OH, { volume: 1 })
+    this.oh = this.scene.sound.add(AUDIO.OH, { volume: 0.5 })
 
     this.bgm = this.scene.sound.add(AUDIO.BGM, { volume: 1, loop: true })
   }
