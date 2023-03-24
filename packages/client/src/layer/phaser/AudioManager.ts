@@ -10,6 +10,7 @@ export class AudioManager {
   huh2: Phaser.Sound.BaseSound
   huh3: Phaser.Sound.BaseSound
   oh: Phaser.Sound.BaseSound
+  bmg: Phaser.Sound.BaseSound
   constructor(scene: Phaser.Scene) {
     this.scene = scene
     this.pew = this.scene.sound.add(AUDIO.PEW, { volume: 1 })
@@ -22,7 +23,20 @@ export class AudioManager {
     this.huh3 = this.scene.sound.add(AUDIO.HUH_3, { volume: 2.5 })
 
     this.oh = this.scene.sound.add(AUDIO.OH, { volume: 2 })
+
+    this.bmg = this.scene.sound.add(AUDIO.BMG, { volume: 0.5, loop: true })
   }
+
+  playBmg() {
+    if (!this.scene.sound.locked) {
+      this.bmg.play()
+    } else {
+      this.scene.sound.once(Phaser.Sound.Events.UNLOCKED, () => {
+        this.bmg.play()
+      })
+    }
+  }
+
   playPew() {
     const effectList = [this.pew, this.pew2, this.pew3, this.pew4, this.huh1, this.huh2, this.huh3]
     const randomIndex = Math.floor(Math.random() * effectList.length)
