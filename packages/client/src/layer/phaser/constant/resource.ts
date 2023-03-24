@@ -39,6 +39,7 @@ export const AUDIO = {
   HUH_3: 'HUH_3',
   OH: 'OH',
   BGM: 'BGM',
+  WARP: 'WARP',
 }
 
 export const SPRITE_PLANET = [

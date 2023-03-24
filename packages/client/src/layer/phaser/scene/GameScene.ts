@@ -229,6 +229,7 @@ class GameScene extends Phaser.Scene {
         addSpaceship(id, ship)
         ship.setPlayerName(name)
         if (owner === networkLayer.connectedAddress) {
+          ship.setAudioManager(this.audioManager)
           this.followPoint.x = +pos.x
           this.followPoint.y = +pos.y
           this.navigator.setPosition(this.followPoint.x, this.followPoint.y)

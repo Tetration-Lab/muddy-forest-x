@@ -1,4 +1,5 @@
 import { FACTION } from '../../../const/faction'
+import { AudioManager } from '../AudioManager'
 import { TILE_SIZE } from '../config/chunk'
 import { COLOR_GREEN } from '../constant'
 import { IMAGE, SPRITE } from '../constant/resource'
@@ -18,6 +19,7 @@ export class HQShip extends Phaser.GameObjects.Container {
   laserSprite: Phaser.GameObjects.Sprite
   bombSprite: Phaser.GameObjects.Sprite
   isOwner = false
+  audioManager: AudioManager | null = null
   constructor(
     scene: Phaser.Scene,
     x: number,
@@ -68,6 +70,10 @@ export class HQShip extends Phaser.GameObjects.Container {
     this.nameText.setColor(FACTION[faction].color || '#000')
     this.signFactionImg = this.scene.add.image(0, 50, FACTION[faction].signImg).setDepth(1000)
     this.add(this.signFactionImg)
+  }
+
+  setAudioManager(audioManager: AudioManager) {
+    this.audioManager = audioManager
   }
 
   attackTo(targetPos: Phaser.Math.Vector2) {
@@ -151,6 +157,9 @@ export class HQShip extends Phaser.GameObjects.Container {
   teleport(x: number, y: number) {
     this.teleportEffect.setPosition(this.x, this.y)
     this.teleportEffect.setVisible(true)
+    if (this.audioManager) {
+      this.audioManager.playWarp()
+    }
     this.teleportEffect.play(SPRITE.TELEPORT).once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
       this.teleportEffect.setVisible(false)
       this.setPosition(x, y)

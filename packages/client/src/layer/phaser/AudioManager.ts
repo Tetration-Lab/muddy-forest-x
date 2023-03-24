@@ -11,6 +11,7 @@ export class AudioManager {
   huh3: Phaser.Sound.BaseSound
   oh: Phaser.Sound.BaseSound
   bgm: Phaser.Sound.BaseSound
+  warp: Phaser.Sound.BaseSound
   constructor(scene: Phaser.Scene) {
     this.scene = scene
     this.pew = this.scene.sound.add(AUDIO.PEW, { volume: 0.5 })
@@ -25,6 +26,12 @@ export class AudioManager {
     this.oh = this.scene.sound.add(AUDIO.OH, { volume: 0.5 })
 
     this.bgm = this.scene.sound.add(AUDIO.BGM, { volume: 1, loop: true })
+
+    this.warp = this.scene.sound.add(AUDIO.WARP, { volume: 1 })
+  }
+
+  playWarp() {
+    this.warp.play()
   }
 
   playBgm() {

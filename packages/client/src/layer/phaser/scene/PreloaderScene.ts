@@ -63,6 +63,7 @@ class PreloaderScene extends Phaser.Scene {
 
     this.load.audio(AUDIO.OH, 'assets/audio/oh.mp3')
     this.load.audio(AUDIO.BGM, 'assets/audio/Space-ambience.mp3')
+    this.load.audio(AUDIO.WARP, 'assets/audio/Spaceship_warp.mp3')
   }
 
   create() {
