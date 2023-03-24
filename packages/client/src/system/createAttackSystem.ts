@@ -1,14 +1,16 @@
-import { formatEntityID, SyncState } from '@latticexyz/network'
-import { defineComponentSystem, defineSystem, getComponentValue, Has, HasValue, runQuery, Type } from '@latticexyz/recs'
-import { EntityType } from '../const/types'
+import { formatEntityID } from '@latticexyz/network'
+import { getComponentValue } from '@latticexyz/recs'
 import { NetworkLayer } from '../layer/network/types'
-import { Planet } from '../layer/phaser/gameobject/Planet'
 import GameScene from '../layer/phaser/scene/GameScene'
 import { gameStore } from '../store/game'
-import { hexToInt } from '../utils/utils'
 
 export function createAttackSystem(network: NetworkLayer, scene: GameScene) {
-  const { world, systemCallStreams } = network
+  const {
+    world,
+    systemCallStreams,
+    components,
+    network: { connectedAddress },
+  } = network
   const attack = systemCallStreams['system.Attack'].subscribe((data) => {
     const attackerId = formatEntityID(data.args['args']['entity'].toHexString())
     const targetId = formatEntityID(data.args['args']['targetEntity'].toHexString())
@@ -18,6 +20,11 @@ export function createAttackSystem(network: NetworkLayer, scene: GameScene) {
     const target = spaceships.get(targetId) ?? planets.get(targetId)
 
     if (attacker && target) {
+      const attackerOwner = getComponentValue(components.Owner, world.registerEntity({ id: attackerId }))?.value
+      if (attackerOwner === connectedAddress.get()) {
+        scene.audioManager.playPew()
+      }
+
       attacker.attackTo(new Phaser.Math.Vector2(target.x, target.y))
     }
   })

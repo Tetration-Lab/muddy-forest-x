@@ -1,5 +1,4 @@
 import { FACTION } from '../../../const/faction'
-import { AudioManager } from '../AudioManager'
 import { TILE_SIZE } from '../config/chunk'
 import { COLOR_GREEN } from '../constant'
 import { IMAGE, SPRITE } from '../constant/resource'
@@ -18,7 +17,6 @@ export class HQShip extends Phaser.GameObjects.Container {
   signFactionImg: Phaser.GameObjects.Image
   laserSprite: Phaser.GameObjects.Sprite
   bombSprite: Phaser.GameObjects.Sprite
-  audioMananger: AudioManager | null = null
   isOwner = false
   constructor(
     scene: Phaser.Scene,
@@ -72,16 +70,9 @@ export class HQShip extends Phaser.GameObjects.Container {
     this.add(this.signFactionImg)
   }
 
-  setAudioMananger(audioMananger: AudioManager) {
-    this.audioMananger = audioMananger
-  }
-
   attackTo(targetPos: Phaser.Math.Vector2) {
     this.laserSprite.setVisible(true)
     this.laserSprite.setPosition(this.x, this.y)
-    if (this.audioMananger && this.isOwner) {
-      this.audioMananger.playPew()
-    }
     this.laserSprite.setRotation(Phaser.Math.Angle.Between(this.x, this.y, targetPos.x, targetPos.y))
     const tweenMove = this.scene.tweens.add({
       targets: [this.laserSprite],

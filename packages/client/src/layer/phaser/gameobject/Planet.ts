@@ -1,5 +1,4 @@
 import { FACTION } from '../../../const/faction'
-import { AudioManager } from '../AudioManager'
 import { TILE_SIZE } from '../config/chunk'
 import { COLOR_RED } from '../constant'
 import { SPRITE } from '../constant/resource'
@@ -13,8 +12,6 @@ export class Planet extends Phaser.GameObjects.Sprite {
   bombSprite: Phaser.GameObjects.Sprite
   aura?: Phaser.GameObjects.Image
   faction: number
-  audioMananger: AudioManager | null = null
-  isOwner = false
 
   constructor(
     scene: Phaser.Scene,
@@ -44,10 +41,6 @@ export class Planet extends Phaser.GameObjects.Sprite {
     this.changeFaction(faction)
   }
 
-  setAudioMananger(audioMananger: AudioManager) {
-    this.audioMananger = audioMananger
-  }
-
   changeFaction(faction: number) {
     if (!faction || this.faction === faction) return
     this.faction = faction
@@ -68,9 +61,6 @@ export class Planet extends Phaser.GameObjects.Sprite {
     this.laserSprite.setVisible(true)
     this.laserSprite.setPosition(this.x, this.y)
     this.laserSprite.setRotation(Phaser.Math.Angle.Between(this.x, this.y, targetPos.x, targetPos.y))
-    if (this.audioMananger && this.isOwner) {
-      this.audioMananger.playPew()
-    }
     const tweenMove = this.scene.tweens.add({
       targets: [this.laserSprite],
       alpha: 1,

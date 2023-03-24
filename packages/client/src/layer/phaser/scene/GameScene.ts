@@ -161,7 +161,6 @@ class GameScene extends Phaser.Scene {
       TILE_SIZE,
     )
     const sprite = new Planet(this, pos.x, pos.y, spriteKey, planetLevel(id) / 2 + 1, id, faction)
-    sprite.setAudioMananger(this.audioManager)
     initPlanetPosition(id, [tileX, tileY])
     // sprite.setVisible(true)
     this.chunkLoader.addObject(sprite)
@@ -226,7 +225,6 @@ class GameScene extends Phaser.Scene {
         }
         const pos = snapToGrid(x, y, 16)
         const ship = new HQShip(this, pos.x, pos.y, FACTION[fractionID].shipSpriteKey, entityID, owner, fractionID)
-        ship.setAudioMananger(this.audioManager)
         ship.setDepth(100)
         addSpaceship(id, ship)
         ship.setPlayerName(name)
@@ -398,7 +396,7 @@ class GameScene extends Phaser.Scene {
     }
     if (lastPlanetID) {
       const planetHashStr = (await localForage.getItem(`planetHash:${playerIndex}`)) as string
-      const planetHash = planetHashStr ? JSON.parse(planetHashStr) : {} 
+      const planetHash = planetHashStr ? JSON.parse(planetHashStr) : {}
 
       if (planetHash) {
         this.cursorExplorer.spawnPlanetMap = new Set(Object.keys(planetHash))
