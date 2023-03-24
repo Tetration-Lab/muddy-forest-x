@@ -1,4 +1,4 @@
-export const INTRO_TEXTS = {
+export const TEXTS = {
   intros: [
     'First time right ?',
     'I will introduce you some background of “Muddy forest”...',
@@ -7,6 +7,22 @@ export const INTRO_TEXTS = {
   ],
   displayNameDescription:
     'Before you start playing our game, we need you to bind a unique name to your account. This will help you to easily identify your account and keep track of your progress.',
-  infoBeforeStart:
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu. Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet. Pellentesque commodo lacus at sodales sodales. Quisque sagittis orci ut diam condimentum, vel euismod erat placerat. In iaculis arcu eros, eget tempus orci facilisis id.',
+}
+
+export const OBJECTIVE = {
+  objective: 'Muddy Forest challenges players to capture as many planets as possible and dominate the leaderboard.',
+  goals: [
+    {
+      imageSrc: '/assets/images/intro/ob_s1.png',
+      description: 'Move spaceship to specific position',
+    },
+    {
+      imageSrc: '/assets/images/intro/ob_s2.png',
+      description: 'Capturing planets by attacking',
+    },
+    {
+      imageSrc: '/assets/images/intro/ob_s3.png',
+      description: 'Use planets and continue to capture higher-level planets',
+    },
+  ],
 }

@@ -11,6 +11,7 @@ export const NavBar = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
+        width: '100%',
         py: 2,
       }}
     >
@@ -23,12 +24,14 @@ export const NavBar = () => {
           }}
         />
       </Link>
-      <MainButton>
-        <Stack direction="row" spacing={2} alignItems="center">
-          <FaUser />
-          <Typography>Sign In</Typography>
-        </Stack>
-      </MainButton>
+      {
+        //<MainButton>
+        //<Stack direction="row" spacing={2} alignItems="center">
+        //<FaUser />
+        //<Typography>Sign In</Typography>
+        //</Stack>
+        //</MainButton>
+      }
     </Box>
   )
 }
