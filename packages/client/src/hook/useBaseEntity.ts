@@ -82,7 +82,7 @@ export const useBaseEntity = (id: string) => {
           rpb: Number(
             r?.rpb ??
               ((!type || type === EntityType.PLANET) && containedResources.includes(ALL_ADVANCED_RESOURCE_ID[i])
-                ? (ADVANCED_REGEN * getLevelResourceStorageMultiplier(level)) / 100
+                ? (ADVANCED_REGEN * getLevelResourceStorageMultiplier(level)) / 200
                 : 0),
           ),
           lrt: r?.lrt ?? 0,

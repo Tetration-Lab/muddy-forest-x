@@ -5,6 +5,7 @@ import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa'
 import { useStore } from 'zustand'
 import { BASE_BLUEPRINT } from '../../../../const/blueprint'
 import { ALL_MATERIALS, MATERIALS } from '../../../../const/materials'
+import { maxBuildingPerLevel } from '../../../../const/planet'
 import { ENERGY_ID } from '../../../../const/resources'
 import { usePlanet } from '../../../../hook/usePlanet'
 import { useResourceRegen, useResourcesRegen } from '../../../../hook/useResourceRegen'
@@ -27,6 +28,7 @@ export const BuildActionBox = ({ id }: { id: string }) => {
   const blueprint = useMemo(() => BASE_BLUEPRINT[selectedBlueprint], [selectedBlueprint])
 
   const { planet } = usePlanet(!id ? '0x1' : id)
+  const maxBuilding = maxBuildingPerLevel(planet?.level ?? 0)
   const resources = { [ENERGY_ID]: useResourceRegen(planet?.energy), ...useResourcesRegen(planet?.resources) }
   const name = useMemo(() => generatePlanetName(BigInt(id)), [id])
   const { planetSprite, focusLocation } = useStore(gameStore, (state) => ({
@@ -287,7 +289,12 @@ export const BuildActionBox = ({ id }: { id: string }) => {
             <MainButton
               onClick={build}
               disabled={
-                isBuilding || !selectedBlueprint || !id || !planet || Object.values(isSufficient).some((e) => !e)
+                isBuilding ||
+                !selectedBlueprint ||
+                !id ||
+                !planet ||
+                planet.buildings.length >= maxBuilding ||
+                Object.values(isSufficient).some((e) => !e)
               }
             >
               Build
