@@ -160,7 +160,11 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
             <Typography
               sx={{ fontSize: 14, fontWeight: 400 }}
             >{`Buildings: ${planet.buildings.length}/${maxBuildings}`}</Typography>
-            <Stack sx={{ p: 0.5, backgroundColor: theme.palette.grayScale.black, borderRadius: '4px' }} spacing={0.5}>
+            <Stack
+              sx={{ p: 0.5, backgroundColor: theme.palette.grayScale.black, borderRadius: '4px' }}
+              spacing={0.5}
+              direction="row"
+            >
               {planet.buildings.length > 0 &&
                 planet.buildings.map((b) => <BuildingItem key={b} imageSrc={BASE_BLUEPRINT[+b].imageUrl} />)}
               {planet.buildings.length < maxBuildings && isOwner && (
