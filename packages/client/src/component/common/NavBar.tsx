@@ -24,14 +24,6 @@ export const NavBar = () => {
           }}
         />
       </Link>
-      {
-        //<MainButton>
-        //<Stack direction="row" spacing={2} alignItems="center">
-        //<FaUser />
-        //<Typography>Sign In</Typography>
-        //</Stack>
-        //</MainButton>
-      }
     </Box>
   )
 }
