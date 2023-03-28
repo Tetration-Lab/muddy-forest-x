@@ -169,7 +169,6 @@ export const InventoryBox = () => {
   const [activeTab, setActiveTab] = useState<InventoryTabType>(InventoryTabType.Inventory)
   const [activeFilters, setActiveFilters] = useState<InventoryType[]>([InventoryType.Material])
   const [selectedItemId, setSelectedItemId] = useState<string>()
-  // TODO: fetch items
   const [items] = useState<IInventoryItem[]>(
     Object.entries(MATERIALS).map((e) => ({
       id: e[0],

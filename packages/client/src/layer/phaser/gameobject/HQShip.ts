@@ -31,7 +31,6 @@ export class HQShip extends Phaser.GameObjects.Container {
   ) {
     super(scene, x, y)
     this.scene.add.existing(this)
-    //TODO: replace with sprite sheet
     this.laserSprite = this.scene.add.sprite(x, y, SPRITE.LASER).setDepth(1000 + this.depth + 1)
     this.laserSprite.play(SPRITE.LASER)
     this.bombSprite = this.scene.add.sprite(x, y, SPRITE.BOMB).setDepth(this.laserSprite.depth + 1)

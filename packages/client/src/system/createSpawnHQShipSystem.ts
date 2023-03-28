@@ -21,8 +21,7 @@ export function createSpawnHQShipSystem(network: NetworkLayer, callback: Callbac
   } = network
 
   const query = [HasValue(Type, { value: EntityType.HQSHIP }), Has(Position), Has(Owner)]
-  //TODO: need to query faction
-  // runQuery(query).forEach((entity) => {
+
   defineSystem(world, query, (update) => {
     const entity = update.entity
     const position = getComponentValue(Position, entity)
