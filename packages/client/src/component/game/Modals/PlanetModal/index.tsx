@@ -19,6 +19,7 @@ import { CloseModalButton } from '../../common/CloseModalButton'
 import { GameItem } from '../../common/GameItem'
 import { LevelTag, TypeTag } from '../../common/LabelTag'
 import { SaveButton } from '../../common/SaveButton'
+import { AttackStatTooltip, DefenseStatTooltip, StatTooltip } from '../../common/StatTooltip'
 import { BuildingItem } from './BuildingItem'
 import { EnergyInfoTab, FactionInfoTab, InfoTab, StatInfoTab } from './InfoTab'
 import { MaterialEntry } from './MaterialEntry'
@@ -129,8 +130,18 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
             <FactionInfoTab faction={owner.faction} name={owner.name} isYou={isOwner} />
             <Typography sx={{ fontSize: 14, fontWeight: 400 }}>Stats:</Typography>
             <Stack sx={{ p: 1, backgroundColor: theme.palette.grayScale.black, borderRadius: '4px' }} spacing={0.5}>
-              <StatInfoTab iconSrc="/assets/svg/attack-icon.svg" title="Attack" value={planet.attack} />
-              <StatInfoTab iconSrc="/assets/svg/shield-icon.svg" title="Defense" value={planet.defense} />
+              <StatInfoTab
+                iconSrc="/assets/svg/attack-icon.svg"
+                title="Attack"
+                value={planet.attack}
+                tooltip={<AttackStatTooltip />}
+              />
+              <StatInfoTab
+                iconSrc="/assets/svg/shield-icon.svg"
+                title="Defense"
+                value={planet.defense}
+                tooltip={<DefenseStatTooltip />}
+              />
             </Stack>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
               <Typography sx={{ fontSize: 14, fontWeight: 400 }}>{`Materials:`}</Typography>

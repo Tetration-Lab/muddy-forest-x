@@ -17,6 +17,7 @@ import { ToolButton } from '../../../ToolButton'
 import { CloseModalButton } from '../../common/CloseModalButton'
 import { GameItem } from '../../common/GameItem'
 import { LevelTag, TypeTag } from '../../common/LabelTag'
+import { AttackStatTooltip, DefenseStatTooltip } from '../../common/StatTooltip'
 import { GameItemEntry } from '../../Modals/PlanetModal/GameItemEntry'
 import { StatInfoTab } from '../../Modals/PlanetModal/InfoTab'
 
@@ -219,6 +220,7 @@ export const BuildActionBox = ({ id }: { id: string }) => {
             <StatInfoTab
               title="Attack"
               iconSrc="/assets/svg/attack-icon.svg"
+              tooltip={<AttackStatTooltip />}
               value={
                 <>
                   {planet?.attack ?? 0}{' '}
@@ -238,6 +240,7 @@ export const BuildActionBox = ({ id }: { id: string }) => {
             <StatInfoTab
               title="Defense"
               iconSrc="/assets/svg/shield-icon.svg"
+              tooltip={<DefenseStatTooltip />}
               value={
                 <>
                   {planet?.defense ?? 0}{' '}
