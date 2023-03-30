@@ -1,6 +1,6 @@
 import { FACTION } from '../../../const/faction'
 import { TILE_SIZE } from '../config/chunk'
-import { COLOR_RED } from '../constant'
+import { COLOR_RED, COLOR_YELLOW } from '../constant'
 import { SPRITE } from '../constant/resource'
 
 export class Planet extends Phaser.GameObjects.Sprite {
@@ -12,6 +12,7 @@ export class Planet extends Phaser.GameObjects.Sprite {
   bombSprite: Phaser.GameObjects.Sprite
   aura?: Phaser.GameObjects.Image
   faction: number
+  circleSendItem: Phaser.GameObjects.Arc
 
   constructor(
     scene: Phaser.Scene,
@@ -39,6 +40,8 @@ export class Planet extends Phaser.GameObjects.Sprite {
     this.bombSprite.setVisible(false)
     this.laserSprite.setVisible(false)
     this.changeFaction(faction)
+    this.circleSendItem = this.scene.add.circle(this.x, this.y, 16, COLOR_YELLOW, 1)
+    this.circleSendItem.setVisible(false)
   }
 
   changeFaction(faction: number) {
@@ -86,6 +89,33 @@ export class Planet extends Phaser.GameObjects.Sprite {
       this.bombSprite.play(SPRITE.BOMB).once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
         this.bombSprite.setVisible(false)
       })
+    })
+  }
+
+  sendItemTo(targetPos: Phaser.Math.Vector2) {
+    console.log('sendItemTo', targetPos)
+    this.circleSendItem.setVisible(true)
+    this.circleSendItem.setPosition(this.x, this.y)
+    this.circleSendItem.setRotation(Phaser.Math.Angle.Between(this.x, this.y, targetPos.x, targetPos.y))
+    const tweenMove = this.scene.tweens.add({
+      targets: [this.circleSendItem],
+      alpha: 1,
+      x: {
+        from: this.x,
+        to: targetPos.x,
+      },
+      y: {
+        from: this.y,
+        to: targetPos.y,
+      },
+      // },
+      ease: 'Linear', // 'Linear, 'Cubic', 'Elastic', 'Bounce', 'Back'
+      duration: 500,
+      repeat: 0, // -1: infinity
+      yoyo: false,
+    })
+    tweenMove.once(Phaser.Tweens.Events.TWEEN_COMPLETE, () => {
+      this.circleSendItem.setVisible(false)
     })
   }
 

@@ -646,9 +646,6 @@ class GameScene extends Phaser.Scene {
   onDestroy = () => {
     this.time.removeAllEvents()
     window.removeEventListener('position', this.handleUIEventPosition)
-    /**
-     * TODO: clean up for event listeners in this scene
-     */
   }
 }
 export default GameScene

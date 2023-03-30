@@ -156,7 +156,6 @@ export const BuildBox = () => {
   const [activeTab, setActiveTab] = useState<BuildTabType>(BuildTabType.Build)
   const [activeFilters, setActiveFilters] = useState<BuildItemType[]>([BuildItemType.Available])
   const [selectedItemId, setSelectedItemId] = useState<string>()
-  // TODO: fetch items
   const [items] = useState<IBuildItem[]>(MOCK_BUILD_ITEMS)
 
   const selectedItem = useMemo(() => items.find((item) => item.id === selectedItemId), [selectedItemId, items])

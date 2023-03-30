@@ -11,6 +11,8 @@ import { useBaseEntity } from '../../../../hook/useBaseEntity'
 import { usePlayer } from '../../../../hook/usePlayer'
 import { useResourceRegen, useResourcesRegen } from '../../../../hook/useResourceRegen'
 import { TILE_SIZE } from '../../../../layer/phaser/config/chunk'
+import { HQShip } from '../../../../layer/phaser/gameobject/HQShip'
+import { Planet } from '../../../../layer/phaser/gameobject/Planet'
 import { appStore } from '../../../../store/app'
 import { closeSendModal, gameStore } from '../../../../store/game'
 import { generatePlanetName } from '../../../../utils/random'
@@ -127,6 +129,23 @@ export const SendModal = ({
       ])
     } finally {
       setSending(false)
+      let targetSender: Planet | HQShip = gameStore.getState().planets.get(id)
+      let _targetSprite: Planet | HQShip = gameStore.getState().spaceships.get(targetId)
+      if (!_targetSprite) {
+        _targetSprite = gameStore.getState().planets.get(targetId)
+      }
+      if (targetSender) {
+        targetSender.sendItemTo(new Phaser.Math.Vector2(_targetSprite.x, _targetSprite.y))
+        targetSender.clearLine()
+      } else {
+        if (!targetSender) {
+          targetSender = gameStore.getState().spaceships.get(id)
+        }
+        if (targetSender) {
+          targetSender.sendItemTo(new Phaser.Math.Vector2(_targetSprite.x, _targetSprite.y))
+          targetSender.clearLine()
+        }
+      }
     }
   }, [id, targetId, distance, sentEnergy, senderEnergy, sentResources, senderResources])
 
