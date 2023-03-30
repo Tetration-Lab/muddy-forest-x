@@ -10,6 +10,8 @@ export class AudioManager {
   huh2: Phaser.Sound.BaseSound
   huh3: Phaser.Sound.BaseSound
   oh: Phaser.Sound.BaseSound
+  oh2: Phaser.Sound.BaseSound
+  oh3: Phaser.Sound.BaseSound
   bgm: Phaser.Sound.BaseSound
   warp: Phaser.Sound.BaseSound
   constructor(scene: Phaser.Scene) {
@@ -23,7 +25,9 @@ export class AudioManager {
     this.huh2 = this.scene.sound.add(AUDIO.HUH_2, { volume: 1 })
     this.huh3 = this.scene.sound.add(AUDIO.HUH_3, { volume: 1.25 })
 
-    this.oh = this.scene.sound.add(AUDIO.OH, { volume: 0.5 })
+    this.oh = this.scene.sound.add(AUDIO.OH, { volume: 1 })
+    this.oh2 = this.scene.sound.add(AUDIO.OH_2, { volume: 1 })
+    this.oh3 = this.scene.sound.add(AUDIO.OH_3, { volume: 1 })
 
     this.bgm = this.scene.sound.add(AUDIO.BGM, { volume: 1, loop: true })
 
@@ -54,7 +58,9 @@ export class AudioManager {
   playEffect() {
     if (Math.random() < 0.3) {
       setTimeout(() => {
-        this.oh.play()
+        const list = [this.oh, this.oh2, this.oh3]
+        const randomIndex = Math.floor(Math.random() * list.length)
+        list[randomIndex].play()
       }, 500)
     }
   }

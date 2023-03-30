@@ -38,6 +38,8 @@ export const AUDIO = {
   HUH_2: 'HUH_2',
   HUH_3: 'HUH_3',
   OH: 'OH',
+  OH_2: 'OH_2',
+  OH_3: 'OH_3',
   BGM: 'BGM',
   WARP: 'WARP',
 }
