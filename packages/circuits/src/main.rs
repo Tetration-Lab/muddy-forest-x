@@ -47,7 +47,7 @@ fn generate<C: ConstraintSynthesizer<Fr>>(circuit: C, label: &str) -> Result<(),
 
 fn main() -> Result<(), Box<dyn Error>> {
     let dir = format!("{}/out", env!("CARGO_MANIFEST_DIR"));
-    if let Err(_) = fs::read_dir(&dir) {
+    if fs::read_dir(&dir).is_err() {
         fs::create_dir(&dir)?;
     }
 
@@ -73,7 +73,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             target_coord: [Fr::zero(); 2],
             target_location: Fr::zero(),
             max_distance: Fr::zero(),
-            hasher: hasher.clone(),
+            hasher,
         },
         "distance",
     )?;

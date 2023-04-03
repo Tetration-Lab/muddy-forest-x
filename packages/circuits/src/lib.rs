@@ -26,7 +26,7 @@ impl<F: PrimeField, MP: MiMCParameters> ConstraintSynthesizer<F> for LocationCir
 
         let coord_x = FpVar::new_witness(cs.clone(), || Ok(self.coord[0]))?;
         let coord_y = FpVar::new_witness(cs.clone(), || Ok(self.coord[1]))?;
-        let result = FpVar::new_input(cs.clone(), || Ok(self.result))?;
+        let result = FpVar::new_input(cs, || Ok(self.result))?;
 
         mimc_var.permute_non_feistel(vec![coord_x, coord_y])[0].enforce_equal(&result)?;
 
@@ -58,7 +58,7 @@ impl<F: PrimeField, MP: MiMCParameters> ConstraintSynthesizer<F> for DistanceCir
         let from_location = FpVar::new_input(cs.clone(), || Ok(self.from_location))?;
         let target_coord_x = FpVar::new_witness(cs.clone(), || Ok(self.target_coord[0]))?;
         let target_coord_y = FpVar::new_witness(cs.clone(), || Ok(self.target_coord[1]))?;
-        let target_location = FpVar::new_input(cs.clone(), || Ok(self.target_location))?;
+        let target_location = FpVar::new_input(cs, || Ok(self.target_location))?;
 
         (max_distance.square()?
             - &(&(&from_coord_x - &target_coord_x).square()?
@@ -174,7 +174,7 @@ mod tests {
                 target_coord,
                 target_location,
                 max_distance,
-                hasher: mimc.clone(),
+                hasher: mimc,
             },
             rng,
         )
