@@ -40,6 +40,7 @@ import { Chunk } from '../utils/Chunk'
 import { ChunkLoader } from '../utils/ChunkLoader'
 import { Tile } from '../utils/Tile'
 import { AudioManager } from '../AudioManager'
+import { PHASER_HOTKEY } from '../../../const/hotkey'
 
 const ZOOM_OUT_LIMIT = 0.1
 const ZOOM_IN_LIMIT = 2
@@ -61,21 +62,13 @@ class GameScene extends Phaser.Scene {
   tileSize!: number
   chunks!: Chunk[]
   followPoint!: Phaser.Math.Vector2
-  keyS!: Phaser.Input.Keyboard.Key
-  keyA!: Phaser.Input.Keyboard.Key
-  keyD!: Phaser.Input.Keyboard.Key
-  keyW!: Phaser.Input.Keyboard.Key
   cameraSpeed = 10
   navigator!: Phaser.GameObjects.Rectangle
   rectBound!: Phaser.GameObjects.Rectangle
   chunkLoader!: ChunkLoader
   pane: Pane
   paramsDebug: { position: string; chunkCoordinate: string; tileCoordinate: string; cameraSize: string } | null
-  keyZ!: Phaser.Input.Keyboard.Key
-  keyX!: Phaser.Input.Keyboard.Key
-  keyF!: Phaser.Input.Keyboard.Key
-  keyG!: Phaser.Input.Keyboard.Key
-  keyESC!: Phaser.Input.Keyboard.Key
+  keys: { [key in keyof typeof PHASER_HOTKEY]: Phaser.Input.Keyboard.Key[] }
   redRect!: Phaser.GameObjects.Rectangle
   rt!: Phaser.GameObjects.RenderTexture
   ready = false
@@ -161,7 +154,7 @@ class GameScene extends Phaser.Scene {
       TILE_SIZE,
     )
     const sprite = new Planet(this, pos.x, pos.y, spriteKey, planetLevel(id) / 2 + 1, id, faction)
-    initPlanetPosition(id, [tileX, tileY])
+    // initPlanetPosition(id, [tileX, tileY])
     // sprite.setVisible(true)
     this.chunkLoader.addObject(sprite)
     sprite.play(spriteKey)
@@ -228,6 +221,7 @@ class GameScene extends Phaser.Scene {
         ship.setDepth(100)
         addSpaceship(id, ship)
         ship.setPlayerName(name)
+        this.chunkLoader.addObject(ship)
         if (owner === networkLayer.connectedAddress) {
           ship.setAudioManager(this.audioManager)
           this.followPoint.x = +pos.x
@@ -474,8 +468,6 @@ class GameScene extends Phaser.Scene {
         const entityID = dataStore.getState().ownedSpaceships[0]
         const networkLayer = appStore.getState().networkLayer
         if (networkLayer) {
-          const tileX = Math.floor(position.x / TILE_SIZE)
-          const tileY = Math.floor(position.y / TILE_SIZE)
           const id = formatEntityID(entityID)
           const ship = gameStore.getState().spaceships.get(id)
           const dist = Phaser.Math.Distance.Between(position.x, position.y, ship.x, ship.y)
@@ -501,19 +493,12 @@ class GameScene extends Phaser.Scene {
     })
 
     window.addEventListener('position', this.handleUIEventPosition)
-    this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W, false)
-    this.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S, false)
-    this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A, false)
-    this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D, false)
-    this.keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z, false)
-    this.keyX = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X, false)
-    this.keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F, false)
-    this.keyG = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G, false)
-    this.keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC, false)
-    const keyG = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G, false)
-    keyG.on('down', () => {
-      this.cursorExplorer.run()
-    })
+
+    this.keys = Object.fromEntries(
+      Object.entries(PHASER_HOTKEY).map((e) => {
+        return [e[0], e[1].keys.map((k) => this.input.keyboard.addKey(k, false))]
+      }),
+    ) as any
 
     this.navigator.setDepth(10)
     this.cameras.main.startFollow(this.navigator, false, 0.3, 0.3)
@@ -565,7 +550,6 @@ class GameScene extends Phaser.Scene {
     if (!this.ready) {
       return
     }
-    const pointer = this.input.activePointer
     this.updateCursor()
 
     if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
@@ -573,11 +557,10 @@ class GameScene extends Phaser.Scene {
     } else {
       this.cursorMove.setVisible(false)
     }
-    this.chunkLoader.updateChunks(this.followPoint.x, this.followPoint.y)
     this.updateDebug()
-
     this.handleKeyboardUpdate()
     this.navigator.setPosition(this.followPoint.x, this.followPoint.y)
+    this.chunkLoader.updateChunks(this.cameras.main.midPoint.x, this.cameras.main.midPoint.y)
   }
 
   updateDebug() {
@@ -595,13 +578,11 @@ class GameScene extends Phaser.Scene {
   }
 
   handleKeyboardUpdate() {
-    if (this.keyESC.isDown) {
+    if (this.keys.clear[0].isDown) {
       this.clearAllDrawLine()
       if (this.targetHQMoverShip) {
         this.targetHQMoverShip.resetPredictMovePosition()
         this.targetHQMoverShip.clearLine()
-        const entityID = this.targetHQMoverShip.entityID
-        const id = formatEntityID(entityID)
         closeTeleport()
       }
       this.gameUIState = GAME_UI_STATE.NONE
@@ -612,30 +593,37 @@ class GameScene extends Phaser.Scene {
     }
 
     const cam = this.cameras.main
-    if (this.keyW.isDown) {
+
+    if (this.keys.move[0].isDown) {
       this.followPoint.y -= this.cameraSpeed / cam.zoom
     }
-    if (this.keyS.isDown) {
-      this.followPoint.y += this.cameraSpeed / cam.zoom
-    }
-    if (this.keyA.isDown) {
+    if (this.keys.move[1].isDown) {
       this.followPoint.x -= this.cameraSpeed / cam.zoom
     }
-    if (this.keyD.isDown) {
+    if (this.keys.move[2].isDown) {
+      this.followPoint.y += this.cameraSpeed / cam.zoom
+    }
+    if (this.keys.move[3].isDown) {
       this.followPoint.x += this.cameraSpeed / cam.zoom
     }
-    if (this.keyF.isDown) {
-      this.cameras.main.startFollow(this.navigator, false, 0.3, 0.3)
+    if (this.keys.unfollow[0].isDown) {
+      this.cameras.main.startFollow(this.navigator)
     }
-    if (this.keyG.isDown) {
+    if (this.keys.followShip[0].isDown) {
+      const hqship = dataStore.getState().ownedSpaceships[0]
+      const ship = gameStore.getState().spaceships.get(hqship)
+      if (ship) {
+        this.cameras.main.startFollow(ship)
+      }
+    }
+    if (this.keys.followExplorer[0].isDown) {
       this.cameras.main.startFollow(this.cursorExplorer)
     }
-    const camera = this.cameras.main
-    if (this.keyZ.isDown && camera.zoom > ZOOM_OUT_LIMIT) {
-      cam.zoom /= 1.02
-    }
-    if (this.keyX.isDown && camera.zoom < ZOOM_IN_LIMIT) {
+    if (this.keys.zoomIn[0].isDown && cam.zoom < ZOOM_IN_LIMIT) {
       cam.zoom *= 1.02
+    }
+    if (this.keys.zoomOut[0].isDown && cam.zoom > ZOOM_OUT_LIMIT) {
+      cam.zoom /= 1.02
     }
   }
 

@@ -27,11 +27,13 @@ import { BuildActionBox } from '../../component/game/ActionBox/BuildActionBox'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { FaDiscord, FaTwitter } from 'react-icons/fa'
 import { faComment } from '@fortawesome/free-solid-svg-icons'
+import { HotkeyActionBox } from '../../component/game/ActionBox/HotkeyActionBox'
 
 export const UILayer = () => {
   const toolsContainerRef = useRef()
   const settingContainerRef = useRef()
   const leaderboardContainerRef = useRef()
+  const hotkeyContainerRef = useRef()
   const teleportContainerRef = useRef()
   const buildContainerRef = useRef()
 
@@ -42,6 +44,7 @@ export const UILayer = () => {
   const [openSettingBox, setOpenSettingBox] = useState(false)
   const [openLeaderboardBox, setOpenLeaderboardBox] = useState(false)
   const [openGameActionBox, setOpenGameActionBox] = useState(false)
+  const [openHotkeyBox, setOpenHotkeyBox] = useState(false)
   const [currentMode, setCurrentMode] = useState<GameActionBoxMode | undefined>()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
@@ -104,6 +107,9 @@ export const UILayer = () => {
             <div ref={settingContainerRef}>
               <ToolButton iconSrc="./assets/svg/setting-icon.svg" onClick={() => setOpenSettingBox((e) => !e)} />
             </div>
+            <div ref={hotkeyContainerRef}>
+              <ToolButton iconSrc="./assets/svg/hotkey-icon.svg" onClick={() => setOpenHotkeyBox((e) => !e)} />
+            </div>
             <div ref={leaderboardContainerRef}>
               <ToolButton iconSrc="./assets/svg/trophy-icon.svg" onClick={() => setOpenLeaderboardBox((e) => !e)} />
             </div>
@@ -111,6 +117,11 @@ export const UILayer = () => {
             <Popper open={openSettingBox} anchorEl={settingContainerRef.current} placement="bottom-end">
               <Box sx={{ mt: 2 }}>
                 <SettingActionBox onClose={() => setOpenSettingBox(false)} />
+              </Box>
+            </Popper>
+            <Popper open={openHotkeyBox} anchorEl={hotkeyContainerRef.current} placement="bottom-end">
+              <Box sx={{ mt: 2 }}>
+                <HotkeyActionBox onClose={() => setOpenHotkeyBox(false)} />
               </Box>
             </Popper>
             <Popper
