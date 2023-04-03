@@ -4,6 +4,32 @@
 
 Welcome to Muddy forest the MMO RTS game repo. you can check out the game [here](https://muddyforest.tetrationlab.com/)
 
+## Project Directory Structure
+
+```
+└── packages
+    ├── circuits - ZK circuits written by Rust using Arkworks
+    │ ├── pkg - WASM binding package
+    │ ├── out - Circuit's PK, VK, and Solidity verifier
+    │ └── src - Circuit's source code
+    ├── client - TS Front end
+    │ ├── nginx
+    │ ├── public
+    │ └── src
+    └── contracts - Core game logic
+        ├── src
+        ├── cache
+        ├── out
+        ├── abi
+        └── types
+```
+
+Currently, the zk verifier of our game is yet implemented in the contracts, so all of the actions in-game is not validated with verifier.
+
+Checkout
+
+- [Circuit README](/packages/circuits/README.md) for more information about ZK circuits, crypto primitive, and proving system we used and instructions to regenerate keys or modify circuits.
+
 ## Usage
 
 ### ENVs
@@ -28,28 +54,6 @@ cp packages/client/.env.prod packages/client/.env
 yarn
 yarn dev
 ```
-
-## Project Directory Structure
-
-```
-└── packages
-    ├── circuits - ZK circuits written by Rust using Arkworks
-    │ ├── pkg - WASM binding package
-    │ ├── out - Circuit's PK, VK, and Solidity verifier
-    │ └── src - Circuit's source code
-    ├── client - TS Front end
-    │ ├── nginx
-    │ ├── public
-    │ └── src
-    └── contracts - Core game logic
-        ├── src
-        ├── cache
-        ├── out
-        ├── abi
-        └── types
-```
-
-Currently, the zk verifier of our game is yet implemented in the contracts, so all of the actions in-game is not validated with verifier.
 
 ## ECS
 
@@ -112,4 +116,3 @@ Ideally longer term we want this project to be open, composable, and permissionl
 - Bug, Doc, Chore will be treat like others open source project.
 
 follow [conventional commit specification](https://www.conventionalcommits.org/en/v1.0.0/) is recommended but not required.
-
