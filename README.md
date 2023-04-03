@@ -8,15 +8,15 @@ Welcome to Muddy forest the MMO RTS game repo. you can check out the game [here]
 
 ```
 └── packages
-    ├── circuits - ZK circuits written by Rust using Arkworks
-    │ ├── pkg - WASM binding package
-    │ ├── out - Circuit's PK, VK, and Solidity verifier
-    │ └── src - Circuit's source code
-    ├── client - TS Front end
+    ├── circuits // ZK circuits written by Rust using Arkworks
+    │ ├── pkg // WASM bindgen package
+    │ ├── out // Pre-generated PK, VK, and Solidity verifier
+    │ └── src // Circuit's source code
+    ├── client // TS Front end
     │ ├── nginx
     │ ├── public
     │ └── src
-    └── contracts - Core game logic
+    └── contracts // Core game logic
         ├── src
         ├── cache
         ├── out
@@ -26,9 +26,10 @@ Welcome to Muddy forest the MMO RTS game repo. you can check out the game [here]
 
 Currently, the zk verifier of our game is yet implemented in the contracts, so all of the actions in-game is not validated with verifier.
 
-Checkout
+### Package Informations
 
-- [Circuit README](/packages/circuits/README.md) for more information about ZK circuits, crypto primitive, and proving system we used and instructions to regenerate keys or modify circuits.
+- [Circuit README](/packages/circuits/README.md) for more information about ZK circuits, crypto primitive, and proving system we used and instructions to regenerate keys or modify circuits. As well as how clients can access hashing function and other circuit functions through WASM bindgen.
+- [Client README](/packages/clients/README.md) for more information about game client, in-game assets handling, and guide for contribution to our front end.
 
 ## Usage
 
