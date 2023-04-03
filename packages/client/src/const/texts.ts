@@ -1,7 +1,10 @@
-export const texts = {
-  intro1: 'First time right ?\n\nI will introduce you some background of “Muddy forest”....',
-  intro2:
-    'In the year 2150, humanity had finally mastered space travel and begun to colonize nearby planets. However, they were not alone in the universe. As they expanded their reach, they encountered two other advanced civilizations: a race of intelligent and advanced aliens, and a powerful and self-evolving AI system.\n\nEach faction has their own headquarters and must build, upgrade and deploy their fleets of spacecraft to invade and claim ownership of planets. Players choose a faction and engage in epic battles across the universe, fighting for dominance and strategic resource control.',
+export const INTRO_TEXTS = {
+  intros: [
+    'First time right ?',
+    'I will introduce you some background of “Muddy forest”...',
+    'In the year 2150, humanity had finally mastered space travel and begun to colonize nearby planets. However, they were not alone in the universe. As they expanded their reach, they encountered two other advanced civilizations: a race of intelligent and advanced aliens, and a powerful and self-evolving AI system.',
+    'Each faction has their own headquarters and must build, upgrade and deploy their fleets of spacecraft to invade and claim ownership of planets. Players choose a faction and engage in epic battles across the universe, fighting for dominance and strategic resource control.',
+  ],
   displayNameDescription:
     'Before you start playing our game, we need you to bind a unique name to your account. This will help you to easily identify your account and keep track of your progress.',
   infoBeforeStart:

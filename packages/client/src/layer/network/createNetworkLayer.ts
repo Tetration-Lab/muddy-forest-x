@@ -8,6 +8,7 @@ import { ethers, utils } from 'ethers'
 import { enqueueSnackbar } from 'notistack'
 import { Subject } from 'rxjs'
 import { faucetUrl, initialGasPrice } from '../../config'
+import { BASE_BLUEPRINT } from '../../const/blueprint'
 import { FACTION } from '../../const/faction'
 import { parseEtherError } from '../../utils/utils'
 import { setupComponents } from './components'
@@ -61,8 +62,31 @@ export async function createNetworkLayer(config: SetupContractConfig) {
     })
   }
 
+  const setupBuildingBlueprint = async () => {
+    await systems['system.SetupBaseBuildingBlueprint'].executeTyped({
+      ids: Object.keys(BASE_BLUEPRINT).map((e) => +e),
+      blueprints: Object.values(BASE_BLUEPRINT).map((e) => ({
+        level: e.level,
+        attack: e.bonus.attack,
+        defense: e.bonus.defense,
+        resources: Object.entries(e.bonus.resources).map((bonus) => ({
+          resourceId: bonus[0],
+          value: 0,
+          cap: bonus[1].cap,
+          rpb: bonus[1].rpb,
+        })),
+        cost: Object.entries(e.materials).map((mat) => ({
+          resourceId: mat[0],
+          value: mat[1],
+          cap: 0,
+          rpb: 0,
+        })),
+      })),
+    })
+  }
+
   const setupName = async (entity: string, name: string) => {
-    await systems['system.Name'].executeTyped({
+    return await systems['system.Name'].executeTyped({
       entity: entity,
       name,
     })
@@ -106,11 +130,12 @@ export async function createNetworkLayer(config: SetupContractConfig) {
   }
 
   const spawn = async (factionId: number, name: string) => {
-    await setupName(network.connectedAddress.get(), name)
-    await systems['system.Spawn'].executeTyped({
+    const nameTx = await setupName(network.connectedAddress.get(), name)
+    const spawnTx = await systems['system.Spawn'].executeTyped({
       factionId: factionId,
       HQShipId: ethers.BigNumber.from(ethers.utils.randomBytes(32)),
     })
+    return Promise.all([nameTx.wait(), spawnTx.wait()])
   }
 
   const initResources = async (entity: string, resources: string[]) => {
@@ -129,7 +154,6 @@ export async function createNetworkLayer(config: SetupContractConfig) {
     resources: { amount: number; id: string }[],
   ) => {
     try {
-      console.log(resources)
       const tx = await systems['system.Send'].executeTyped({
         entity,
         targetEntity,
@@ -138,7 +162,7 @@ export async function createNetworkLayer(config: SetupContractConfig) {
       })
       enqueueSnackbar(`Send Queued`)
       await tx.wait()
-      enqueueSnackbar(`Send successfully`)
+      enqueueSnackbar(`Send Successfully`)
       return tx
     } catch (err) {
       enqueueSnackbar(parseEtherError(err), { variant: 'error' })
@@ -146,13 +170,28 @@ export async function createNetworkLayer(config: SetupContractConfig) {
     }
   }
 
-  const debug = async () => {}
+  const build = async (entity: string, researchId: string | number) => {
+    try {
+      const tx = await systems['system.BuildBuilding'].executeTyped({
+        planetEntity: entity,
+        researchId,
+      })
+      enqueueSnackbar(`Build Queued`)
+      await tx.wait()
+      enqueueSnackbar(`Build Successfully`)
+      return tx
+    } catch (err) {
+      enqueueSnackbar(parseEtherError(err), { variant: 'error' })
+      throw err
+    }
+  }
+
   // FOR DEV
   const w = window as any
-  w.setupFaction = setupFaction
-  w.debug = debug
-  w.spawn = spawn
-  w.move = move
+  w.setup = () => {
+    setupFaction()
+    setupBuildingBlueprint()
+  }
 
   // --- CONTEXT --------------------------------------------------------------------
   const context = {
@@ -175,6 +214,7 @@ export async function createNetworkLayer(config: SetupContractConfig) {
       attack,
       initResources,
       send,
+      build,
     },
     singletonIndex,
     playerIndex,

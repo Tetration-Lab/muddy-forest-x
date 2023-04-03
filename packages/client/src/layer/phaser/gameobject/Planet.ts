@@ -1,6 +1,6 @@
 import { FACTION } from '../../../const/faction'
 import { TILE_SIZE } from '../config/chunk'
-import { COLOR_RED } from '../constant'
+import { COLOR_RED, COLOR_YELLOW } from '../constant'
 import { SPRITE } from '../constant/resource'
 
 export class Planet extends Phaser.GameObjects.Sprite {
@@ -8,10 +8,11 @@ export class Planet extends Phaser.GameObjects.Sprite {
   entityID: string
   predictCursor!: Phaser.GameObjects.Rectangle
   graphics!: Phaser.GameObjects.Graphics
-  laserSprite: Phaser.GameObjects.Rectangle
+  laserSprite: Phaser.GameObjects.Sprite
   bombSprite: Phaser.GameObjects.Sprite
   aura?: Phaser.GameObjects.Image
   faction: number
+  circleSendItem: Phaser.GameObjects.Arc
 
   constructor(
     scene: Phaser.Scene,
@@ -32,12 +33,15 @@ export class Planet extends Phaser.GameObjects.Sprite {
     this.setInteractive()
     this.graphics = this.scene.add.graphics()
     this.predictCursor = this.scene.add.rectangle(this.x, this.y, 0, 0, 0x00ff00).setAlpha(0.5)
-    this.laserSprite = this.scene.add.rectangle(x, y, 48 + 16, 12, 0xff0000).setDepth(1000 + this.depth + 1)
+    this.laserSprite = this.scene.add.sprite(x, y, SPRITE.LASER).setDepth(1000 + this.depth + 1)
+    this.laserSprite.play(SPRITE.LASER)
     this.bombSprite = this.scene.add.sprite(x, y, SPRITE.BOMB).setDepth(this.laserSprite.depth + 1)
     this.bombSprite.play(SPRITE.BOMB)
     this.bombSprite.setVisible(false)
     this.laserSprite.setVisible(false)
     this.changeFaction(faction)
+    this.circleSendItem = this.scene.add.circle(this.x, this.y, 16, COLOR_YELLOW, 1)
+    this.circleSendItem.setVisible(false)
   }
 
   changeFaction(faction: number) {
@@ -81,9 +85,37 @@ export class Planet extends Phaser.GameObjects.Sprite {
       this.laserSprite.setVisible(false)
       this.bombSprite.setPosition(targetPos.x, targetPos.y)
       this.bombSprite.setVisible(true)
+      this.scene.cameras.main.shake(100, 0.01)
       this.bombSprite.play(SPRITE.BOMB).once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
         this.bombSprite.setVisible(false)
       })
+    })
+  }
+
+  sendItemTo(targetPos: Phaser.Math.Vector2) {
+    console.log('sendItemTo', targetPos)
+    this.circleSendItem.setVisible(true)
+    this.circleSendItem.setPosition(this.x, this.y)
+    this.circleSendItem.setRotation(Phaser.Math.Angle.Between(this.x, this.y, targetPos.x, targetPos.y))
+    const tweenMove = this.scene.tweens.add({
+      targets: [this.circleSendItem],
+      alpha: 1,
+      x: {
+        from: this.x,
+        to: targetPos.x,
+      },
+      y: {
+        from: this.y,
+        to: targetPos.y,
+      },
+      // },
+      ease: 'Linear', // 'Linear, 'Cubic', 'Elastic', 'Bounce', 'Back'
+      duration: 500,
+      repeat: 0, // -1: infinity
+      yoyo: false,
+    })
+    tweenMove.once(Phaser.Tweens.Events.TWEEN_COMPLETE, () => {
+      this.circleSendItem.setVisible(false)
     })
   }
 

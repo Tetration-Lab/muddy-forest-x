@@ -9,7 +9,6 @@ use arkworks_mimc::{
     },
     MiMC,
 };
-use arkworks_native_gadgets::poseidon::FieldHasher;
 use wasm_bindgen::prelude::wasm_bindgen;
 
 use crate::wasm::{bf, fr};
@@ -25,6 +24,7 @@ pub struct Hasher {
 #[wasm_bindgen]
 impl Hasher {
     #[wasm_bindgen(constructor)]
+    #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         panic::set_hook(Box::new(console_error_panic_hook::hook));
         Self {

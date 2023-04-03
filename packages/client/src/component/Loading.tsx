@@ -12,18 +12,20 @@ export const Loading = ({ msg, percentage }: LoadingProps) => {
         <div className="absolute w-full h-full z-0 bg-[url('/assets/bg/Star_background.png')] scale-200 animate-spin-slow" />
         <Box py={1} component="img" src="/assets/loading.gif" sx={{ height: '120px' }} />
         <Typography sx={{ fontFamily: 'VT323', fontSize: 32, lineHeight: 1 }}>Loading...</Typography>
-        <LinearProgress
-          sx={{
-            width: 220,
-            height: 8,
-            color: theme.palette.grayScale.white,
-            borderRadius: 12,
-            border: '1px solid #fff',
-          }}
-          color="inherit"
-          variant="determinate"
-          value={percentage}
-        />
+        {percentage && (
+          <LinearProgress
+            sx={{
+              width: 220,
+              height: 8,
+              color: theme.palette.grayScale.white,
+              borderRadius: 12,
+              border: '1px solid #fff',
+            }}
+            color="inherit"
+            variant="determinate"
+            value={percentage}
+          />
+        )}
         <Typography sx={{ fontSize: 14, color: theme.palette.grayScale.almostGray }}>{msg}</Typography>
       </Stack>
     </>

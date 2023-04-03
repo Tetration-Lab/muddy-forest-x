@@ -5,19 +5,21 @@ import Draggable from 'react-draggable'
 import { FaAngleDown } from 'react-icons/fa'
 import { useBoolean } from 'usehooks-ts'
 import { useStore } from 'zustand'
+import { BASE_BLUEPRINT } from '../../../../const/blueprint'
 import { maxBuildingPerLevel } from '../../../../const/planet'
 import { usePlanet } from '../../../../hook/usePlanet'
 import { usePlayer } from '../../../../hook/usePlayer'
 import { GAME_UI_STATE } from '../../../../layer/phaser/scene/GameScene'
 import { appStore } from '../../../../store/app'
 import { dataStore } from '../../../../store/data'
-import { closePlanetModal, gameStore } from '../../../../store/game'
+import { closePlanetModal, gameStore, openBuildModal } from '../../../../store/game'
 import { generatePlanetName } from '../../../../utils/random'
 import { MainButton } from '../../../common/MainButton'
 import { CloseModalButton } from '../../common/CloseModalButton'
 import { GameItem } from '../../common/GameItem'
 import { LevelTag, TypeTag } from '../../common/LabelTag'
 import { SaveButton } from '../../common/SaveButton'
+import { AttackStatTooltip, DefenseStatTooltip, StatTooltip } from '../../common/StatTooltip'
 import { BuildingItem } from './BuildingItem'
 import { EnergyInfoTab, FactionInfoTab, InfoTab, StatInfoTab } from './InfoTab'
 import { MaterialEntry } from './MaterialEntry'
@@ -128,8 +130,18 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
             <FactionInfoTab faction={owner.faction} name={owner.name} isYou={isOwner} />
             <Typography sx={{ fontSize: 14, fontWeight: 400 }}>Stats:</Typography>
             <Stack sx={{ p: 1, backgroundColor: theme.palette.grayScale.black, borderRadius: '4px' }} spacing={0.5}>
-              <StatInfoTab iconSrc="/assets/svg/attack-icon.svg" title="Attack" value={planet.attack} />
-              <StatInfoTab iconSrc="/assets/svg/shield-icon.svg" title="Defense" value={planet.defense} />
+              <StatInfoTab
+                iconSrc="/assets/svg/attack-icon.svg"
+                title="Attack"
+                value={planet.attack}
+                tooltip={<AttackStatTooltip />}
+              />
+              <StatInfoTab
+                iconSrc="/assets/svg/shield-icon.svg"
+                title="Defense"
+                value={planet.defense}
+                tooltip={<DefenseStatTooltip />}
+              />
             </Stack>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
               <Typography sx={{ fontSize: 14, fontWeight: 400 }}>{`Materials:`}</Typography>
@@ -159,15 +171,17 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
             <Typography
               sx={{ fontSize: 14, fontWeight: 400 }}
             >{`Buildings: ${planet.buildings.length}/${maxBuildings}`}</Typography>
-            {planet.buildings.length > 0 ||
-              (isOwner && (
-                <Stack
-                  sx={{ p: 0.5, backgroundColor: theme.palette.grayScale.black, borderRadius: '4px' }}
-                  spacing={0.5}
-                >
-                  <BuildingItem isBuildable={isOwner} />
-                </Stack>
-              ))}
+            <Stack
+              sx={{ p: 0.5, backgroundColor: theme.palette.grayScale.black, borderRadius: '4px' }}
+              spacing={0.5}
+              direction="row"
+            >
+              {planet.buildings.length > 0 &&
+                planet.buildings.map((b) => <BuildingItem key={b} imageSrc={BASE_BLUEPRINT[+b].imageUrl} />)}
+              {planet.buildings.length < maxBuildings && isOwner && (
+                <BuildingItem isBuildable={isOwner} onClick={() => openBuildModal(id)} />
+              )}
+            </Stack>
             {isOwner && (
               <Stack direction="row" spacing={1} justifyContent="center">
                 <MainButton onClick={() => onAttack()}>Attack</MainButton>

@@ -22,7 +22,7 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
   miners: HashWorker[] = []
   isMining = false
   miningPattern: MiningPattern
-  spawnPlanetMap = new Map<string, boolean>()
+  spawnPlanetMap = new Set<string>()
   constructor(
     scene: Phaser.Scene,
     position: Position,
@@ -43,6 +43,18 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
     this.miningPattern = new SpiralPattern(this.currentChunk)
     minerStore.setState({ miner: this })
     this.miners = [workerStore.getState().createWorker()]
+    // for debug
+    if (import.meta.env.DEV) {
+      const w: any = window
+      w.spawnPlanetMap = this.spawnPlanetMap
+    }
+  }
+
+  setCurrentChunkFromPos(position: Position) {
+    this.currentChunk = {
+      x: Math.floor(position.x / TILE_SIZE / CHUNK_WIDTH_SIZE),
+      y: Math.floor(position.y / TILE_SIZE / CHUNK_HEIGHT_SIZE),
+    }
   }
 
   async setMiningPattern(pattern: MiningPatternType) {
@@ -101,7 +113,7 @@ export class CursorExplorer extends Phaser.GameObjects.Sprite {
 
         if (!this.spawnPlanetMap.has(key)) {
           pos.push(position)
-          this.spawnPlanetMap.set(key, true)
+          this.spawnPlanetMap.add(key)
         }
       }
       const res = await Promise.all(

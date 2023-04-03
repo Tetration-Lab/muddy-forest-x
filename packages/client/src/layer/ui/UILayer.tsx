@@ -13,21 +13,48 @@ import { SendModal } from '../../component/game/Modals/SendModal'
 import { Profile } from '../../component/game/Profile'
 import { ToolButton } from '../../component/ToolButton'
 import { dataStore } from '../../store/data'
-import { closeTeleport, gameStore, openHelpModal, openTeleport } from '../../store/game'
+import { Loading } from '../../component/Loading'
+import {
+  closeBuildModal,
+  closeTeleport,
+  gameStore,
+  openBuildModal,
+  openHelpModal,
+  openTeleport,
+} from '../../store/game'
+import { appStore } from '../../store/app'
+import { BuildActionBox } from '../../component/game/ActionBox/BuildActionBox'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FaDiscord, FaTwitter } from 'react-icons/fa'
+import { faComment } from '@fortawesome/free-solid-svg-icons'
+import { HotkeyActionBox } from '../../component/game/ActionBox/HotkeyActionBox'
 
 export const UILayer = () => {
   const toolsContainerRef = useRef()
   const settingContainerRef = useRef()
   const leaderboardContainerRef = useRef()
+  const hotkeyContainerRef = useRef()
   const teleportContainerRef = useRef()
+  const buildContainerRef = useRef()
 
   const openTeleportBox = useStore(gameStore, (state) => state.teleportAction)
+  const openBuildBox = useStore(gameStore, (state) => state.buildAction)
+  const { isLoading } = useStore(appStore, (state) => state)
 
   const [openSettingBox, setOpenSettingBox] = useState(false)
   const [openLeaderboardBox, setOpenLeaderboardBox] = useState(false)
   const [openGameActionBox, setOpenGameActionBox] = useState(false)
+  const [openHotkeyBox, setOpenHotkeyBox] = useState(false)
   const [currentMode, setCurrentMode] = useState<GameActionBoxMode | undefined>()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+
+  const handleOnClickBuild = () => {
+    if (openBuildBox !== undefined) {
+      closeBuildModal()
+    } else {
+      openBuildModal('')
+    }
+  }
 
   const handleOnClickTeleport = () => {
     if (openTeleportBox) {
@@ -80,34 +107,84 @@ export const UILayer = () => {
             <div ref={settingContainerRef}>
               <ToolButton iconSrc="./assets/svg/setting-icon.svg" onClick={() => setOpenSettingBox((e) => !e)} />
             </div>
+            <div ref={hotkeyContainerRef}>
+              <ToolButton iconSrc="./assets/svg/hotkey-icon.svg" onClick={() => setOpenHotkeyBox((e) => !e)} />
+            </div>
             <div ref={leaderboardContainerRef}>
               <ToolButton iconSrc="./assets/svg/trophy-icon.svg" onClick={() => setOpenLeaderboardBox((e) => !e)} />
             </div>
             <ToolButton iconSrc="./assets/svg/lightbulb-icon.svg" onClick={() => openHelpModal(0)} />
             <Popper open={openSettingBox} anchorEl={settingContainerRef.current} placement="bottom-end">
               <Box sx={{ mt: 2 }}>
-                <SettingActionBox />
+                <SettingActionBox onClose={() => setOpenSettingBox(false)} />
               </Box>
             </Popper>
-            <Popper open={openLeaderboardBox} anchorEl={leaderboardContainerRef.current} placement="bottom-end">
+            <Popper open={openHotkeyBox} anchorEl={hotkeyContainerRef.current} placement="bottom-end">
               <Box sx={{ mt: 2 }}>
-                <LeaderboardActionBox />
+                <HotkeyActionBox onClose={() => setOpenHotkeyBox(false)} />
+              </Box>
+            </Popper>
+            <Popper
+              open={openLeaderboardBox}
+              anchorEl={leaderboardContainerRef.current}
+              placement="bottom-end"
+              keepMounted={true}
+            >
+              <Box sx={{ mt: 2 }}>
+                <LeaderboardActionBox
+                  onClose={() => {
+                    setOpenLeaderboardBox(false)
+                  }}
+                />
               </Box>
             </Popper>
           </div>
         </div>
       </div>
-      <div className="absolute top-1/2 right-0" ref={teleportContainerRef}>
+      <div className="absolute top-1/2 right-0 -translate-y-1/2">
         <div className="p-4">
-          <ToolButton title="Teleport" iconSrc="./assets/svg/teleport-icon.svg" onClick={handleOnClickTeleport} />
-          <Popper open={!!openTeleportBox} anchorEl={teleportContainerRef.current} placement="left">
-            <TeleportActionBox id={openTeleportBox} />
-          </Popper>
+          <div className="flex flex-col space-y-2">
+            <div ref={buildContainerRef}>
+              <ToolButton iconSrc="./assets/svg/build-icon-2.svg" onClick={handleOnClickBuild} />
+            </div>
+            <div ref={teleportContainerRef}>
+              <ToolButton iconSrc="./assets/svg/teleport-icon.svg" onClick={handleOnClickTeleport} />
+            </div>
+            <Popper open={openBuildBox !== undefined} anchorEl={buildContainerRef.current} placement="left">
+              <Box sx={{ mr: 2 }}>
+                <BuildActionBox id={openBuildBox} />
+              </Box>
+            </Popper>
+            <Popper open={!!openTeleportBox} anchorEl={teleportContainerRef.current} placement="left-end">
+              <Box sx={{ mr: 2 }}>
+                <TeleportActionBox id={openTeleportBox} />
+              </Box>
+            </Popper>
+          </div>
         </div>
       </div>
       <div className="absolute top-50 left-0">
         <div className="p-4">
           <Profile />
+        </div>
+      </div>
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div className="flex space-x-2">
+          <a href="https://discord.gg/9MJ4Y6qCtf" target="_blank" rel="noopener noreferrer">
+            <button className="bg-[#353A40] p-1 w-8 h-8 flex items-center justify-center border rounded-md border-[#222428]">
+              <FaDiscord />
+            </button>
+          </a>
+          <a href="https://twitter.com/muddyforest_eth" target="_blank" rel="noopener noreferrer">
+            <button className="bg-[#353A40] p-1 w-8 h-8 flex items-center justify-center border rounded-md border-[#222428]">
+              <FaTwitter />
+            </button>
+          </a>
+          <a href="https://discord.gg/9MJ4Y6qCtf" target="_blank" rel="noopener noreferrer">
+            <button className="bg-[#353A40] p-1 w-8 h-8 flex items-center justify-center border rounded-md border-[#222428]">
+              <FontAwesomeIcon icon={faComment} />
+            </button>
+          </a>
         </div>
       </div>
       {/*</ClickAwayListener>*/}
@@ -135,14 +212,13 @@ export const UILayer = () => {
               iconSrc="./assets/svg/inventory-icon-2.svg"
               onClick={handleToolsClick(GameActionBoxMode.Inventory)}
             />
-            <ToolButton
-              title={'Build'}
-              iconSrc="./assets/svg/build-icon-2.svg"
-              onClick={handleToolsClick(GameActionBoxMode.Build)}
-            />
             <Popper id={toolId} open={openGameActionBox} anchorEl={anchorEl}>
               <Box sx={{ mr: 2 }}>
-                <GameActionBox mode={currentMode} onChangeMode={(mode) => setCurrentMode(mode)} />
+                <GameActionBox
+                  mode={currentMode}
+                  onClose={handleToolsClose}
+                  onChangeMode={(mode) => setCurrentMode(mode)}
+                />
               </Box>
             </Popper>
           </div>
@@ -154,6 +230,11 @@ export const UILayer = () => {
       <PlanetModals />
       <SendModals />
       <HelpModal />
+      {isLoading && (
+        <div className="absolute w-full h-full bg-black z-50">
+          <Loading msg={'Preparing Resouce...'} />
+        </div>
+      )}
     </div>
   )
 }

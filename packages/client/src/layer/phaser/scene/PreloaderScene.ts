@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { IMAGE, SPRITE } from '../constant/resource'
+import { AUDIO, IMAGE, SPRITE } from '../constant/resource'
 import { MAIN_SCENE, PRELOADER_SCENE } from '../constant/scene'
 class PreloaderScene extends Phaser.Scene {
   constructor() {
@@ -50,6 +50,22 @@ class PreloaderScene extends Phaser.Scene {
     this.load.spritesheet(SPRITE.AI_SHIP, 'assets/sprite/AI_Ship-Sheet.png', { frameWidth: 64, frameHeight: 64 })
     this.load.spritesheet(SPRITE.ALIEN_SHIP, 'assets/sprite/Alien_Ship-Sheet.png', { frameWidth: 64, frameHeight: 64 })
     this.load.spritesheet(SPRITE.APE_SHIP, 'assets/sprite/Ape_Ship-Sheet.png', { frameWidth: 64, frameHeight: 64 })
+    this.load.spritesheet(SPRITE.LASER, 'assets/sprite/laser_96x32.png', { frameWidth: 32, frameHeight: 32 })
+
+    this.load.audio(AUDIO.PEW, 'assets/audio/pewpew.mp3')
+    this.load.audio(AUDIO.PEW_2, 'assets/audio/pewpew2.mp3')
+    this.load.audio(AUDIO.PEW_3, 'assets/audio/pewpew3.mp3')
+    this.load.audio(AUDIO.PEW_4, 'assets/audio/pewpew4.mp3')
+
+    this.load.audio(AUDIO.HUH_1, 'assets/audio/huh_1.mp3')
+    this.load.audio(AUDIO.HUH_2, 'assets/audio/huh_2.mp3')
+    this.load.audio(AUDIO.HUH_3, 'assets/audio/huh_3.mp3')
+
+    this.load.audio(AUDIO.OH, 'assets/audio/oh.mp3')
+    this.load.audio(AUDIO.OH_2, 'assets/audio/oh_2.mp3')
+    this.load.audio(AUDIO.OH_3, 'assets/audio/oh_3.mp3')
+    this.load.audio(AUDIO.BGM, 'assets/audio/Space-ambience.mp3')
+    this.load.audio(AUDIO.WARP, 'assets/audio/Spaceship_warp.mp3')
   }
 
   create() {

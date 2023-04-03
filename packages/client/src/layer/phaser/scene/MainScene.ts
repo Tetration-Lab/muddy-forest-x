@@ -53,7 +53,6 @@ class MainScene extends Phaser.Scene {
   }
 
   onDestroy = () => {
-    console.log('MainScene onDestroy')
     this.scale.off(Phaser.Scale.Events.RESIZE).removeAllListeners()
   }
 

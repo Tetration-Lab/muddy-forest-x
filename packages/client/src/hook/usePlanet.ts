@@ -8,15 +8,14 @@ import _ from 'lodash'
 import { useBaseEntity } from './useBaseEntity'
 
 export const usePlanet = (id: string) => {
-  const { components, network } = useStore(appStore, (state) => state.networkLayer)
+  const { components } = useStore(appStore, (state) => state.networkLayer)
   const { entity, containedResources, ind, uninitilizedResources } = useBaseEntity(id)
 
   const [planet, setPlanet] = useState<Planet>()
 
   useEffect(() => {
-    const buildings = getComponentValue(components.Building, ind)?.value ?? []
-
     if (entity) {
+      const buildings = getComponentValue(components.Building, entity.index)?.value ?? []
       setPlanet({
         ...entity,
         buildings,

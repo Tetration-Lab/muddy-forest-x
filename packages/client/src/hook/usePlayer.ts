@@ -25,10 +25,6 @@ export const usePlayer = (id: string) => {
       name,
     })
   }, [ind])
-
-  useEffect(() => {
-    return () => {}
-  }, [])
-
+  
   return player
 }

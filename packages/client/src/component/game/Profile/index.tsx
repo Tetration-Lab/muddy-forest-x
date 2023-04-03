@@ -8,7 +8,8 @@ import { useSpaceship } from '../../../hook/useSpaceship'
 import { appStore } from '../../../store/app'
 import { dataStore } from '../../../store/data'
 import { gameStore } from '../../../store/game'
-import { EnergyStatBox, PlanetStatBox, StatBox } from './StatBox'
+import { GlobalClock } from '../GlobalClock'
+import { EnergyStatBox, PlanetStatBox } from './StatBox'
 import { CooldownStatusBadge } from './StatusBadge'
 
 export const Profile = () => {
@@ -26,68 +27,67 @@ export const Profile = () => {
   if (!ship || !shipSprite || !player) return <></>
 
   return (
-    <Stack spacing={1}>
-      <Box sx={{ color: theme.palette.grayScale.white }}>
-        <Stack direction="row" spacing={1}>
-          <Box
-            onClick={() => focusLocation(shipSprite?.getPosition())}
-            sx={{
-              width: 84,
-              height: 84,
-              backgroundColor: theme.palette.grayScale.black,
-              border: `4px solid ${theme.palette.grayScale.almostBlack}`,
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-            }}
-          >
-            <Box
-              component="img"
-              src={shipSprite?.shipImg?.texture?.manager?.getBase64(shipSprite?.shipImg?.texture?.key)}
-              sx={{ height: 40 }}
-            />
-          </Box>
-          <Box
-            p={1}
-            sx={{
-              backgroundColor: theme.palette.grayScale.almostBlack,
-              borderRadius: '8px',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'start',
-            }}
-            gap={0.5}
-            display="flex"
-            flexDirection="column"
-          >
-            <Stack
-              direction="row"
-              spacing={1}
-              sx={{
-                alignItems: 'center',
-              }}
-            >
-              <Box component="img" src={FACTION[player?.faction]?.signSrc} sx={{ height: 28 }} />
-              <Typography sx={{ fontFamily: 'VT323', fontSize: 28, lineHeight: 1 }}>
-                {player?.name ?? 'Anonymous'}
-              </Typography>
-            </Stack>
-            <Stack
-              direction="row"
-              spacing={0.5}
-              sx={{
-                alignItems: 'center',
-              }}
-            >
-              <EnergyStatBox key={ship.energy.value} {...ship.energy} />
-              <PlanetStatBox />
-            </Stack>
-          </Box>
-        </Stack>
-      </Box>
+    <Box sx={{ color: theme.palette.grayScale.white, position: 'relative' }}>
       <Stack direction="row" spacing={1}>
+        <Box
+          onClick={() => focusLocation(shipSprite?.getPosition())}
+          sx={{
+            width: 85,
+            height: 85,
+            backgroundColor: theme.palette.grayScale.black,
+            border: `4px solid ${theme.palette.grayScale.almostBlack}`,
+            borderRadius: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+          }}
+        >
+          <Box
+            component="img"
+            src={shipSprite?.shipImg?.texture?.manager?.getBase64(shipSprite?.shipImg?.texture?.key)}
+            sx={{ height: 40 }}
+          />
+        </Box>
+        <Box
+          p={1}
+          sx={{
+            backgroundColor: theme.palette.grayScale.almostBlack,
+            borderRadius: '8px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'start',
+          }}
+          gap={0.5}
+          display="flex"
+          flexDirection="column"
+        >
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+              alignItems: 'center',
+            }}
+          >
+            <Box component="img" src={FACTION[player?.faction]?.signSrc} sx={{ height: 28 }} />
+            <Typography sx={{ fontFamily: 'VT323', fontSize: 28, lineHeight: 1 }}>
+              {player?.name ?? 'Anonymous'}
+            </Typography>
+          </Stack>
+          <Stack
+            direction="row"
+            spacing={0.5}
+            sx={{
+              alignItems: 'center',
+            }}
+          >
+            <EnergyStatBox key={ship.energy.value} {...ship.energy} />
+            <PlanetStatBox />
+          </Stack>
+        </Box>
+        <GlobalClock />
+      </Stack>
+      <Box sx={{ position: 'absolute', top: 95, display: 'block' }}>
         <CooldownStatusBadge
           key={ship.cooldown}
           imgSrc="/assets/svg/high-temp-icon.svg"
@@ -97,7 +97,7 @@ export const Profile = () => {
             description: 'Unable to move spaceship continuously.',
           }}
         />
-      </Stack>
-    </Stack>
+      </Box>
+    </Box>
   )
 }

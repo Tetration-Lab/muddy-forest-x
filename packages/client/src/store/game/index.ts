@@ -6,6 +6,7 @@ import { BaseEntityType } from '../../types/entity'
 export type Store = {
   helpModal?: number
   teleportAction?: string
+  buildAction?: string
   planetModals: Map<string, Phaser.Math.Vector2>
   attackModals: Map<string, [string, Phaser.Math.Vector2]>
   sendModals: Map<string, [string, Phaser.Math.Vector2]>
@@ -21,7 +22,7 @@ const initialState: Store = {
   sendModals: new Map(),
   planets: new Map(),
   spaceships: new Map(),
-  focusLocation: () => {},
+  focusLocation: () => null,
 }
 
 export const gameStore = createStore<Store>((set) => ({
@@ -116,5 +117,17 @@ export const openHelpModal = (id?: number) => {
 export const closeHelpModal = () => {
   gameStore.setState((state) => {
     return { helpModal: undefined }
+  })
+}
+
+export const openBuildModal = (id: string) => {
+  gameStore.setState((state) => {
+    return { buildAction: id }
+  })
+}
+
+export const closeBuildModal = () => {
+  gameStore.setState((state) => {
+    return { buildAction: undefined }
   })
 }

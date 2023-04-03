@@ -1,3 +1,4 @@
+import localForage from 'localforage'
 import { formatEntityID } from '@latticexyz/network'
 import { Perlin } from '@latticexyz/noise'
 import { getComponentValue } from '@latticexyz/recs'
@@ -27,7 +28,7 @@ import { createTeleportSystem } from '../../../system/createTeleportSystem'
 import { snapPosToGrid, snapToGrid, snapValToGrid } from '../../../utils/snapToGrid'
 import { NetworkLayer } from '../../network/types'
 import { initConfigAnim } from '../anim'
-import { CHUNK_HEIGHT_SIZE, CHUNK_WIDTH_SIZE, TILE_SIZE } from '../config/chunk'
+import { CHUNK_HEIGHT_SIZE, CHUNK_WIDTH_SIZE, LOAD_RADIUS, TILE_SIZE } from '../config/chunk'
 import { GAME_HEIGHT, GAME_WIDTH } from '../config/game'
 import { COLOR_RED, COLOR_YELLOW } from '../constant'
 import { IMAGE, SPRITE, SPRITE_PLANET } from '../constant/resource'
@@ -38,8 +39,10 @@ import { Planet } from '../gameobject/Planet'
 import { Chunk } from '../utils/Chunk'
 import { ChunkLoader } from '../utils/ChunkLoader'
 import { Tile } from '../utils/Tile'
+import { AudioManager } from '../AudioManager'
+import { PHASER_HOTKEY } from '../../../const/hotkey'
 
-const ZOOM_OUT_LIMIT = 0.01
+const ZOOM_OUT_LIMIT = 0.1
 const ZOOM_IN_LIMIT = 2
 
 const debug = import.meta.env.DEV && false
@@ -59,21 +62,13 @@ class GameScene extends Phaser.Scene {
   tileSize!: number
   chunks!: Chunk[]
   followPoint!: Phaser.Math.Vector2
-  keyS!: Phaser.Input.Keyboard.Key
-  keyA!: Phaser.Input.Keyboard.Key
-  keyD!: Phaser.Input.Keyboard.Key
-  keyW!: Phaser.Input.Keyboard.Key
   cameraSpeed = 10
-  navigation!: Phaser.GameObjects.Rectangle
+  navigator!: Phaser.GameObjects.Rectangle
   rectBound!: Phaser.GameObjects.Rectangle
   chunkLoader!: ChunkLoader
   pane: Pane
   paramsDebug: { position: string; chunkCoordinate: string; tileCoordinate: string; cameraSize: string } | null
-  keyZ!: Phaser.Input.Keyboard.Key
-  keyX!: Phaser.Input.Keyboard.Key
-  keyF!: Phaser.Input.Keyboard.Key
-  keyG!: Phaser.Input.Keyboard.Key
-  keyESC!: Phaser.Input.Keyboard.Key
+  keys: { [key in keyof typeof PHASER_HOTKEY]: Phaser.Input.Keyboard.Key[] }
   redRect!: Phaser.GameObjects.Rectangle
   rt!: Phaser.GameObjects.RenderTexture
   ready = false
@@ -86,6 +81,7 @@ class GameScene extends Phaser.Scene {
   targetAttack: HQShip | Planet | null = null
   targetPlanet: Planet | null = null
   drawPlanetSends: Set<string> = new Set()
+  audioManager: AudioManager
   constructor() {
     super(GAME_SCENE)
     appStore.setState({ gameScene: this })
@@ -93,7 +89,7 @@ class GameScene extends Phaser.Scene {
 
   handleWorker = async (res: HashTwoRespItem[]) => {
     const {
-      networkLayer: { components, world },
+      networkLayer: { playerIndex },
     } = appStore.getState()
     for (let i = 0; i < res.length; i++) {
       const hVal = res[i].val
@@ -101,51 +97,93 @@ class GameScene extends Phaser.Scene {
       const tileY = res[i].y
       const check = BigInt(hVal) < PLANET_RARITY
       if (check) {
+        type PlanetHashValItemType = {
+          id: string
+          hVal: string
+          tileX: number
+          tileY: number
+        }
         const id = formatEntityID(hVal)
-        const spriteKey = SPRITE_PLANET[Number(BigInt(hVal) % BigInt(SPRITE_PLANET.length))]
-        const owner = getComponentValue(components.Owner, world.registerEntity({ id }))?.value
-        const faction = owner
-          ? getComponentValue(components.Faction, world.registerEntity({ id: formatEntityID(owner) }))?.value
-          : undefined
+        const planetHashValStr: string = (await localForage.getItem(`planetHash:${playerIndex}`)) || 'null'
+        let planetHashVal = {} as Record<string, PlanetHashValItemType>
+        if (planetHashValStr === 'null') {
+          const planetHashVal = {} as Record<string, PlanetHashValItemType>
+          planetHashVal[`${id}`] = {
+            id: `${id}`,
+            hVal,
+            tileX,
+            tileY,
+          }
+        } else {
+          planetHashVal = JSON.parse(planetHashValStr) as Record<string, PlanetHashValItemType>
+          // update
+          planetHashVal[`${id}`] = {
+            id: `${id}`,
+            hVal,
+            tileX,
+            tileY,
+          }
+        }
 
-        const pos = snapPosToGrid(
-          {
-            x: tileX * TILE_SIZE,
-            y: tileY * TILE_SIZE,
-          },
-          TILE_SIZE,
-        )
-        const sprite = new Planet(this, pos.x, pos.y, spriteKey, planetLevel(id) / 2 + 1, id, faction)
-        initPlanetPosition(id, [tileX, tileY])
-        sprite.play(spriteKey)
-        sprite.registerOnClick((p: Phaser.Input.Pointer) => {
-          if (!p.leftButtonReleased()) {
-            return
-          }
-          if (this.gameUIState === GAME_UI_STATE.SELECTED_PLANET_SEND) {
-            openSendModal(this.targetPlanet.entityID, id, new Phaser.Math.Vector2(p.x, p.y))
-            this.drawPlanetSends.delete(this.targetPlanet.entityID)
-            this.gameUIState = GAME_UI_STATE.NONE
-            return
-          }
-          if (this.gameUIState === GAME_UI_STATE.SELECTED_PLANET) {
-            // change to attack
-            this.gameUIState = GAME_UI_STATE.SELECTED_ATTACK_BY_PLANET
-            this.targetAttack = sprite
-            return
-          }
-          if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
-            // change to attack
-            this.gameUIState = GAME_UI_STATE.SELECTED_ATTACK_BY_SHIP
-            this.targetAttack = sprite
-            return
-          }
-          openPlanetModal(id, new Phaser.Math.Vector2(p.x, p.y))
-        })
-
-        addPlanet(id, sprite)
+        const newPlanetHashValStr = JSON.stringify(planetHashVal)
+        await localForage.setItem(`planetHash:${playerIndex}`, newPlanetHashValStr)
+        localStorage.setItem(`lastPlanetID:${playerIndex}`, `${id}`)
+        const currentChunk = this.cursorExplorer.currentChunk
+        localStorage.setItem(`lastChunk:${playerIndex}`, `${currentChunk.x},${currentChunk.y}`)
+        this.createPlanet(hVal, tileX, tileY)
       }
     }
+  }
+
+  createPlanet = (hVal: string, tileX: number, tileY: number) => {
+    const {
+      networkLayer: { components, world },
+    } = appStore.getState()
+    const id = formatEntityID(hVal)
+    const spriteKey = SPRITE_PLANET[Number(BigInt(hVal) % BigInt(SPRITE_PLANET.length))]
+    const owner = getComponentValue(components.Owner, world.registerEntity({ id }))?.value
+    const faction = owner
+      ? getComponentValue(components.Faction, world.registerEntity({ id: formatEntityID(owner) }))?.value
+      : undefined
+
+    const pos = snapPosToGrid(
+      {
+        x: tileX * TILE_SIZE,
+        y: tileY * TILE_SIZE,
+      },
+      TILE_SIZE,
+    )
+    const sprite = new Planet(this, pos.x, pos.y, spriteKey, planetLevel(id) / 2 + 1, id, faction)
+    // initPlanetPosition(id, [tileX, tileY])
+    // sprite.setVisible(true)
+    this.chunkLoader.addObject(sprite)
+    sprite.play(spriteKey)
+    sprite.registerOnClick((p: Phaser.Input.Pointer) => {
+      if (!p.leftButtonReleased()) {
+        return
+      }
+      if (this.gameUIState === GAME_UI_STATE.SELECTED_PLANET_SEND) {
+        openSendModal(this.targetPlanet.entityID, id, new Phaser.Math.Vector2(p.x, p.y))
+        this.drawPlanetSends.delete(this.targetPlanet.entityID)
+        this.gameUIState = GAME_UI_STATE.NONE
+        return
+      }
+      if (this.gameUIState === GAME_UI_STATE.SELECTED_PLANET) {
+        // change to attack
+        this.gameUIState = GAME_UI_STATE.SELECTED_ATTACK_BY_PLANET
+        this.targetAttack = sprite
+        return
+      }
+      if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
+        // change to attack
+        this.gameUIState = GAME_UI_STATE.SELECTED_ATTACK_BY_SHIP
+        this.targetAttack = sprite
+        return
+      }
+      openPlanetModal(id, new Phaser.Math.Vector2(p.x, p.y))
+    })
+
+    addPlanet(id, sprite)
   }
 
   handleUIEventPosition = (e: any) => {
@@ -183,12 +221,16 @@ class GameScene extends Phaser.Scene {
         ship.setDepth(100)
         addSpaceship(id, ship)
         ship.setPlayerName(name)
+        this.chunkLoader.addObject(ship)
         if (owner === networkLayer.connectedAddress) {
+          ship.setAudioManager(this.audioManager)
           this.followPoint.x = +pos.x
           this.followPoint.y = +pos.y
-          this.navigation.setPosition(this.followPoint.x, this.followPoint.y)
+          this.navigator.setPosition(this.followPoint.x, this.followPoint.y)
+          this.navigator.setVisible(debug)
           ship.predictCursor.setVisible(true)
           ship.setPlayerIndicatorVisible(true)
+          ship.isOwner = true
           ship.registerOnClick((p: Phaser.Input.Pointer) => {
             if (!p.leftButtonReleased()) {
               return
@@ -270,6 +312,7 @@ class GameScene extends Phaser.Scene {
         createTeleportSystem(networkLayer, (entityID: string, x: number, y: number) => {
           const id = formatEntityID(entityID)
           const ship = gameStore.getState().spaceships.get(id.toString())
+          if (!ship) return
           const dist = Phaser.Math.Distance.Between(x, y, ship.x, ship.y)
           if (ship && dist > 0) {
             ship.teleport(x, y)
@@ -309,24 +352,59 @@ class GameScene extends Phaser.Scene {
 
   async onCreate() {
     initConfigAnim(this)
+    this.rt = this.add.renderTexture(0, 0, GAME_WIDTH, GAME_HEIGHT)
+    this.chunkLoader = new ChunkLoader(this, { tileSize: TILE_SIZE }, this.rt)
     this.input.setPollAlways()
     this.cursorMove = this.add.image(0, 0, IMAGE.SELECTED_CURSOR)
     this.cursorMove.setDisplaySize(16, 16)
     this.cursorMove.setDepth(1000)
     this.cursorMove.setOrigin(0)
 
+    let startAt = 0
+    for (let i = -1; i <= LOAD_RADIUS; i++) {
+      for (let j = -1; j <= LOAD_RADIUS; j++) {
+        this.time.addEvent({
+          startAt,
+          delay: 50,
+          callback: () => {
+            this.chunkLoader.updateChunksRePositionWithOffset(this.followPoint.x, this.followPoint.y, i, j)
+          },
+          loop: true,
+        })
+        startAt += 50
+      }
+    }
     const { networkLayer } = appStore.getState()
+    const playerIndex = networkLayer.playerIndex
     this.onSetUpSystem(networkLayer)
 
     this.events.on('sendWorker', this.handleWorker)
     this.events.on(Phaser.GameObjects.Events.DESTROY, this.onDestroy)
 
-    this.rt = this.add.renderTexture(0, 0, GAME_WIDTH, GAME_HEIGHT)
     this.cursorExplorer = new CursorExplorer(this, this.followPoint, SPRITE.EXPLORER, this.handleWorker)
+    const lastPlanetID = localStorage.getItem(`lastPlanetID:${playerIndex}`)
+    const lastChunkStr = localStorage.getItem(`lastChunk:${playerIndex}`)
+    if (lastChunkStr) {
+      const [x, y] = lastChunkStr.split(',').map((v) => Number(v))
+      this.cursorExplorer.setCurrentChunkFromPos({ x, y })
+    }
+    if (lastPlanetID) {
+      const planetHashStr = (await localForage.getItem(`planetHash:${playerIndex}`)) as string
+      const planetHash = planetHashStr ? JSON.parse(planetHashStr) : {}
+
+      if (planetHash) {
+        this.cursorExplorer.spawnPlanetMap = new Set(Object.keys(planetHash))
+        Object.keys(planetHash).forEach((key) => {
+          const planet = planetHash[key]
+          if (planet) {
+            this.createPlanet(planet.hVal, planet.tileX, planet.tileY)
+          }
+        })
+      }
+    }
     this.cursorExplorer.run()
     this.cursorExplorer.play(SPRITE.EXPLORER)
 
-    this.chunkLoader = new ChunkLoader(this, { tileSize: TILE_SIZE }, this.rt)
     this.chunkLoader.setUpdateCbToChunks((t: Tile) => {
       t.alpha = 0
       t.registerOnClick((pointer: Phaser.Input.Pointer) => {
@@ -350,6 +428,8 @@ class GameScene extends Phaser.Scene {
         this.followPoint = new Phaser.Math.Vector2(v)
       },
     }))
+
+    appStore.setState({ isLoading: false })
 
     this.input.on('pointerup', async (p) => {
       if (this.input.activePointer.rightButtonReleased()) {
@@ -388,8 +468,6 @@ class GameScene extends Phaser.Scene {
         const entityID = dataStore.getState().ownedSpaceships[0]
         const networkLayer = appStore.getState().networkLayer
         if (networkLayer) {
-          const tileX = Math.floor(position.x / TILE_SIZE)
-          const tileY = Math.floor(position.y / TILE_SIZE)
           const id = formatEntityID(entityID)
           const ship = gameStore.getState().spaceships.get(id)
           const dist = Phaser.Math.Distance.Between(position.x, position.y, ship.x, ship.y)
@@ -415,27 +493,22 @@ class GameScene extends Phaser.Scene {
     })
 
     window.addEventListener('position', this.handleUIEventPosition)
-    this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W, false)
-    this.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S, false)
-    this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A, false)
-    this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D, false)
-    this.keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z, false)
-    this.keyX = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X, false)
-    this.keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F, false)
-    this.keyG = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G, false)
-    this.keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC, false)
-    const keyG = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G, false)
-    keyG.on('down', () => {
-      this.cursorExplorer.run()
-    })
 
-    this.navigation.setDepth(10)
-    this.cameras.main.startFollow(this.navigation, false, 0.3, 0.3)
+    this.keys = Object.fromEntries(
+      Object.entries(PHASER_HOTKEY).map((e) => {
+        return [e[0], e[1].keys.map((k) => this.input.keyboard.addKey(k, false))]
+      }),
+    ) as any
+
+    this.navigator.setDepth(10)
+    this.cameras.main.startFollow(this.navigator, false, 0.3, 0.3)
     this.ready = true
   }
   create() {
+    this.audioManager = new AudioManager(this)
+    this.audioManager.playBgm()
     this.followPoint = new Phaser.Math.Vector2(0, 0)
-    this.navigation = this.add.rectangle(this.followPoint.y, this.followPoint.x, 1, 1, 0x00ff00)
+    this.navigator = this.add.rectangle(this.followPoint.y, this.followPoint.x, 1, 1, 0x00ff00)
     this.onCreate()
   }
 
@@ -477,7 +550,6 @@ class GameScene extends Phaser.Scene {
     if (!this.ready) {
       return
     }
-    const pointer = this.input.activePointer
     this.updateCursor()
 
     if (this.gameUIState === GAME_UI_STATE.SELECTED_HQ_SHIP) {
@@ -485,21 +557,20 @@ class GameScene extends Phaser.Scene {
     } else {
       this.cursorMove.setVisible(false)
     }
-    this.chunkLoader.updateChunks(this.followPoint.x, this.followPoint.y)
     this.updateDebug()
-
     this.handleKeyboardUpdate()
-    this.navigation.setPosition(this.followPoint.x, this.followPoint.y)
+    this.navigator.setPosition(this.followPoint.x, this.followPoint.y)
+    this.chunkLoader.updateChunks(this.cameras.main.midPoint.x, this.cameras.main.midPoint.y)
   }
 
   updateDebug() {
     if (this.pane) {
-      this.paramsDebug.position = `${this.navigation.x}, ${this.navigation.y}`
-      const chunkX = Math.floor(this.navigation.x / (TILE_SIZE * CHUNK_WIDTH_SIZE))
-      const chunkY = Math.floor(this.navigation.y / (TILE_SIZE * CHUNK_HEIGHT_SIZE))
+      this.paramsDebug.position = `${this.navigator.x}, ${this.navigator.y}`
+      const chunkX = Math.floor(this.navigator.x / (TILE_SIZE * CHUNK_WIDTH_SIZE))
+      const chunkY = Math.floor(this.navigator.y / (TILE_SIZE * CHUNK_HEIGHT_SIZE))
       this.paramsDebug.chunkCoordinate = `${chunkX}, ${chunkY}`
-      const tileX = Math.floor(this.navigation.x / TILE_SIZE)
-      const tileY = Math.floor(this.navigation.y / TILE_SIZE)
+      const tileX = Math.floor(this.navigator.x / TILE_SIZE)
+      const tileY = Math.floor(this.navigator.y / TILE_SIZE)
 
       this.paramsDebug.tileCoordinate = `${tileX}, ${tileY}`
       this.paramsDebug.cameraSize = `${this.cameras.main.worldView.width} ${this.cameras.main.worldView.height}`
@@ -507,13 +578,11 @@ class GameScene extends Phaser.Scene {
   }
 
   handleKeyboardUpdate() {
-    if (this.keyESC.isDown) {
+    if (this.keys.clear[0].isDown) {
       this.clearAllDrawLine()
       if (this.targetHQMoverShip) {
         this.targetHQMoverShip.resetPredictMovePosition()
         this.targetHQMoverShip.clearLine()
-        const entityID = this.targetHQMoverShip.entityID
-        const id = formatEntityID(entityID)
         closeTeleport()
       }
       this.gameUIState = GAME_UI_STATE.NONE
@@ -524,30 +593,37 @@ class GameScene extends Phaser.Scene {
     }
 
     const cam = this.cameras.main
-    if (this.keyW.isDown) {
+
+    if (this.keys.move[0].isDown) {
       this.followPoint.y -= this.cameraSpeed / cam.zoom
     }
-    if (this.keyS.isDown) {
-      this.followPoint.y += this.cameraSpeed / cam.zoom
-    }
-    if (this.keyA.isDown) {
+    if (this.keys.move[1].isDown) {
       this.followPoint.x -= this.cameraSpeed / cam.zoom
     }
-    if (this.keyD.isDown) {
+    if (this.keys.move[2].isDown) {
+      this.followPoint.y += this.cameraSpeed / cam.zoom
+    }
+    if (this.keys.move[3].isDown) {
       this.followPoint.x += this.cameraSpeed / cam.zoom
     }
-    if (this.keyF.isDown) {
-      this.cameras.main.startFollow(this.navigation, false, 0.3, 0.3)
+    if (this.keys.unfollow[0].isDown) {
+      this.cameras.main.startFollow(this.navigator)
     }
-    if (this.keyG.isDown) {
+    if (this.keys.followShip[0].isDown) {
+      const hqship = dataStore.getState().ownedSpaceships[0]
+      const ship = gameStore.getState().spaceships.get(hqship)
+      if (ship) {
+        this.cameras.main.startFollow(ship)
+      }
+    }
+    if (this.keys.followExplorer[0].isDown) {
       this.cameras.main.startFollow(this.cursorExplorer)
     }
-    const camera = this.cameras.main
-    if (this.keyZ.isDown && camera.zoom > ZOOM_OUT_LIMIT) {
-      cam.zoom /= 1.02
-    }
-    if (this.keyX.isDown && camera.zoom < ZOOM_IN_LIMIT) {
+    if (this.keys.zoomIn[0].isDown && cam.zoom < ZOOM_IN_LIMIT) {
       cam.zoom *= 1.02
+    }
+    if (this.keys.zoomOut[0].isDown && cam.zoom > ZOOM_OUT_LIMIT) {
+      cam.zoom /= 1.02
     }
   }
 
@@ -558,9 +634,6 @@ class GameScene extends Phaser.Scene {
   onDestroy = () => {
     this.time.removeAllEvents()
     window.removeEventListener('position', this.handleUIEventPosition)
-    /**
-     * TODO: clean up for event listeners in this scene
-     */
   }
 }
 export default GameScene

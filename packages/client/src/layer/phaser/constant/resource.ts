@@ -26,6 +26,22 @@ export const SPRITE = {
   AI_SHIP: 'AI_SHIP',
   ALIEN_SHIP: 'ALIEN_SHIP',
   APE_SHIP: 'APE_SHIP',
+  LASER: 'laser',
+}
+
+export const AUDIO = {
+  PEW: 'PEW',
+  PEW_2: 'PEW_2',
+  PEW_3: 'PEW_3',
+  PEW_4: 'PEW_4',
+  HUH_1: 'HUH_1',
+  HUH_2: 'HUH_2',
+  HUH_3: 'HUH_3',
+  OH: 'OH',
+  OH_2: 'OH_2',
+  OH_3: 'OH_3',
+  BGM: 'BGM',
+  WARP: 'WARP',
 }
 
 export const SPRITE_PLANET = [

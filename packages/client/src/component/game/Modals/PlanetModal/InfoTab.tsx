@@ -1,5 +1,5 @@
 import { Box, Stack, Typography, useTheme } from '@mui/material'
-import { ReactNode, useMemo } from 'react'
+import React, { ReactNode, useMemo } from 'react'
 import { FACTION } from '../../../../const/faction'
 import { useResourceRegen } from '../../../../hook/useResourceRegen'
 import { Components } from '../../../../layer/network/components'
@@ -37,10 +37,11 @@ export const FactionInfoTab = ({ faction, name, isYou }: FactionInfoTabProps) =>
 export interface StatInfoTabProps {
   iconSrc: string
   title: string
-  value: number
+  value: number | ReactNode
+  tooltip?: ReactNode
 }
 
-export const StatInfoTab = ({ iconSrc, title, value }: StatInfoTabProps) => {
+export const StatInfoTab = ({ iconSrc, title, value, tooltip }: StatInfoTabProps) => {
   const theme = useTheme()
 
   return (
@@ -54,10 +55,14 @@ export const StatInfoTab = ({ iconSrc, title, value }: StatInfoTabProps) => {
       px={2}
     >
       <Box component="img" src={iconSrc} sx={{ width: 24, height: 24 }} />
-      <Typography flex={1} sx={{ fontSize: 14 }}>
-        {title}
-      </Typography>
-      <Typography sx={{ fontSize: 20, lineHeight: 1, fontFamily: 'VT323' }}>{`${value}%`}</Typography>
+      <Typography sx={{ fontSize: 14 }}>{title}</Typography>
+      {tooltip}
+      <Box flex={1} />
+      <pre>
+        <Typography sx={{ fontSize: 20, lineHeight: 0.8, fontFamily: 'VT323', textAlign: 'end' }}>
+          {typeof value === 'number' ? `${value}%` : value}
+        </Typography>
+      </pre>
     </Stack>
   )
 }

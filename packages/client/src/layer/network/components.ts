@@ -52,21 +52,26 @@ export const setupComponents = (world: World) => {
         contractId: 'component.Defense',
       },
     }),
-    BaseBlueprint: defineComponent(
-      world,
-      {
-        level: Type.Number,
-        attack: Type.Number,
-        defense: Type.Number,
-        resources: Type.StringArray,
-        cost: Type.StringArray,
+    //BaseBlueprint: defineComponent(
+    //world,
+    //{
+    //level: Type.Number,
+    //attack: Type.Number,
+    //defense: Type.Number,
+    //resources: Type.StringArray,
+    //cost: Type.StringArray,
+    //},
+    //{
+    //metadata: {
+    //contractId: 'component.BaseBlueprint',
+    //},
+    //},
+    //),
+    BaseBlueprint: defineStringComponent(world, {
+      metadata: {
+        contractId: 'component.BaseBlueprint',
       },
-      {
-        metadata: {
-          contractId: 'component.BaseBlueprint',
-        },
-      },
-    ),
+    }),
     Blueprint: defineStringComponent(world, {
       metadata: {
         contractId: 'component.Blueprint',

@@ -1,7 +1,15 @@
 import { Box, useTheme } from '@mui/system'
 import { FaPlus } from 'react-icons/fa'
 
-export const BuildingItem = ({ isBuildable = false, onClick }: { isBuildable: boolean; onClick?: () => void }) => {
+export const BuildingItem = ({
+  isBuildable = false,
+  onClick,
+  imageSrc,
+}: {
+  isBuildable?: boolean
+  onClick?: () => void
+  imageSrc?: string
+}) => {
   const theme = useTheme()
   return (
     <Box
@@ -18,6 +26,7 @@ export const BuildingItem = ({ isBuildable = false, onClick }: { isBuildable: bo
       }}
       onClick={onClick}
     >
+      {imageSrc && <img src={imageSrc} style={{ width: 24, height: 24 }} />}
       {isBuildable && <FaPlus size={14} color={theme.palette.grayScale.black} />}
     </Box>
   )

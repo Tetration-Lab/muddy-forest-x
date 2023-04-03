@@ -55,6 +55,8 @@ export const TeleportActionBox = ({ id }: { id: string }) => {
     }
   }
 
+  if (!ship) return <></>
+
   return (
     <Stack
       p={1}
@@ -71,7 +73,7 @@ export const TeleportActionBox = ({ id }: { id: string }) => {
         <Typography px={2} sx={{ fontFamily: 'VT323', fontSize: 24, flex: 1 }}>
           Teleport
         </Typography>
-        <CloseModalButton onClick={closeTeleport} />
+        <CloseModalButton onClick={() => closeTeleport()} />
       </Stack>
       <SpriteEntry
         sprite={shipSprite?.shipImg}

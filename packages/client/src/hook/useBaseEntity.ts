@@ -77,12 +77,12 @@ export const useBaseEntity = (id: string) => {
       return [
         ALL_ADVANCED_RESOURCE_ID[i],
         {
-          value: 0,
+          value: Number(r?.value ?? 0),
           cap: Number(r?.cap ?? (ADVANCED_CAP * getLevelResourceStorageMultiplier(level)) / 100),
           rpb: Number(
             r?.rpb ??
               ((!type || type === EntityType.PLANET) && containedResources.includes(ALL_ADVANCED_RESOURCE_ID[i])
-                ? (ADVANCED_REGEN * getLevelResourceStorageMultiplier(level)) / 100
+                ? (ADVANCED_REGEN * getLevelResourceStorageMultiplier(level)) / 200
                 : 0),
           ),
           lrt: r?.lrt ?? 0,
@@ -114,24 +114,20 @@ export const useBaseEntity = (id: string) => {
     const resources = components.Resource.update$
       .pipe(filter((update) => indexes.includes(update.entity)))
       .subscribe((u) => {
+        const id = world.entities[u.entity]
+        const rid = ALL_ADVANCED_RESOURCE_ID[ids.indexOf(id)]
+        if (uninitilizedResources.includes(rid)) setUninitializedResources((e) => e.filter((e) => e !== rid))
         setEntity((e) => {
-          const id = world.entities[u.entity]
-          const rid = ALL_ADVANCED_RESOURCE_ID[ids.indexOf(id)]
-          if (uninitilizedResources.includes(rid)) setUninitializedResources((e) => e.filter((e) => e !== rid))
           return {
             ...e,
-            resources: new Map([
-              ...e.resources,
-              [
-                rid,
-                {
-                  value: Number(u.value[0].value),
-                  cap: Number(u.value[0].cap),
-                  rpb: Number(u.value[0].rpb),
-                  lrt: u.value[0].lrt,
-                },
-              ],
-            ]),
+            resources: new Map(
+              e.resources.set(rid, {
+                value: Number(u.value[0].value),
+                cap: Number(u.value[0].cap),
+                rpb: Number(u.value[0].rpb),
+                lrt: u.value[0].lrt,
+              }),
+            ),
           }
         })
       })

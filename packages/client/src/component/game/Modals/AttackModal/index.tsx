@@ -198,7 +198,7 @@ export const AttackModal = ({
               <InfoTab iconSrc="/assets/svg/attack-icon.svg" title={`${attacker?.entity?.attack}%`} />
             </Stack>
             {attackerOwner?.faction === targetOwner?.faction ? (
-              <WarningBox label="Cannot attack your own faciton!" />
+              <WarningBox label="Cannot attack your own faction!" />
             ) : (
               <Stack p={1} sx={{ backgroundColor: theme.palette.grayScale.darkGray, borderRadius: '8px' }} spacing={1}>
                 <Typography sx={{ fontSize: 14, fontWeight: 400 }}>Energy Used</Typography>

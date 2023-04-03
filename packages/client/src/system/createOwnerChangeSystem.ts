@@ -13,6 +13,7 @@ export function createOwnerChangeSystem(network: NetworkLayer, scene: GameScene)
 
     // Handle faction change on planet
     const { planets } = gameStore.getState()
-    planets.get(id)?.changeFaction(faction)
+    const planet = planets.get(id)
+    planet?.changeFaction(faction)
   })
 }

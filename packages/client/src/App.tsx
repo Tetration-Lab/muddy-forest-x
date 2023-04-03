@@ -2,7 +2,6 @@ import { SyncState } from '@latticexyz/network'
 import { ThemeProvider } from '@mui/material'
 import { useCallback, useEffect, useState } from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import { useStore } from 'zustand'
 import { createNetworkLayer } from './layer/network/createNetworkLayer'
 import { createLoadingStateSystem } from './system/createLoadingStateSystem'
 import { AppRoutes } from './router'
@@ -12,9 +11,10 @@ import { theme } from './themes/theme'
 import { config } from './config'
 import { SnackbarProvider } from 'notistack'
 import { Loading } from './component/Loading'
+import { version } from '../package.json'
+import localForage from 'localforage'
 
 function App() {
-  const store = useStore(appStore, (state) => state)
   const [loaded, setLoaded] = useState(false)
   const [loadingMsg, setLoadingMsg] = useState<{ msg: string; percentage: number }>({
     msg: '',
@@ -38,7 +38,20 @@ function App() {
     })
   }, [])
 
+  const clearAllStorage = async () => {
+    const burnerWallet = localStorage.getItem('burnerWallet')
+    localStorage.clear()
+    await localForage.clear()
+    if (burnerWallet) {
+      localStorage.setItem('burnerWallet', burnerWallet)
+    }
+    localStorage.setItem('version', version)
+  }
+
   useEffect(() => {
+    if (localStorage.getItem('version') !== version) {
+      clearAllStorage()
+    }
     onInitialSync()
     document.addEventListener('contextmenu', (event) => {
       event.preventDefault()

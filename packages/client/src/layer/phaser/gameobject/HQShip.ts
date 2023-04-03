@@ -1,6 +1,7 @@
 import { FACTION } from '../../../const/faction'
+import { AudioManager } from '../AudioManager'
 import { TILE_SIZE } from '../config/chunk'
-import { COLOR_GREEN } from '../constant'
+import { COLOR_GREEN, COLOR_YELLOW } from '../constant'
 import { IMAGE, SPRITE } from '../constant/resource'
 
 export class HQShip extends Phaser.GameObjects.Container {
@@ -15,8 +16,11 @@ export class HQShip extends Phaser.GameObjects.Container {
   nameText: Phaser.GameObjects.Text
   faction = -1
   signFactionImg: Phaser.GameObjects.Image
-  laserSprite: Phaser.GameObjects.Rectangle
+  laserSprite: Phaser.GameObjects.Sprite
   bombSprite: Phaser.GameObjects.Sprite
+  isOwner = false
+  audioManager: AudioManager | null = null
+  circleSendItem: Phaser.GameObjects.Arc
   constructor(
     scene: Phaser.Scene,
     x: number,
@@ -28,8 +32,8 @@ export class HQShip extends Phaser.GameObjects.Container {
   ) {
     super(scene, x, y)
     this.scene.add.existing(this)
-    //TODO: replace with sprite sheet
-    this.laserSprite = this.scene.add.rectangle(x, y, 48 + 16, 12, 0xff0000).setDepth(1000 + this.depth + 1)
+    this.laserSprite = this.scene.add.sprite(x, y, SPRITE.LASER).setDepth(1000 + this.depth + 1)
+    this.laserSprite.play(SPRITE.LASER)
     this.bombSprite = this.scene.add.sprite(x, y, SPRITE.BOMB).setDepth(this.laserSprite.depth + 1)
     this.bombSprite.play(SPRITE.BOMB)
     this.bombSprite.setVisible(false)
@@ -66,6 +70,39 @@ export class HQShip extends Phaser.GameObjects.Container {
     this.nameText.setColor(FACTION[faction].color || '#000')
     this.signFactionImg = this.scene.add.image(0, 50, FACTION[faction].signImg).setDepth(1000)
     this.add(this.signFactionImg)
+
+    this.circleSendItem = this.scene.add.circle(this.x, this.y, 16, COLOR_YELLOW, 1)
+    this.circleSendItem.setVisible(false)
+  }
+
+  setAudioManager(audioManager: AudioManager) {
+    this.audioManager = audioManager
+  }
+
+  sendItemTo(targetPos: Phaser.Math.Vector2) {
+    this.circleSendItem.setVisible(true)
+    this.circleSendItem.setPosition(this.x, this.y)
+    this.circleSendItem.setRotation(Phaser.Math.Angle.Between(this.x, this.y, targetPos.x, targetPos.y))
+    const tweenMove = this.scene.tweens.add({
+      targets: [this.circleSendItem],
+      alpha: 1,
+      x: {
+        from: this.x,
+        to: targetPos.x,
+      },
+      y: {
+        from: this.y,
+        to: targetPos.y,
+      },
+      // },
+      ease: 'Linear', // 'Linear, 'Cubic', 'Elastic', 'Bounce', 'Back'
+      duration: 500,
+      repeat: 0, // -1: infinity
+      yoyo: false,
+    })
+    tweenMove.once(Phaser.Tweens.Events.TWEEN_COMPLETE, () => {
+      this.circleSendItem.setVisible(false)
+    })
   }
 
   attackTo(targetPos: Phaser.Math.Vector2) {
@@ -93,6 +130,9 @@ export class HQShip extends Phaser.GameObjects.Container {
       this.laserSprite.setVisible(false)
       this.bombSprite.setPosition(targetPos.x, targetPos.y)
       this.bombSprite.setVisible(true)
+      if (this.isOwner) {
+        this.scene.cameras.main.shake(100, 0.05)
+      }
       this.bombSprite.play(SPRITE.BOMB).once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
         this.bombSprite.setVisible(false)
       })
@@ -146,6 +186,9 @@ export class HQShip extends Phaser.GameObjects.Container {
   teleport(x: number, y: number) {
     this.teleportEffect.setPosition(this.x, this.y)
     this.teleportEffect.setVisible(true)
+    if (this.audioManager) {
+      this.audioManager.playWarp()
+    }
     this.teleportEffect.play(SPRITE.TELEPORT).once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
       this.teleportEffect.setVisible(false)
       this.setPosition(x, y)

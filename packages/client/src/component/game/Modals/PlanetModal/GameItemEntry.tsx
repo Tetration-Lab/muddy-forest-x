@@ -8,7 +8,7 @@ export interface GameItemEntryProps {
   onClick?: () => void
   value?: string
   title: string
-  description?: string
+  description?: ReactNode
   sx?: SxProps
   suffix?: ReactNode
 }
@@ -53,14 +53,16 @@ export const GameItemEntry = ({ iconUrl, onClick, value, title, description, sx,
         alignItems="center"
         justifyContent="space-between"
       >
-        <Stack>
+        <Stack flex={1}>
           <Typography fontSize={14} color={theme.palette.grayScale.almostGray}>
             {title}
           </Typography>
-          {description && (
+          {description && typeof description === 'string' ? (
             <Typography fontSize={12} color={theme.palette.grayScale.almostDarkGray}>
               {description}
             </Typography>
+          ) : (
+            description
           )}
         </Stack>
         {suffix}

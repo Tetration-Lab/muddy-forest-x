@@ -20,9 +20,6 @@ class GameUIScene extends Phaser.Scene {
   }
 
   onDestroy = () => {
-    /**
-     * TODO: clean up for event listeners in this scene
-     */
     this.scale.off(Phaser.Scale.Events.RESIZE, this.resize, this)
   }
 }
