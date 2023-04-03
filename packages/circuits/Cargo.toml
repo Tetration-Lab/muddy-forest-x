@@ -25,6 +25,8 @@ arkworks-utils = { version = "^1.0.1", default-features = false, features = ["po
 
 arkworks-mimc = { version = "^0.2.0", default-features = false, features = ["r1cs", "mimc-7-91-bn254"] }
 
+arkworks-solidity-verifier = "0.1.0"
+
 thiserror = "1.0.35"
 hex = "0.4.3"
 
