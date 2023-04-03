@@ -130,7 +130,7 @@ export const UILayer = () => {
           </div>
         </div>
       </div>
-      <div className="absolute top-1/2 right-0">
+      <div className="absolute top-1/2 right-0 -translate-y-1/2">
         <div className="p-4">
           <div className="flex flex-col space-y-2">
             <div ref={buildContainerRef}>
