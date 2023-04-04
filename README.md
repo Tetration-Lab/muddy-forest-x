@@ -29,7 +29,7 @@ Currently, the zk verifier of our game is yet implemented in the contracts, so a
 ### Package Informations
 
 - [Circuit README](/packages/circuits/README.md) for more information about ZK circuits, crypto primitive, and proving system we used and instructions to regenerate keys or modify circuits. As well as how clients can access hashing function and other circuit functions through WASM bindgen.
-- [Client README](/packages/clients/README.md) for more information about game client, in-game assets handling, and guide for contribution to our front end.
+- [Client README](/packages/client/README.md) for more information about game client, in-game assets handling, and guide for contribution to our front end.
 
 ## Usage
 
