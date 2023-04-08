@@ -32,7 +32,6 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
     planetSprite: state.planets.get(id),
     focusLocation: state.focusLocation,
   }))
-  const planetLocations = useStore(dataStore, (state) => state.planetLocations.get(id))
   const { planet, uninitilizedResources } = usePlanet(id)
   const owner = usePlayer(planet?.owner ?? '0x0')
   const isOwner = useMemo(() => planet?.owner === network.connectedAddress.get(), [planet?.owner])
@@ -122,7 +121,7 @@ export const PlanetModal = ({ id, position }: { id: string; position: Phaser.Mat
                 <EnergyInfoTab key={planet.energy.value} {...planet.energy} />
                 <InfoTab
                   iconSrc="/assets/svg/location-icon.svg"
-                  title={`${planetLocations[0]},${planetLocations[1]}`}
+                  title={`${planetSprite?.coordinate?.x},${planetSprite?.coordinate?.y}`}
                   suffix={<SaveButton onClick={() => console.log('save!')} />}
                 />
               </Stack>
